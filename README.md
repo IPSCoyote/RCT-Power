@@ -1,2 +1,14 @@
-# RCT-Power
-Modul zum Auslesen des RCT-Power Inverter (Wechselrichter)
+### IP-Symcon Modul für den RCT-Power Inverter / Wechselrichter
+
+PHP-Modul zur Einbindung eines [RCT-Power](http://www.rct-power.com) Inverter/Wechselrichter in IPSymcon. 
+
+Nutzung auf eigene Gefahr ohne Gewähr. Das Modul kann jederzeit überarbeitet werden, so daß Anpassungen für eine weitere Nutzung notwendig sein können. Bei der Weiterentwicklung wird möglichst auf Kompatibilität geachtet. 
+
+## Dokumentation
+
+**Inhaltsverzeichnis**
+
+1. [Funktionsumfang](#1-funktionsumfang) 
+2. [Systemanforderungen](#2-systemanforderungen)
+3. [Installation](#3-installation)
+4. [Module](#4-module)
