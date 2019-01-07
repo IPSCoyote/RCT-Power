@@ -12,3 +12,9 @@ Nutzung auf eigene Gefahr ohne Gewähr. Das Modul kann jederzeit überarbeitet w
 2. [Systemanforderungen](#2-systemanforderungen)
 3. [Installation](#3-installation)
 4. [Module](#4-module)
+
+## 1. Funktionsumfang
+
+Das Modul ist dazu gedacht einen [RCT-Power](http://www.rct-power.com) Inverter/Wechselrichter einer Photovoltaikanlage in [IP-Symcon](www.ip-symcon.de) einzubinden. 
+
+Es sollen Zustandsdaten (gelieferte Energie, Momentanverbrauch, Ladezustand des Akkus, etc.) zur Auswertung und weiterverwendung in IP-Symcon zur Verfügung gestellt werden. Programmierung oder Steuerung des Inverters/Wechselrichters sind __nicht__ Bestandteil des Moduls.
