@@ -1,0 +1,14 @@
+{
+    "id": "{541F2136-5BAD-49ED-B2F4-F6F97ECAF3D6}",
+    "name": "ViessControl",
+    "type": 3,
+    "vendor": "Viessmann",
+    "aliases":
+    [
+        "Vitodens 200/300 mit Vitotronic 200 (HO1)"
+    ],  
+    "parentRequirements": ["{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}"], 
+    "childRequirements": [],                                          
+    "implemented": ["{018EF6B5-AB94-40C6-AA53-46943E824ACF}"],  
+    "prefix": "ViessControl"
+}
