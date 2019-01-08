@@ -1,0 +1,22 @@
+{
+    "elements": 
+    [
+      { "type": "Label", "label": "Basic Data" },
+      { "type": "ValidationTextBox", "name": "IPAddressCharger", "caption": "IP Address" },
+      { "type": "Label", "label": "Update Interval" },
+      { "type": "NumberSpinner", "name": "UpdateInterval", "caption": "Update Interval", "digits": 0 , "hex": false, "suffix": "seconds"},
+    ],
+    "actions":  
+    [
+        { "type": "Button", "label": "Check Connection", "onClick": "RCTPowerInverter_Update($id);" }
+    ],
+    "status":   
+    [
+      { "code": 102, "icon": "active",      "caption": "RCT Power Inverter identified" },
+      { "code": 200, "icon": "inactive",    "caption": "Configuration missing" },
+      { "code": 201, "icon": "error",       "caption": "IP invalid" },
+      { "code": 202, "icon": "error",       "caption": "No device found on IP" },
+      { "code": 203, "icon": "error",       "caption": "No Data returned from IP" },
+      { "code": 204, "icon": "error",       "caption": "No RCT Power Inverter available at IP" }
+    ]
+}
