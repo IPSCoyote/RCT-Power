@@ -11,7 +11,7 @@
             "Configuration missing": "Konfiguration fehlt",
             "IP invalid": "IP Adresse ungültig",
             "No device found on IP": "Kein Gerät antwortet an der IP Adresse",
-            "No DATA returned from IP": "Keine Daten von IP Adresse geliefert",
+            "No Data returned from IP": "Keine Daten von IP Adresse geliefert",
             "No RCT Power Inverter available at IP": "Kein RCT Power Wechselrichter an IP Adresse erreichbar"
         }
     }
