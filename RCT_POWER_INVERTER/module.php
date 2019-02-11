@@ -63,11 +63,11 @@
 			  $this->sendDebug( "RCTPower", "Phase L3 voltage [V]: ".number_format( $float, 0 )."V", 0 );
 	      		  break; 
 			  
-		  case "B298395D": // DC input A voltage [V], Float	
+		  case "418CF140": // DC input A voltage [V], Float (by Documentation B298395D!)	
 			  $this->sendDebug( "RCTPower", "DC input A voltage [V]: ".number_format( $float, 0 )."V", 0 );
 	      		  break;
 			  
-		  case "5BB8075A": // DC input B voltage [V], Float	
+		  case "4268C565": // DC input B voltage [V], Float (by Documentation 5BB8075A)
 			  $this->sendDebug( "RCTPower", "DC input B voltage [V]: ".number_format( $float, 0 )."V", 0 );
 	      		  break;
 			  
@@ -88,7 +88,7 @@
 	      		  break;
 			  
 		  case "959930BF": // Battery State of Charge (SoC) [0..1], Float
-			  $this->sendDebug( "RCTPower", "Battery State of Charge: ".number_format( $float*100, 0 )."%", 0 );
+			  $this->sendDebug( "RCTPower", "Battery State of Charge: ".number_format( $float*100, 1 )."%", 0 );
 	      		  break;
 			  
 		  case "400F015B": // Battery power (positive if discharge) [W], Float	
@@ -234,11 +234,11 @@
           // Phase L3 voltage [V]
 	  $this->requestData( "2545E22D", 4 );
 	  usleep( 100000 );
-          // DC input A voltage [V]
-          $this->requestData( "B298395D", 4 );
+          // DC input A voltage [V] (by Documentation B298395D)
+          $this->requestData( "418CF140", 4 );
           usleep( 100000 );
-          // DC input B voltage [V]
-          $this->requestData( "5BB8075A", 4 );
+          // DC input B voltage [V] (by Documentation 5BB8075A)
+          $this->requestData( "4268C565", 4 );
           usleep( 100000 );
           // DC input A power [W]
           $this->requestData( "DB11855B", 4 );
