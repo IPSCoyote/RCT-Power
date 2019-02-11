@@ -16,12 +16,8 @@
  
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
-	
-	  $this->sendDebug( "RCTPower", "ReceiveData Begin", 0 );	
-		
           // Receive data from serial port I/O
           $data = json_decode($JSONString);	
-		
           // Process data
 	  $response = "";
 	  for ( $x=0; $x<strlen($data->Buffer); $x++ ) {
@@ -29,9 +25,7 @@
             if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
 	    $response = $response.$hex;
 	  }
-	  $this->sendDebug( "RCTPower", $response, 0 );
-
-          $this->sendDebug( "RCTPower", "ReceiveData End", 0 );
+	  $this->SetBuffer("RCT_Response", $response);
           return true;
         }
         
@@ -54,11 +48,8 @@
           // send command to RCT Power Inverter
 		
 	  $command = "\x2B\x01\x04\x40\x0F\x01\x5B\x58\xB4";	
-		
-	  for ( $x=1; $x <= strlen($command); $x++ );	
-		
-	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
-						    "Buffer" => utf8_encode($command) )));
+			
+	  $requestData( $command );
 
         } 
         
@@ -67,6 +58,19 @@
         }
        
         //=== Tool Functions ============================================================================================
+	function requestData( string $command ) {
+		
+	  // clear expected Response and send Data to Parent...
+	  $this->SetBuffer("RCT_Response", "");
+	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
+						    "Buffer" => utf8_encode($command) )));
+	  // and wait for response
+	  while ( $this->GetBuffer( "RCT_Response" ) == "" ) usleep( 250000 ); // wait a 1/4 second
+	  
+	  return $this->GetBuffer( "RCT_Response" );
+	}  
+	  
+	  
         function hexTo32Float($strHex) {
           $v = hexdec($strHex);
           $x = ($v & ((1 << 23) - 1)) + (1 << 23) * ($v >> 31 | 1);
