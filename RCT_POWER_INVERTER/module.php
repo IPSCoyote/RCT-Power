@@ -210,70 +210,70 @@
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
           // Actual inverters AC-power [W]
-	  // $this->requestData( "DB2D69AE", 4 ), 0);
+	  // $this->requestData( "DB2D69AE", 4 );
           usleep( 100000 );
           // Phase L1 voltage [V]
-	  $this->requestData( "CF053085", 4 ), 0);
+	  $this->requestData( "CF053085", 4 );
 	  usleep( 100000 );
           // Phase L2 voltage [V]
-	  $this->requestData( "54B4684E", 4 ), 0);
+	  $this->requestData( "54B4684E", 4 );
 	  usleep( 100000 );
           // Phase L3 voltage [V]
-	  $this->requestData( "2545E22D", 4 ), 0);
+	  $this->requestData( "2545E22D", 4 );
 	  usleep( 100000 );
           // DC input A voltage [V]
-          $this->requestData( "B298395D", 4 ), 0);
+          $this->requestData( "B298395D", 4 );
           usleep( 100000 );
           // DC input B voltage [V]
-          $this->requestData( "5BB8075A", 4 ), 0);
+          $this->requestData( "5BB8075A", 4 );
           usleep( 100000 );
           // DC input A power [W]
-          $this->requestData( "DB11855B", 4 ), 0);
+          $this->requestData( "DB11855B", 4 );
           usleep( 100000 );
           // DC input B power [W]
-          $this->requestData( "0CB5D21B", 4 ), 0);
+          $this->requestData( "0CB5D21B", 4 );
           usleep( 100000 );
           //// Battery current measured by inverter, low pass filter with Tau = 1s [A]
-	  // $this->requestData( "B408E40A", 4 ), 0);
+	  // $this->requestData( "B408E40A", 4 );
           usleep( 10000 );
           // Battery voltage [V]
-          $this->requestData( "A7FA5C5D", 4 ), 0);
+          $this->requestData( "A7FA5C5D", 4 );
           usleep( 100000 );
           // Battery State of Charge (SoC) [0..1]
-          $this->requestData( "959930BF", 4 ), 0);		
+          $this->requestData( "959930BF", 4 );	
           usleep( 100000 );
           // Battery power (positive if discharge) [W]
-          $this->requestData( "400F015B", 4 ), 0);
+          $this->requestData( "400F015B", 4 );
           usleep( 100000 );
           // Battery temperature [°C]
-          $this->requestData( "902AFAFB", 4 ), 0);	
+          $this->requestData( "902AFAFB", 4 );
           usleep( 100000 );
           // Public grid power (house connection, negative by feed-in) [W]
-          $this->requestData( "91617C58", 4 ), 0);
+          $this->requestData( "91617C58", 4 );
           usleep( 100000 );
           // External power (additional inverters/generators in house internal grid) [W]
-          $this->requestData( "E96F1844", 4 ), 0);
+          $this->requestData( "E96F1844", 4 );
           usleep( 100000 );
           // Todays energy [Wh]
-          $this->requestData( "BD55905F", 4 ), 0);	
+          $this->requestData( "BD55905F", 4 );
           usleep( 100000 );
           // This month energy [Wh]
-          $this->requestData( "10970E9D", 4 ), 0);	
+          $this->requestData( "10970E9D", 4 );
           usleep( 100000 );
           // This year energy [Wh]
-          $this->requestData( "C0CC81B6", 4 ), 0);	
+          $this->requestData( "C0CC81B6", 4 );
           usleep( 100000 );
           // Total Energy [Wh]
-          $this->requestData( "B1EF67CE", 4 ), 0);	
+          $this->requestData( "B1EF67CE", 4 );
           usleep( 100000 );
           // External Power Limit [0..1]
-          $this->requestData( "FE1AA500", 4 ), 0);
+          $this->requestData( "FE1AA500", 4 );
           usleep( 100000 );
           // External battery power target [W] (positive = discharge)
-          $this->requestData( "BD008E29", 4 ), 0);	
+          $this->requestData( "BD008E29", 4 );
           usleep( 100000 );
           // External load demand [W] (positive = feed in / 0=internal
-          $this->requestData( "872F380B", 4 ), 0);	
+          $this->requestData( "872F380B", 4 );	
 		
 	  // return result
           return true;
