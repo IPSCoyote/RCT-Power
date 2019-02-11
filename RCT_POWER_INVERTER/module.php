@@ -67,7 +67,7 @@
 		
 		
 	  $this->sendDebug( "RCTPower", $hexCommand, 0 );
-				// "\x2B\x01\x04\x40\x0F\x01\x5B\x58\xB4" 
+	  $this->sendDebug( "RCTPower", "\x2B\x01\x04\x40\x0F\x01\x5B\x58\xB4" , 0 );
 				 
 	  // clear expected Response and send Data to Parent...
 	  $this->SetBuffer("RCT_Response", "");
