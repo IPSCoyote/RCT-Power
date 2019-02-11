@@ -47,8 +47,92 @@
 	  if ( strlen( $data ) == 8 ) $float = round( $this->hexTo32Float( $data ), 2 );
 		
 	  switch ($address) {
+		  case "DB2D69AE": // Actual inverters AC-power [W], Float
+			  $this->sendDebug( "RCTPower", "Actual inverters AC-power [W]: ".number_format( $float, 0 )."W", 0 );
+	      		  break;
+			  
+		  case "CF053085": // Phase L1 voltage [V], Float
+			  $this->sendDebug( "RCTPower", "Phase L1 voltage [V]: ".number_format( $float*100, 0 )."V", 0 );
+	      		  break;
+			  
+		  case "54B4684E": // Phase L2 voltage [V], Float	
+			  $this->sendDebug( "RCTPower", "Phase L2 voltage [V]: ".number_format( $float*100, 0 )."V", 0 );
+	      		  break;
+			  
+		  case "2545E22D": // Phase L3 voltage [V], Float	
+			  $this->sendDebug( "RCTPower", "Phase L3 voltage [V]: ".number_format( $float*100, 0 )."V", 0 );
+	      		  break; 
+			  
+		  case "B298395D": // DC input A voltage [V], Float	
+			  $this->sendDebug( "RCTPower", "DC input A voltage [V]: ".number_format( $float*100, 0 )."V", 0 );
+	      		  break;
+			  
+		  case "5BB8075A": // DC input B voltage [V], Float	
+			  $this->sendDebug( "RCTPower", "DC input B voltage [V]: ".number_format( $float*100, 0 )."V", 0 );
+	      		  break;
+			  
+		  case "DB11855B": // DC input A power [W], Float	
+			  $this->sendDebug( "RCTPower", "DC input A power [W]: ".number_format( $float*100, 0 )."W", 0 );
+	      		  break;
+			  
+		  case "0CB5D21B": // DC input B power [W], Float	
+			  $this->sendDebug( "RCTPower", "DC input B power [W]: ".number_format( $float*100, 0 )."W", 0 );
+	      		  break;
+			  
+		  case "B408E40A": // Battery current measured by inverter, low pass filter with Tau = 1s [A], Float	
+			  $this->sendDebug( "RCTPower", "Battery current measured by inverter, low pass filter with Tau = 1s [A]: ".number_format( $float*100, 0 )."A", 0 );
+	      		  break;
+		
+		  case "A7FA5C5D": // "Battery voltage [V], Float	
+			  $this->sendDebug( "RCTPower", "Battery voltage [V]: ".number_format( $float*100, 0 )."V", 0 );
+	      		  break;
+			  
 		  case "959930BF": // Battery State of Charge (SoC) [0..1], Float
 			  $this->sendDebug( "RCTPower", "Battery State of Charge: ".number_format( $float*100, 0 )."%", 0 );
+	      		  break;
+			  
+		  case "400F015B": // Battery power (positive if discharge) [W], Float	
+			  $this->sendDebug( "RCTPower", "Battery power (positive if discharge) [W]: ".number_format( $float*100, 0 )."W", 0 );
+	      		  break;
+			  
+		  case "902AFAFB": // Battery temperature [Grad C], Float	
+			  $this->sendDebug( "RCTPower", "Battery temperature [Grad C]: ".number_format( $float*100, 0 )." C", 1 );
+	      		  break;
+			  
+		  case "91617C58": // Public grid power (house connection, negative by feed-in) [W], Float	
+			  $this->sendDebug( "RCTPower", "Public grid power (house connection, negative by feed-in) [W]: ".number_format( $float*100, 0 )."W", 0 );
+	      		  break;
+			  
+		  case "E96F1844": // External power (additional inverters/generators in house internal grid) [W], Float	
+			  $this->sendDebug( "RCTPower", "External power (additional inverters/generators in house internal grid) [W]: ".number_format( $float*100, 0 )."W", 0 );
+	      		  break;
+			 
+		  case "BD55905F": // Todays energy [Wh], Float	
+			  $this->sendDebug( "RCTPower", "Todays energy [Wh]: ".number_format( $float*100, 0 )."Wh", 0 );
+	      		  break;
+			  
+		  case "10970E9D": // This month energy [Wh], Float	
+			  $this->sendDebug( "RCTPower", "This month energy [Wh]: ".number_format( $float*100, 0 )."Wh", 0 );
+	      		  break;
+			  
+		  case "C0CC81B6": // This year energy [Wh], Float	
+			  $this->sendDebug( "RCTPower", "This year energy [Wh]: ".number_format( $float*100, 0 )."Wh", 0 );
+	      		  break;
+			  
+		  case "B1EF67CE": // Total Energy [Wh], Float	
+			  $this->sendDebug( "RCTPower", "Total Energy [Wh]: ".number_format( $float*100, 0 )."Wh", 0 );
+	      		  break;
+			  
+		  case "FE1AA500": // External Power Limit [0..1], Float	
+			  $this->sendDebug( "RCTPower", "External Power Limit [0..1]: ".number_format( $float*100, 0 )."%", 0 );
+	      		  break;
+			  
+		  case "BD008E29": // External battery power target [W] (positive = discharge), Float	
+			  $this->sendDebug( "RCTPower", "External battery power target [W] (positive = discharge): ".number_format( $float*100, 0 )."W", 0 );
+	      		  break;
+			  
+		  case "872F380B": // External load demand [W] (positive = feed in / 0=internal ), Float	
+			  $this->sendDebug( "RCTPower", "External load demand [W] (positive = feed in / 0=internal ): ".number_format( $float*100, 0 )."W", 0 );
 	      		  break;
 			  
 		  default:         // Unknown response
