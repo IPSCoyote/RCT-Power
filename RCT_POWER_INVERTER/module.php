@@ -32,7 +32,7 @@
 		
 	  $expectedLength = $this->GetBuffer( "RCT_ExpectedLength" );
 	  if ( strlen( $response ) >= $expectedLength*2 ) {
-	    $this->SetBuffer("RCT_Response", substr( $response,0, $expectedLength*2 );
+	    $this->SetBuffer("RCT_Response", substr( $response,0, $expectedLength*2 ));
             $this->GetBuffer( "ReceiveBuffer", "" );
           }
           return true;
