@@ -24,8 +24,8 @@
 	  for ($x=1; $x<count($SingleResponses); $x++) {
 		  
             $response = "";
-	    for ( $x=0; $x<$SingleResponses[$x]; $x++ ) {
-	      $hex = strtoupper( dechex( ord($SingleResponses[$x]) ) );
+	    for ( $y=0; $y<$SingleResponses[$x]; $y++ ) {
+	      $hex = strtoupper( dechex( ord($SingleResponses[$x][$y]) ) );
               if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
 	      $response = $response.$hex." ";
 	    }	    
