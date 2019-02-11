@@ -74,6 +74,10 @@
 	  
 	  $response = $this->GetBuffer( "RCT_Response" );
 	
+		
+		$this->sendDebug( "RCTPower", "Response: ".$response, 0 );
+		$this->sendDebug( "RCTPower", "Calc CRC: ".substr( $response, 2, strlen( $response ) - 6 ), 0 );
+		
 	  // check responsonse CRC
 	  $CRC = $this->calcCRC( substr( $response, 2, strlen( $response ) - 6 ) );
 		
