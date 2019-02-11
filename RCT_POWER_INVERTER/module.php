@@ -57,12 +57,12 @@
         }
        
         //=== Tool Functions ============================================================================================
-        function encodeCommand( string $command ) {
-	  $newCommand = "";
-	  for ( $x=0; $x<strlen($command)/2; $x++ )
-            $newCommand = $newCommand.chr(hexdec(substr( $command, $x*2, 2 )));
-          return $newCommand;
-	}
+        function hexTo32Float($strHex) {
+          $v = hexdec($strHex);
+          $x = ($v & ((1 << 23) - 1)) + (1 << 23) * ($v >> 31 | 1);
+          $exp = ($v >> 23 & 0xFF) - 127;
+          return $x * pow(2, $exp - 23);
+        }
 		
 		
         //=== Module Prefix Functions ===================================================================================
