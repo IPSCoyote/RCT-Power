@@ -23,6 +23,8 @@
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
 	  for ($x=1; $x<count($SingleResponses); $x++) {
 	    $this->sendDebug( "RCTPower", "Responses ".$x.": ".$SingleResponses[$x], 0 );
+            if ( ord( $SingleResponses[$x][2] ) + 5 = strlen( $SingleResponses[$x] ) 
+		$this->sendDebug( "RCTPower", "Response ok", 0 );
 	  }
       
           return true;
