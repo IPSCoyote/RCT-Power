@@ -48,7 +48,7 @@
 		
 	  switch ($address) {
 		  case "959930BF": // Battery State of Charge (SoC) [0..1], Float
-			  $this->sendDebug( "RCTPower", "Battery State of Charge: ".$float*100 );
+			  $this->sendDebug( "RCTPower", "Battery State of Charge: ".number_format( $float*100, 0 )."%" );
 	      		  break;
 			  
 		  default:         // Unknown response
