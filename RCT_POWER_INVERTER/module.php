@@ -47,7 +47,7 @@
 	  if ( strlen( $data ) == 8 ) $float = round( $this->hexTo32Float( $data ), 2 );
 		
 	  switch ($address) {
-		  case '959930BF': // Battery State of Charge (SoC) [0..1], Float
+		  case "959930BF": // Battery State of Charge (SoC) [0..1], Float
 			  $this->sendDebug( "RCTPower", "Battery State of Charge: ".$float*100 );
 	      		  break;
 			  
