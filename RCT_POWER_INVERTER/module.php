@@ -64,19 +64,19 @@
 	      		  break; 
 			  
 		  case "418CF140": // DC input A voltage [V], Float (by Documentation B298395D!)	
-			  $this->sendDebug( "RCTPower", "DC input A voltage [V]: ".number_format( $float, 0 )."V", 0 );
+			  $this->sendDebug( "RCTPower", "DC Input A voltage [V]: ".number_format( $float, 0 )."V", 0 );
 	      		  break;
 			  
 		  case "4268C565": // DC input B voltage [V], Float (by Documentation 5BB8075A)
-			  $this->sendDebug( "RCTPower", "DC input B voltage [V]: ".number_format( $float, 0 )."V", 0 );
+			  $this->sendDebug( "RCTPower", "DC Input B voltage [V]: ".number_format( $float, 0 )."V", 0 );
 	      		  break;
 			  
 		  case "DB11855B": // DC input A power [W], Float	
-			  $this->sendDebug( "RCTPower", "DC input A power [W]: ".number_format( $float, 0 )."W", 0 );
+			  $this->sendDebug( "RCTPower", "DC Input A power [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
 			  
 		  case "0CB5D21B": // DC input B power [W], Float	
-			  $this->sendDebug( "RCTPower", "DC input B power [W]: ".number_format( $float, 0 )."W", 0 );
+			  $this->sendDebug( "RCTPower", "DC Input B power [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
 			  
 		  case "B408E40A": // Battery current measured by inverter, low pass filter with Tau = 1s [A], Float	
