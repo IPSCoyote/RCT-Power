@@ -20,15 +20,15 @@
           $data = json_decode($JSONString);	
 		  
 	  $this->sendDebug( "RCTPower", "Received: ".strlen( utf8_decode( $data->Buffer ) ), 0 );
-	  $receivedData = $this->GetBuffer( "ReceiveBuffer" );     // Get previously received data
-	  $receivedData = $receivedData.$data->Buffer;             // Append newly received data
-	  $this->SetBuffer( "ReceiveBuffer", $receivedData );      // Store fully received data to buffer
+	  $receivedData = $this->GetBuffer( "ReceiveBuffer" );        // Get previously received data
+	  $receivedData = $receivedData.utf8_decode( $data->Buffer ); // Append newly received data
+	  $this->SetBuffer( "ReceiveBuffer", $receivedData );         // Store fully received data to buffer
 		
 	  if ( strlen( $receivedData ) >= $this->GetBuffer( "RCT_ExpectedLength" ) and $this->GetBuffer( "RCT_ExpectedLength" ) > 0) {
 		  
             // Process data
 	    $response = "";
-	    for ( $x=0; $x<strlen($data->Buffer); $x++ ) {
+	    for ( $x=0; $x<strlen($receivedData); $x++ ) {
 	      $hex = strtoupper( dechex( ord($receivedData[$x]) ) );
               if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
 	      $response = $response.$hex;
