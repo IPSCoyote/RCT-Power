@@ -208,7 +208,7 @@
         *
         */
         
-        public function UpdateData() {
+        public function UpdateData() { 
           /* get Data from RCT Power Inverter */
 		
 	  ///--- HANDLE Connection --------------------------------------------------------------------------------------	
