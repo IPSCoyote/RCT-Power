@@ -19,7 +19,6 @@
           // Receive data from serial port I/O
           $data = json_decode($JSONString);	
 		  
-	  $this->sendDebug( "RCTPower", "Received: ".strlen( utf8_decode( $data->Buffer ) ), 0 );
 	  $receivedData = $this->GetBuffer( "ReceiveBuffer" );        // Get previously received data
 	  $receivedData = $receivedData.utf8_decode( $data->Buffer ); // Append newly received data
 	  $this->SetBuffer( "ReceiveBuffer", $receivedData );         // Store fully received data to buffer
