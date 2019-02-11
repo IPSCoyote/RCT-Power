@@ -24,18 +24,16 @@
 	  for ($x=1; $x<count($SingleResponses); $x++) {  
             if ( ord( $SingleResponses[$x][1] ) + 4 == strlen( $SingleResponses[$x] ) ) {
 	      // lenght of response package is correct, so check CRC
+	      // first convert into 0xYY format
               $response = "";
 	      for ( $y=0; $y<strlen($SingleResponses[$x]); $y++ ) {
 	        $hex = strtoupper( dechex( ord($SingleResponses[$x][$y]) ) );
                 if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
 	        $response = $response.$hex;
 	      }	     
-		    
-	      $this->sendDebug( "RCTPower", "Calc CRC: ".substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ), 0 );
 	      $CRC = $this->calcCRC( substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ));
-	
-	      $this->sendDebug( "RCTPower", "Response: ".$response, 0 );
-	      $this->sendDebug( "RCTPower", "Response CRC:".$CRC, 0 );
+	      if ( $CRC == substr( $response, -4 ) );
+	        $this->sendDebug( "RCTPower", "Response: OK: ".$response, 0 );
 		    
 	    }
 	  }
