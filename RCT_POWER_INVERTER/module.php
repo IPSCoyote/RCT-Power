@@ -30,6 +30,8 @@
                 if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
 	        $response = $response.$hex;
 	      }	     
+		    
+	      $this->sendDebug( "RCTPower", "Calc CRC: ".substr( $response,0,ord( $SingleResponses[$x][1] )*2 ), 0 );
 	      $CRC = $this->calcCRC( substr( $response,0,ord( $SingleResponses[$x][1] )*2 ));
 	
 	      $this->sendDebug( "RCTPower", "Response: ".$response, 0 );
