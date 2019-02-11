@@ -96,7 +96,7 @@
 	      		  break;
 			  
 		  case "902AFAFB": // Battery temperature [Grad C], Float	
-			  $this->sendDebug( "RCTPower", "Battery temperature [Grad C]: ".number_format( $float, 0 )." C", 1 );
+			  $this->sendDebug( "RCTPower", "Battery temperature [Grad C]: " );
 	      		  break;
 			  
 		  case "91617C58": // Public grid power (house connection, negative by feed-in) [W], Float	
@@ -124,7 +124,7 @@
 	      		  break;
 			  
 		  case "FE1AA500": // External Power Limit [0..1], Float	
-			  $this->sendDebug( "RCTPower", "External Power Limit [0..1]: ".number_format( $float, 0 )."%", 0 );
+			  $this->sendDebug( "RCTPower", "External Power Limit [0..1]: ".number_format( $float*100, 0 )."%", 0 );
 	      		  break;
 			  
 		  case "BD008E29": // External battery power target [W] (positive = discharge), Float	
