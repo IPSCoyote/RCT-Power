@@ -96,7 +96,7 @@
 	      		  break;
 			  
 		  case "902AFAFB": // Battery temperature [Grad C], Float	
-			  $this->sendDebug( "RCTPower", "Battery temperature [Grad C]: " );
+			  $this->sendDebug( "RCTPower", "Battery temperature [Grad C]: ".number_format( $float, 1 )."C", 0 );
 	      		  break;
 			  
 		  case "91617C58": // Public grid power (house connection, negative by feed-in) [W], Float	
