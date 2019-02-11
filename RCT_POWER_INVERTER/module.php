@@ -92,23 +92,15 @@
 	  while ( $this->GetBuffer( "RCT_Response" ) == "" ) usleep( 250000 ); // wait a 1/4 second
 	  
 	  $response = $this->GetBuffer( "RCT_Response" );
-	
-		
-		$this->sendDebug( "RCTPower", "Response: ".$response, 0 );
-		$this->sendDebug( "RCTPower", "Calc CRC: ".substr( $response, 2, strlen( $response ) - 6 ), 0 );
 		
 	  // check responsonse CRC
 	  $CRC = $this->calcCRC( substr( $response, 2, strlen( $response ) - 6 ) );
 		
 	  if ( $CRC == substr( $response, strlen( $response ) - 4, 4 ) )
-		$this->sendDebug( "RCTPower", "OK", 0 );
-		else
-			$this->sendDebug( "RCTPower", $CRC, 0 );
-		  
-		  
-		
-	  $response = substr( $this->GetBuffer( "RCT_Response" ), 7, $length );
-		
+	    // Response is correct, so return it
+	    return substr( $response, 7, $length );
+	  else
+	    return false;		
 	}  
 	  
 	function calcCRC( string $command ) {
