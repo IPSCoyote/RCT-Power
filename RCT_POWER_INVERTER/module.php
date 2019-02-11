@@ -31,6 +31,9 @@
         
         //=== Private Functions for Communication handling with Vitotronic ==============================================
         private function startCommunication() {
+		
+	  $this->sendDebug( "RCTPower", "startCommunication", 0 );	
+		
 	  ///--- HANDLE Connection --------------------------------------------------------------------------------------	
           // check Socket Connection (parent)
           $SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID']; 
