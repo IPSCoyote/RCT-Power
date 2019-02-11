@@ -98,7 +98,7 @@
 		
 	  if ( $CRC == substr( $response, strlen( $response ) - 4, 4 ) )
 	    // Response is correct, so return it
-	    return substr( $response, 7, $length );
+	    return substr( $response, 14, $length*2 );
 	  else
 	    return false;		
 	}  
