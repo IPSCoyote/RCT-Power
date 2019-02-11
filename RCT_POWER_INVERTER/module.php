@@ -17,6 +17,7 @@
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
           // Receive data from serial port I/O
+		return true;
           $data = json_decode($JSONString);	
 		  
 	  $receivedData = $this->GetBuffer( "ReceiveBuffer" );        // Get previously received data
@@ -57,33 +58,8 @@
 	  $expectedLength = 9 + $length; // 
 		
 	  // clear expected Response and send Data to Parent...
-	  $this->SetBuffer("ReceiveBuffer", "" );
-	  $this->SetBuffer("RCT_Response", "");
-	  $this->SetBuffer("RCT_ExpectedLength", $expectedLength );
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
-	  					    "Buffer" => utf8_encode($hexCommand) )));
-	  // and wait for response
-	  while ( $this->GetBuffer( "RCT_Response" ) == "" ) usleep( 250000 ); // wait a 1/4 second
-	  
-	  $response = $this->GetBuffer( "RCT_Response" );
-		
-	  // check responsonse CRC
-	  $CRC = $this->calcCRC( substr( $response, 2, strlen( $response ) - 6 ) );
-		
-	  if ( $CRC == substr( $response, strlen( $response ) - 4, 4 ) ) {
-	    // Response is correct, so return it formatted (if format known)
-	    $result = substr( $response, 14, $length*2 );
-	    switch ( $format ) {
-              case 'FLOAT': 
-	        $returnFloat = 0;
-	        $returnFloat = round( $this->hexTo32Float($result), 2 );
-	        return $returnFloat;
-                break;
-              default: return $result;	    	    
-	    }
-	  }
-	  else
-	    return false;		
+	  					    "Buffer" => utf8_encode($hexCommand) )));	
 	}  
 	  
 	function calcCRC( string $command ) {
