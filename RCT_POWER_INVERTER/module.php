@@ -60,7 +60,7 @@
 	  $hexlength = strtoupper( dechex($length) );
           if ( strlen( $hexlength ) == 1 ) $hexlength = '0'.$hexlength;
 	  $command = "01".$hexlength.$command;
-	  $command = "2B".$command.calcCRC( $command );
+	  $command = "2B".$command.$this->calcCRC( $command );
 	  $hexCommand = "";
 	  for( $x=0; $x<strlen($command)/2;$x++)
 	    $hexCommand = $hexCommand."\x".substr( $command, $x*2, 2 );
