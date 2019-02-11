@@ -20,6 +20,7 @@
           $data = json_decode($JSONString);	
 	  $receivedData = $this->GetBuffer( "ReceiveBuffer" );     // Get previously received data
 	  $receivedData = $receivedData.$data->Buffer;             // Append newly received data
+          $this->sendDebug( "RCTPower", $receivedData, 0 );
 	  $this->SetBuffer( "ReceiveBuffer", $receivedData );      // Store fully received data to buffer
 		
           // Process data
