@@ -49,7 +49,7 @@
 		
 	  $command = "\x2B\x01\x04\x40\x0F\x01\x5B\x58\xB4";	
 			
-	  $requestData( $command );
+	  $this->requestData( $command );
 
         } 
         
