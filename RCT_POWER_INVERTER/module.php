@@ -123,7 +123,9 @@
             }
             $crc &= 0xffff;
           }  
-          return strtoupper( dechex( $crc ) );
+          $crc = strtoupper( dechex( $crc ) );
+	  if ( strlen( $crc ) == 3 ) $crc = '0'.$crc;
+	  return $crc;
         }    
 	  
 	  
