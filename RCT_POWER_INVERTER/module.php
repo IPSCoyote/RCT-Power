@@ -78,7 +78,7 @@
 	  $expectedLength = 9 + $length; // 
 		
 	  // clear expected Response and send Data to Parent...
-	  $this->GetBuffer( "ReceiveBuffer", "" );
+	  $this->SetBuffer("ReceiveBuffer", "" );
 	  $this->SetBuffer("RCT_Response", "");
 	  $this->SetBuffer("RCT_ExpectedLength", $expectedLength );
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
