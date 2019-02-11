@@ -42,31 +42,6 @@
           } 
           return true;
         }
-        
-        //=== Private Functions for Communication handling with Vitotronic ==============================================
-        private function startCommunication() {
-		
-	  $this->sendDebug( "RCTPower", "startCommunication", 0 );	
-		
-	  ///--- HANDLE Connection --------------------------------------------------------------------------------------	
-          // check Socket Connection (parent)
-          $SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID']; 
-          if ( $SocketConnectionInstanceID == 0 ) return false; // No parent assigned  
-            
-          $ModuleID = IPS_GetInstance($SocketConnectionInstanceID)['ModuleInfo']['ModuleID'];      
-          if ( $ModuleID !== '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}' ) return false; // wrong parent type
-		
-          // check connection status
-		
-          ///--- INIT CONNECTION ----------------------------------------------------------------------------------------
-          // send command to RCT Power Inverter		
-	  $this->sendDebug( "RCTPower", $this->requestData( "400F015B", 4, "FLOAT" ), 0);
-
-        } 
-        
-        private function endCommunication() {
-	  return true;			
-        }
        
         //=== Tool Functions ============================================================================================
 	function requestData( string $command, int $length, string $format ) {
@@ -149,20 +124,22 @@
         
         public function UpdateData() {
           /* get Data from RCT Power Inverter */
-          
-          // Init Communication
-          if ( $this->startCommunication() === true ) {
-            // Init successful, request Data
-  
-            // End Communication
-            $this->endCommunication();
-		  
-            // return result
-            return $result;
-	  }
-          else { 
-            return false; 
-	  }
+		
+	  ///--- HANDLE Connection --------------------------------------------------------------------------------------	
+          // check Socket Connection (parent)
+          $SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID']; 
+          if ( $SocketConnectionInstanceID == 0 ) return false; // No parent assigned  
+            
+          $ModuleID = IPS_GetInstance($SocketConnectionInstanceID)['ModuleInfo']['ModuleID'];      
+          if ( $ModuleID !== '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}' ) return false; // wrong parent type
+		
+          // Init Communication -----------------------------------------------------------------------------------------
+		
+	  // Request Data -----------------------------------------------------------------------------------------------	
+	  $this->sendDebug( "RCTPower", "Battery power (positive if discharge): ",$this->requestData( "400F015B", 4, "FLOAT" ), 0);
+		
+          // return result
+          return $result;
         }
         
     }
