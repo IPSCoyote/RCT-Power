@@ -46,7 +46,7 @@
 	  $command = "2B0104400F015B58B4";	
 		
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
-						    "Buffer" => $command )));
+						    "Buffer" => utf8_encode($command) )));
 
         } 
         
