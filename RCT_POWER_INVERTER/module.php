@@ -31,7 +31,7 @@
 	    }	    
 	    $this->sendDebug( "RCTPower", "Response: ".$response, 0 );
 	    $this->sendDebug( "RCTPower", "Response lenght: ".strlen($SingleResponses[$x]), 0 );
-            if ( ord( $SingleResponses[$x][2] ) + 5 == strlen( $SingleResponses[$x] ) )
+            if ( ord( $SingleResponses[$x][2] ) + 4 == strlen( $SingleResponses[$x] ) )
 		$this->sendDebug( "RCTPower", "Response ok", 0 );
 	  }
       
