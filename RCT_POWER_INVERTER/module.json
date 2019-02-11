@@ -7,8 +7,8 @@
     [
         "RCT POWER INVERTER 4.0 | 5.0 | 6.0"
     ],  
-    "parentRequirements": ["{C8792760-65CF-4C53-B5C7-A30FCC84FEFE}"], 
+    "parentRequirements": ["{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}"], 
     "childRequirements": [],                                          
-    "implemented": ["{7A1272A4-CBDB-46EF-BFC6-DCF4A53D2FC7}"],  
+    "implemented": ["{018EF6B5-AB94-40C6-AA53-46943E824ACF}"],  
     "prefix": "RCTPOWERINVERTER"
 }
