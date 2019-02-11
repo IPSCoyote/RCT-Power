@@ -48,7 +48,7 @@
 	  for ( $x=1; $x <= strlen($command); $x++ );	
 		
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
-						    "Buffer" => encodeCommand($command) )));
+						    "Buffer" => $this->encodeCommand($command) )));
 
         } 
         
