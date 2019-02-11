@@ -44,7 +44,7 @@
 		
 	  // precalculation
 	  $float = 0.0;
-	  if ( strlen( $data ) == 8 ) $float = round( $this->hexTo32Float( $data ), 2 );
+	  if ( strlen( $data ) == 8 ) $float = $this->hexTo32Float( $data );
 		
 	  switch ($address) {
 		  case "DB2D69AE": // Actual inverters AC-power [W], Float
