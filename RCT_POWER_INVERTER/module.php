@@ -23,11 +23,11 @@
           $data = json_decode($JSONString);	
 		
           // Process data
-	  //$text = "";
-	  //for ( $x=0; $x<strlen($data->Buffer); 0 ) {
-	  //  $text = $text.dechex( ord($data->Buffer[$x] ) );
-	  //}
-	  //$this->sendDebug( "RCTPower", $text, 0 );
+	  $response = "";
+	  for ( $x=0; $x<strlen($data->Buffer); 0 ) {
+	    $response = $response.dechex( ord($data->Buffer[$x]) );
+	  }
+	  $this->sendDebug( "RCTPower", $response, 0 );
 
           $this->sendDebug( "RCTPower", "ReceiveData End", 0 );
           return true;
