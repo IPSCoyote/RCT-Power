@@ -22,7 +22,15 @@
 	  $FullResponse = utf8_decode( $data->Buffer );
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
 	  for ($x=1; $x<count($SingleResponses); $x++) {
-	    $this->sendDebug( "RCTPower", "Responses ".$x.": ".$SingleResponses[$x], 0 );
+		  
+            $response = "";
+	    for ( $x=0; $x<$SingleResponses[$x]; $x++ ) {
+	      $hex = strtoupper( dechex( ord($SingleResponses[$x]) ) );
+              if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
+	      $response = $response.$hex." ";
+	    }	    
+	    $this->sendDebug( "RCTPower", "Response ".$response, 0 );
+	    $this->sendDebug( "RCTPower", "Response lenght ".strlen($SingleResponses[$x]), 0 );
             if ( ord( $SingleResponses[$x][2] ) + 5 == strlen( $SingleResponses[$x] ) )
 		$this->sendDebug( "RCTPower", "Response ok", 0 );
 	  }
