@@ -96,7 +96,7 @@
 	  // check responsonse CRC
 	  $CRC = $this->calcCRC( substr( $response, 2, strlen( $response ) - 6 ) );
 		
-	  if ( $CRC == substr( $response, strlen( $response ) - 4, 4 ) )
+	  if ( $CRC == substr( $response, strlen( $response ) - 4, 4 ) ) {
 	    // Response is correct, so return it
 	    $result = substr( $response, 14, $length*2 );
 	    switch ( $format ) {
@@ -106,7 +106,7 @@
 	        return $float;
                 break;
               default: return $result;	    	    
-	    }
+	  }
 	  else
 	    return false;		
 	}  
