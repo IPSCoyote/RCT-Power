@@ -17,7 +17,6 @@
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
           // Receive data from serial port I/O
-		return true;
           $data = json_decode($JSONString);	
 	  
 	  $responses = encode( utf8_decode( $data->buffer ), chr(hexdec('2B')));
