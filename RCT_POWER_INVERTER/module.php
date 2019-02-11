@@ -2,7 +2,7 @@
   class RCTPowerInverter extends IPSModule {
 
         public function Create() {
-          /* Create is called ONCE on Instance creation and start of IP-Symcon.
+          /* Create is called ONCE on Instance creation and start of IP-Symcon. 
              Status-Variables und Modul-Properties for permanent usage should be created here  */
           parent::Create(); 
         }
