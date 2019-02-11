@@ -22,7 +22,7 @@
 	  $receivedData = $receivedData.$data->Buffer;             // Append newly received data
 	  $this->SetBuffer( "ReceiveBuffer", $receivedData );      // Store fully received data to buffer
 		
-	  if ( strlen( $receivedData >= $this->GetBuffer( "RCT_ExpectedLength" ) and $this->GetBuffer( "RCT_ExpectedLength" ) > 0) {
+	  if ( strlen( $receivedData ) >= $this->GetBuffer( "RCT_ExpectedLength" ) and $this->GetBuffer( "RCT_ExpectedLength" ) > 0) {
 		  
             // Process data
 	    $response = "";
