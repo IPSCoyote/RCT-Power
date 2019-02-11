@@ -17,7 +17,6 @@
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
           // Receive data from serial port I/O
-	  $this->sendDebug( "RCTPower", "ReceiveData", 0 );
           $data = json_decode($JSONString);
 	  $FullResponse = utf8_decode( $data->Buffer );
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
@@ -32,16 +31,34 @@
 	        $response = $response.$hex;
 	      }	     
 	      $CRC = $this->calcCRC( substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ));
-	      if ( $CRC == substr( $response, -4 ) );
-	        $this->sendDebug( "RCTPower", "Response: OK: ".$response, 0 );
-		    
+	      if ( $CRC == substr( $response, -4 ) )
+		// CRC is also ok, so analyze the response
+	        $this->analyzeResponse( substr( $response, 4, 8 ), substr( $response, 12, ord( $SingleResponses[$x][1] )*2-8) );
 	    }
 	  }
-      
           return true;
         }
        
         //=== Tool Functions ============================================================================================
+	function analyzeResponse( string $address, string $data ) {
+		
+	  // precalculation
+	  $float = 0.0;
+	  if ( strlen( $data ) == 8 ) $float = round( $this->hexTo32Float( $data ), 2 );
+		
+	  switch ($address) {
+		  case '959930BF': // Battery State of Charge (SoC) [0..1], Float
+			  $this->sendDebug( "RCTPower", "Battery State of Charge: ".$float*100 );
+	      		  break;
+			  
+		  default:         // Unknown response
+			  $this->sendDebug( "RCTPower", "Unkown Response Address ".$address." with data ".$data, 0 );
+			  
+	  }
+		
+	}
+	  
+	  
 	function requestData( string $command, int $length, string $format ) {
 	  // does not work for string requests!!!
           // build command		
