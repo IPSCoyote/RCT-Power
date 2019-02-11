@@ -76,7 +76,7 @@
 	    switch ( $format ) {
               case 'FLOAT': 
 	        $returnFloat = 0;
-	        $returnFloat = round( $this->hexTo32Float($result), 0 );
+	        $returnFloat = round( $this->hexTo32Float($result), 2 );
 	        return $returnFloat;
                 break;
               default: return $result;	    	    
