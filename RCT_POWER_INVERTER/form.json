@@ -6,7 +6,6 @@
     ],
     "status":   
     [
-      { "code": 102, "icon": "active",      "caption": "RCT Power Inverter identified" },
       { "code": 200, "icon": "inactive",    "caption": "Configuration missing" },
       { "code": 201, "icon": "error",       "caption": "IP invalid" },
       { "code": 202, "icon": "error",       "caption": "No device found on IP" },
