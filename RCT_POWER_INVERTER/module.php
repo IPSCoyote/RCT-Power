@@ -135,7 +135,7 @@
           // Init Communication -----------------------------------------------------------------------------------------
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
-	  $this->sendDebug( "RCTPower", "Battery power (positive if discharge): ",$this->requestData( "400F015B", 4, "FLOAT" ), 0);
+	  $this->sendDebug( "RCTPower", "Battery power (positive if discharge): ".$this->requestData( "400F015B", 4, "FLOAT" ), 0);
 		
           // return result
           return $result;
