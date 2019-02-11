@@ -37,141 +37,32 @@
         
         //=== Private Functions for Communication handling with Vitotronic ==============================================
         private function startCommunication() {
-	  ///--- HANDLE SERIAL PORT -------------------------------------------------------------------------------------	
-          // check serial port (parent)
-          $SerialPortInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID']; 
-          if ( $SerialPortInstanceID == 0 ) return false; // No parent assigned  
+	  ///--- HANDLE Connection --------------------------------------------------------------------------------------	
+          // check Socket Connection (parent)
+          $SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID']; 
+          if ( $SocketConnectionInstanceID == 0 ) return false; // No parent assigned  
             
-          $ModuleID = IPS_GetInstance($SerialPortInstanceID)['ModuleInfo']['ModuleID'];      
-          if ( $ModuleID !== '{6DC3D946-0D31-450F-A8C6-C42DB8D7D4F1}' ) return false; // wrong parent type
+          $ModuleID = IPS_GetInstance($SocketConnectionInstanceID)['ModuleInfo']['ModuleID'];      
+          if ( $ModuleID !== '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}' ) return false; // wrong parent type
+		
+          // check connection status
 		
           ///--- INIT CONNECTION ----------------------------------------------------------------------------------------
-          // send 0x04 to bring communication into a defined state (Protocol 300)
+          // send command to RCT Power Inverter
+		
+	  $command = "\0x2B0104400F015B58B4";	
+		
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{C8792760-65CF-4C53-B5C7-A30FCC84FEFE}", 
-						    "Buffer" => utf8_encode("\x04") )));
-          $this->SetBuffer( "PortState", ViessControl::COMPORT_PREINIT );
-		
-          // now wait for connection to be COMPORT_READY (not too long ;))
-	  $tryCounter = 10;
-	  do {
-	    //$this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
-		//				      "Buffer" => utf8_encode("\x16\x00\x00") )));
-            sleep(1); // wait 1 second
-	    $tryCounter--;	  
-	  } while ( $this->GetBuffer( "PortState" ) != ViessControl::COMPORT_READY AND $tryCounter > 0 );
-		
-	  if ( $this->GetBuffer( "PortState" ) != ViessControl::COMPORT_READY ) {
-            // connection failed
-	    return false; } 
-	  else { 
-	    // connection established
-            return true; }
+						    "Buffer" => utf8_encode($command) )));
+
         } 
         
         private function endCommunication() {
-	  // get serial port (parent) and check
-	  $SerialPortInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID'];
-	  if ( $SerialPortInstanceID == 0 ) return false; // No parent assigned     
-          // check parent is serial port  
-          $ModuleID = IPS_GetInstance($SerialPortInstanceID)['ModuleInfo']['ModuleID'];      
-          if ( $ModuleID !== '{6DC3D946-0D31-450F-A8C6-C42DB8D7D4F1}' ) return false; // wrong parent type
-	  if ( IPS_GetProperty( $SerialPortInstanceID, "Open" ) != true ) return false; // com port closed	
-		
-	  // send 0x04		 
-	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
-						    "Buffer" => utf8_encode("\x04") )));	
-		
-	  // Close serial port
-	  if ( IPS_GetProperty( $SerialPortInstanceID, "Open" ) != false )
-          {
-	        IPS_SetProperty( $SerialPortInstanceID, "Open", false );
-	        IPS_ApplyChanges( $SerialPortInstanceID );
-          }
-	  $this->SetBuffer( "PortState", ViessControl::COMPORT_CLOSED );	
-		
 	  return true;			
         }
        
         //=== Tool Functions ============================================================================================
-        private function strToHex($string){
-		$this->sendDebug( "Viess", "strToHex Start", 0 );
-            $hex = '';
-            for ($i=0; $i<strlen($string); $i++){
-                $ord = ord($string[$i]);
-                $hexCode = dechex($ord);
-                $hex .= substr('0'.$hexCode, -2);
-            }
-		$this->sendDebug( "Viess", "strToHex End", 0 );
-            return strToUpper($hex);
-	}
-	    
-        private function hexToStr($hex){
-            $string='';
-            for ($i=0; $i < strlen($hex)-1; $i+=2){
-                $string .= chr(hexdec($hex[$i].$hex[$i+1]));
-            }
-            return $string;
-        }  
-	    
-        private function createPackage( $type, $address, $countOfBytes, $bytesToWrite ) {
-          // determination of payload length (bytes between 0x41 and checksum)
-          $payloadLength = 5;
-          if ( $type == 2 ) { $payloadLength = $payloadLength + $countOfBytes; }
-          $package = "\x41".chr($payloadLength);
-	  
-          // perpare payload
-	  $package = $package."\x0".chr($type).chr( hexdec( substr( $address,0,2 ) ) ).chr( hexdec( substr( $address,2,2 ) ) ).chr($countOfBytes);
-	  // add Bytes to write in case of write request
-	  if ( $type == 2 ) {
-	    for( $i=0; $i<$countOfBytes; $i++ ) {
-		  $package = $package.chr( hexdec( substr( $bytesToWrite( $i*2, 2 ) ) ) );
-		}
-	  }
-	  
-	  // calculate checksum
-	  $sum = 0;
-	  for( $i=1; $i<strlen( $package ); $i++ ) {
-	    $sum = $sum + ord( $package[$i] );
-	  }
-	  $hexCode = substr(dechex( $sum ),-2);
-          $hexCode .= substr('0'.$hexCode, -2);	  
-	  $package = $package.chr(hexdec($hexCode));
-	  
-	  return $package;
-	}
-	    
-	private function getDataFromControl( $address, $requestedLength )
-	{
-	  if ( $this->GetBuffer( "PortState" ) == ViessControl::COMPORT_READY )
-	  {
-	    // Clear old data
-	    $this->SetBuffer( "ReceiveBuffer", "" );
-            $this->SetBuffer( "RequestedData", "" );
-	
-	    // Calculate package
-	    $requestPackage = $this->createPackage( 1, $address, $requestedLength, "" );
-	    // send request
-	    $this->SetBuffer( "PortState", ViessControl::COMPORT_DATA_REQUESTED ); // to be done before request is send
-	    $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
-                                                      "Buffer" => utf8_encode($requestPackage))));	
-	    $tryCounter = 10;
-	    do {
-              sleep(1); // wait 1 second
-	      $tryCounter--;	  
-	    } while ( $this->GetBuffer( "PortState" ) != ViessControl::COMPORT_READY AND $tryCounter > 0 );
-		
-	    if ( $this->GetBuffer( "PortState" ) == ViessControl::COMPORT_READY ) {
-	      return $this->GetBuffer( "RequestedData" );
-	    }
-	    else { 
-	      return false; 
-	    }
-	  }
-	  else { 
-            return false; 
-	  }
-	}
-	    
+
         //=== Module Prefix Functions ===================================================================================
         /* Own module functions called via the defined prefix ViessControl_* 
         *
@@ -179,19 +70,16 @@
         *
         */
         
-        public function IdentifyHeatingControl() {
-          /* identify the connected Heating Control */
+        public function UpdateData() {
+          /* get Data from RCT Power Inverter */
           
-	  $string = file_get_contents("./ControlData/Controls.json");	
-	  $ViessmannControls = json_decode($string, true);	
-	  $this->sendDebug( "Viess", $ViessmannControls[0][control], 0 );
-		
           // Init Communication
           if ( $this->startCommunication() === true ) {
             // Init successful, request Data
-	    $result = $this->getDataFromControl( "00F8", 2 );	  
+  
             // End Communication
             $this->endCommunication();
+		  
             // return result
             return $result;
 	  }
