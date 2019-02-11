@@ -135,7 +135,8 @@
           // Init Communication -----------------------------------------------------------------------------------------
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
-	  $this->sendDebug( "RCTPower", "Actual inverters AC-power [W]: ".$this->requestData( "DB2D69AE", 4, "FLOAT" ), 0);
+	  $this->sendDebug( "RCTPower", "Battery power (positive if discharge) [W]: ".$this->requestData( "400F015B", 4, "FLOAT" ), 0);		
+          $this->sendDebug( "RCTPower", "Actual inverters AC-power [W]: ".$this->requestData( "DB2D69AE", 4, "FLOAT" ), 0);
 	  $this->sendDebug( "RCTPower", "Phase L1 voltage [V]: ".$this->requestData( "CF053085", 4, "FLOAT" ), 0);
 	  $this->sendDebug( "RCTPower", "Phase L2 voltage [V]: ".$this->requestData( "54B4684E", 4, "FLOAT" ), 0);
 	  $this->sendDebug( "RCTPower", "Phase L3 voltage [V]: ".$this->requestData( "2545E22D", 4, "FLOAT" ), 0);
