@@ -22,7 +22,7 @@
 	  $FullResponse = utf8_decode( $data->Buffer );
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
 	  for ($x=0; $x<count($SingleResponses); $x++) {
-	    $this->sendDebug( "RCTPower", "Responses ".$x.": ".$SingleResponses[$x]), 0 );
+	    $this->sendDebug( "RCTPower", "Responses ".$x.": ".$SingleResponses[$x], 0 );
 	  }
       
           return true;
