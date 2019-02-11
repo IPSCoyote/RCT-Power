@@ -45,8 +45,10 @@
 		
 	  $command = "2B0104400F015B58B4";	
 		
+	  for ( $x=1; $x <= strlen($command); $x++ );	
+		
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
-						    "Buffer" => utf8_encode($command) )));
+						    "Buffer" => encodeCommand($command) )));
 
         } 
         
@@ -55,7 +57,13 @@
         }
        
         //=== Tool Functions ============================================================================================
-
+        function encodeCommand( string $command ) {
+	  for ( $x=0; $x<strlen($command)/2; $x++ )
+            $newCommand = $newCommand.chr(hexdec(substr( $command, $x*2, 2 )));
+          return $newCommand;
+	}
+		
+		
         //=== Module Prefix Functions ===================================================================================
         /* Own module functions called via the defined prefix ViessControl_* 
         *
