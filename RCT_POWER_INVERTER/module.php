@@ -20,21 +20,23 @@
           $data = json_decode($JSONString);	
 	  $receivedData = $this->GetBuffer( "ReceiveBuffer" );     // Get previously received data
 	  $receivedData = $receivedData.$data->Buffer;             // Append newly received data
-          $this->sendDebug( "RCTPower", $receivedData, 0 );
 	  $this->SetBuffer( "ReceiveBuffer", $receivedData );      // Store fully received data to buffer
 		
-          // Process data
-	  $response = "";
-	  for ( $x=0; $x<strlen($data->Buffer); $x++ ) {
-	    $hex = strtoupper( dechex( ord($receivedData[$x]) ) );
-            if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
-	    $response = $response.$hex;
-	  }
+	  if ( strlen( $receivedData >= $this->GetBuffer( "RCT_ExpectedLength" ) and $this->GetBuffer( "RCT_ExpectedLength" ) > 0) {
+		  
+            // Process data
+	    $response = "";
+	    for ( $x=0; $x<strlen($data->Buffer); $x++ ) {
+	      $hex = strtoupper( dechex( ord($receivedData[$x]) ) );
+              if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
+	      $response = $response.$hex;
+	    }	  
 		
-	  $expectedLength = $this->GetBuffer( "RCT_ExpectedLength" );
-	  if ( strlen( $response ) >= $expectedLength*2 ) {
-	    $this->SetBuffer("RCT_Response", substr( $response,0, $expectedLength*2 ));
+	    $expectedLength = $this->GetBuffer( "RCT_ExpectedLength" );
+	    $this->SetBuffer( "RCT_Response", substr( $response,0, $expectedLength*2 ));
             $this->GetBuffer( "ReceiveBuffer", "" );
+	    $this->SetBuffer( "RCT_ExpectedLength", 0 );
+		  
           }
           return true;
         }
