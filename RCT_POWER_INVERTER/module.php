@@ -18,14 +18,23 @@
         public function ReceiveData($JSONString) {
           // Receive data from serial port I/O
           $data = json_decode($JSONString);	
+	  $receivedData = $this->GetBuffer( "ReceiveBuffer" );     // Get previously received data
+	  $receivedData = $receivedData.$data->Buffer;             // Append newly received data
+	  $this->SetBuffer( "ReceiveBuffer", $receivedData );      // Store fully received data to buffer
+		
           // Process data
 	  $response = "";
 	  for ( $x=0; $x<strlen($data->Buffer); $x++ ) {
-	    $hex = strtoupper( dechex( ord($data->Buffer[$x]) ) );
+	    $hex = strtoupper( dechex( ord($receivedData[$x]) ) );
             if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
 	    $response = $response.$hex;
 	  }
-	  $this->SetBuffer("RCT_Response", $response );
+		
+	  $expectedLength = $this->GetBuffer( "RCT_ExpectedLength" );
+	  if ( strlen( $response ) >= $expectedLength*2 ) {
+	    $this->SetBuffer("RCT_Response", substr( $response,0, $expectedLength*2 );
+            $this->GetBuffer( "ReceiveBuffer", "" );
+          }
           return true;
         }
         
@@ -56,6 +65,7 @@
        
         //=== Tool Functions ============================================================================================
 	function requestData( string $command, int $length ) {
+	  // does not work for string requests!!!
           // build command		
 	  $hexlength = strtoupper( dechex($length) );
           if ( strlen( $hexlength ) == 1 ) $hexlength = '0'.$hexlength;
@@ -65,8 +75,12 @@
 	  for( $x=0; $x<strlen($command)/2;$x++)
 	    $hexCommand = $hexCommand.chr(hexdec(substr( $command, $x*2, 2 )));
 				 
+	  $expectedLength = 9 + $length; // 
+		
 	  // clear expected Response and send Data to Parent...
+	  $this->GetBuffer( "ReceiveBuffer", "" );
 	  $this->SetBuffer("RCT_Response", "");
+	  $this->SetBuffer("RCT_ExpectedLength", $expectedLength );
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
 	  					    "Buffer" => utf8_encode($hexCommand) )));
 	  // and wait for response
