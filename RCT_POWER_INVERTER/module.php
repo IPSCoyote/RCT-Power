@@ -20,7 +20,7 @@
 		return true;
           $data = json_decode($JSONString);	
 	  
-	  $responses = encode( utf8_decode( $data->buffer ), chr(hexdec('2B'));	
+	  $responses = encode( utf8_decode( $data->buffer ), chr(hexdec('2B')));	
 
 			      
 			      
