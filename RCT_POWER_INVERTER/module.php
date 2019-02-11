@@ -21,7 +21,9 @@
           $data = json_decode($JSONString);
 	  $FullResponse = utf8_decode( $data->Buffer );
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
-	  $this->sendDebug( "RCTPower", "Received Responses: ".count($SingleResponses), 0 );
+	  for ($x=0; $x<count($SingleResponses); $x++) {
+	    $this->sendDebug( "RCTPower", "Responses ".$x.": ".$SingleResponses[$x]), 0 );
+	  }
       
           return true;
         }
