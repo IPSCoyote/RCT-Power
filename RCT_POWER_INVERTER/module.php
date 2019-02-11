@@ -143,7 +143,7 @@
 	  $this->sendDebug( "RCTPower", "DC input B voltage [V]: ".$this->requestData( "5BB8075A", 4, "FLOAT" ), 0);
 	  $this->sendDebug( "RCTPower", "DC input A power [W]: ".$this->requestData( "DB11855B", 4, "FLOAT" ), 0);
           $this->sendDebug( "RCTPower", "DC input B power [W]: ".$this->requestData( "0CB5D21B", 4, "FLOAT" ), 0);
-          $this->sendDebug( "RCTPower", "Battery current measured by inverter, low pass filter with Tau = 1s [A]: ".$this->requestData( "B408E40A", 4, "FLOAT" ), 0);
+//         $this->sendDebug( "RCTPower", "Battery current measured by inverter, low pass filter with Tau = 1s [A]: ".$this->requestData( "B408E40A", 4, "FLOAT" ), 0);
           $this->sendDebug( "RCTPower", "Battery voltage [V]: ".$this->requestData( "A7FA5C5D", 4, "FLOAT" ), 0);
           $this->sendDebug( "RCTPower", "Battery State of Charge (SoC) [0..1]: ".$this->requestData( "959930BF", 4, "FLOAT" ), 0);		
           $this->sendDebug( "RCTPower", "Battery power (positive if discharge) [W]: ".$this->requestData( "400F015B", 4, "FLOAT" ), 0);		
