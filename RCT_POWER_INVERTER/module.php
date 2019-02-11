@@ -7,7 +7,7 @@
           parent::Create(); 
         }
  
-        public function ApplyChanges() {
+        public function ApplyChanges() { 
           /* Called on 'apply changes' in the configuration UI and after creation of the instance */
           parent::ApplyChanges();
 		
