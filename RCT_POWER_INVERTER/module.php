@@ -135,6 +135,19 @@
 			  $this->sendDebug( "RCTPower", "External load demand [W] (positive = feed in / 0=internal ): ".number_format( $float, 0 )."W", 0 );
 	      		  break;
 			  
+		  //--- NOT DOCUMENTED !!! -------------------------------------------------------------------------
+		  case "8B9FF008": // Upper load boundary in %
+			  $this->sendDebug( "RCTPower", "Upper battery charge level [0..1]: ".number_format( $float*100, 0 )."%", 0 );
+	      		  break;
+			  
+		  case "4BC0F974": // gross battery capacity kwh
+			  $this->sendDebug( "RCTPower", "Gross Battery Capacity [kwh]: ".number_format( $float, 0 )."kwh", 0 );
+	      		  break;
+			  
+		  case "1AC87AA0": // Current House power consumption
+			  $this->sendDebug( "RCTPower", "Current House Power Consumption [W]: ".number_format( $float, 0 )."W", 0 );
+	      		  break;
+			  
 		  default:         // Unknown response
 			  $this->sendDebug( "RCTPower", "Unkown Response Address ".$address." with data ".$data, 0 );
 			  
@@ -274,6 +287,20 @@
           usleep( 100000 );
           // External load demand [W] (positive = feed in / 0=internal
           $this->requestData( "872F380B", 4 );	
+          usleep( 100000 );
+		
+          //--- NOT DOCUMENTED -------------------------------------------------------------------------
+	  // Upper load boundary in %
+	  $this->requestData( "8B9FF008", 4 );
+          usleep( 100000 );
+		
+	  // gross battery capacity kwh
+	  $this->requestData( "4BC0F974", 4 );
+          usleep( 100000 );
+		
+	  // Current House power consumption
+	  $this->requestData( "1AC87AA0", 4 );
+	  usleep( 100000 );
 		
 	  // return result
           return true;
