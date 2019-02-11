@@ -45,11 +45,8 @@
           // check connection status
 		
           ///--- INIT CONNECTION ----------------------------------------------------------------------------------------
-          // send command to RCT Power Inverter
-		
-	  $command = "\x2B\x01\x04\x40\x0F\x01\x5B\x58\xB4";	
-			
-	  $this->requestData( "400F015B", 4 );
+          // send command to RCT Power Inverter		
+	  $this->sendDebug( "RCTPower", $this->requestData( "400F015B", 4 ), 0);
 
         } 
         
@@ -58,14 +55,20 @@
         }
        
         //=== Tool Functions ============================================================================================
-	function requestData( string $command, int length ) {
-		
-	  	
+	function requestData( string $command, int $length ) {
+          // build command		
+	  $hexlength = strtoupper( dechex($length) );
+          if ( strlen( $hexlength ) == 1 ) $hexlength = '0'.$hexlength;
+	  $command = "01".$hexlength.$command;
+	  $command = "2B".$command.calcCRC( $command );
+	  $hexCommand = "";
+	  for( $x=0; $x<strlen($command)/2;$x++)
+	    $hexCommand = $hexCommand."\x".substr( $command, $x*2, 2 );
 		
 	  // clear expected Response and send Data to Parent...
 	  $this->SetBuffer("RCT_Response", "");
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
-						    "Buffer" => utf8_encode($command) )));
+						    "Buffer" => utf8_encode($hexcommand) )));
 	  // and wait for response
 	  while ( $this->GetBuffer( "RCT_Response" ) == "" ) usleep( 250000 ); // wait a 1/4 second
 	  
