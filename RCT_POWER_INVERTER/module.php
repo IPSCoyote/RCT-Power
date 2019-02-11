@@ -210,7 +210,7 @@
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
           // Actual inverters AC-power [W]
-	  // $this->requestData( "DB2D69AE", 4 );
+	  $this->requestData( "DB2D69AE", 4 );
           usleep( 100000 );
           // Phase L1 voltage [V]
 	  $this->requestData( "CF053085", 4 );
