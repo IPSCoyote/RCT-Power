@@ -19,27 +19,11 @@
           // Receive data from serial port I/O
 		return true;
           $data = json_decode($JSONString);	
-		  
-	  $receivedData = $this->GetBuffer( "ReceiveBuffer" );        // Get previously received data
-	  $receivedData = $receivedData.utf8_decode( $data->Buffer ); // Append newly received data
-	  $this->SetBuffer( "ReceiveBuffer", $receivedData );         // Store fully received data to buffer
-		
-	  if ( strlen( $receivedData ) >= $this->GetBuffer( "RCT_ExpectedLength" ) and $this->GetBuffer( "RCT_ExpectedLength" ) > 0) {
-		  
-            // Process data
-	    $response = "";
-	    for ( $x=0; $x<strlen($receivedData); $x++ ) {
-	      $hex = strtoupper( dechex( ord($receivedData[$x]) ) );
-              if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
-	      $response = $response.$hex;
-	    }	  
-		
-	    $expectedLength = $this->GetBuffer( "RCT_ExpectedLength" );
-	    $this->SetBuffer( "RCT_Response", substr( $response,0, $expectedLength*2 ));
-            $this->GetBuffer( "ReceiveBuffer", "" );
-	    $this->SetBuffer( "RCT_ExpectedLength", 0 );
-		  
-          } 
+	  
+	  $responses = encode( utf8_decode( $data->buffer ), chr(hexdec('2B'));	
+
+			      
+			      
           return true;
         }
        
