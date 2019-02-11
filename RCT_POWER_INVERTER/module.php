@@ -141,7 +141,7 @@
 	      		  break;
 			  
 		  case "4BC0F974": // gross battery capacity kwh
-			  $this->sendDebug( "RCTPower", "Gross Battery Capacity [kwh]: ".number_format( $float, 0 )."kwh", 0 );
+			  $this->sendDebug( "RCTPower", "Gross Battery Capacity [kwh]: ".number_format( $float/1000, 2 )."kwh", 0 );
 	      		  break;
 			  
 		  case "1AC87AA0": // Current House power consumption
