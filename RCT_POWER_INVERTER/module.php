@@ -1,13 +1,6 @@
 <?
   class RCTPowerInverter extends IPSModule {
- 
-	const COMPORT_OPEN           = 'Open';             // Comport was just opened
-	const COMPORT_PREINIT        = 'PreInit';          // Viessmann INIT was requested (0x04)
-	const COMPORT_INIT           = 'Init';             // Viessmann INIT was requested (0x16 0x00 0x00)
-	const COMPORT_READY          = 'Ready';            // Viessmann confirmed INIT; Control is READY to take commands
-	const COMPORT_CLOSED         = 'Closed';           // Comport is closed
-	const COMPORT_DATA_REQUESTED = 'DataRequested';    // Data was requested from the Control
-	    
+
         public function Create() {
           /* Create is called ONCE on Instance creation and start of IP-Symcon.
              Status-Variables und Modul-Properties for permanent usage should be created here  */
