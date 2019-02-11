@@ -25,7 +25,9 @@
           // Process data
 	  $response = "";
 	  for ( $x=0; $x<strlen($data->Buffer); $x++ ) {
-	    $response = $response.dechex( ord($data->Buffer[$x]) );
+	    $hex = strtoupper( dechex( ord($data->Buffer[$x]) ) );
+            if ( strlen( $hex ) = 1 ) $hex = '0'.$hex;
+	    $response = $response.$hex;
 	  }
 	  $this->sendDebug( "RCTPower", $response, 0 );
 
