@@ -49,7 +49,7 @@
 		
 	  $command = "\x2B\x01\x04\x40\x0F\x01\x5B\x58\xB4";	
 			
-	  $this->requestData( $command );
+	  $this->requestData( "400F015B", 4 );
 
         } 
         
@@ -58,7 +58,9 @@
         }
        
         //=== Tool Functions ============================================================================================
-	function requestData( string $command ) {
+	function requestData( string $command, int length ) {
+		
+	  	
 		
 	  // clear expected Response and send Data to Parent...
 	  $this->SetBuffer("RCT_Response", "");
@@ -69,6 +71,23 @@
 	  
 	  return $this->GetBuffer( "RCT_Response" );
 	}  
+	  
+	function calcCRC( string $command ) {
+          // Command with an odd byte length (add 0x00 to make odd!) without(!) start byte (0x2B)
+          $commandLength = strlen( $command ) / 2;
+          $crc = 0xFFFF; 	
+          for ( $x = 0; $x <$commandLength; $x++ ) {
+            $b = hexdec( substr( $command, $x*2, 2 ) );
+            for( $i = 0; $i<8; $i++ ) {
+              $bit = (($b >> (7 - $i) & 1) == 1);
+	      $c15 = ((($crc >> 15) & 1) == 1); 
+	      $crc <<= 1;
+              if ($c15 ^ $bit) $crc ^= 0x1021;
+            }
+            $crc &= 0xffff;
+          }  
+          return strtoupper( dechex( $crc ) );
+        }    
 	  
 	  
         function hexTo32Float($strHex) {
