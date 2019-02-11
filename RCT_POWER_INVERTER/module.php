@@ -11,7 +11,7 @@
           /* Called on 'apply changes' in the configuration UI and after creation of the instance */
           parent::ApplyChanges();
 		
-          $this->SetReceiveDataFilter(".*7A1272A4-CBDB-46EF-BFC6-DCF4A53D2FC7.*");
+          $this->SetReceiveDataFilter(".*018EF6B5-AB94-40C6-AA53-46943E824ACF.*");
         }
  
         //=== Module Functions =========================================================================================
@@ -45,7 +45,7 @@
 		
 	  $command = "\0x2B0104400F015B58B4";	
 		
-	  $this->SendDataToParent(json_encode(Array("DataID" => "{C8792760-65CF-4C53-B5C7-A30FCC84FEFE}", 
+	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
 						    "Buffer" => utf8_encode($command) )));
 
         } 
