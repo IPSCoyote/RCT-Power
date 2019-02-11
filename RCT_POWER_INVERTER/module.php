@@ -24,13 +24,13 @@
 	  for ($x=1; $x<count($SingleResponses); $x++) {
 		  
             $response = "";
-	    for ( $y=0; $y<$SingleResponses[$x]; $y++ ) {
+	    for ( $y=0; $y<strlen($SingleResponses[$x]); $y++ ) {
 	      $hex = strtoupper( dechex( ord($SingleResponses[$x][$y]) ) );
               if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
 	      $response = $response.$hex." ";
 	    }	    
-	    $this->sendDebug( "RCTPower", "Response ".$response, 0 );
-	    $this->sendDebug( "RCTPower", "Response lenght ".strlen($SingleResponses[$x]), 0 );
+	    $this->sendDebug( "RCTPower", "Response: ".$response, 0 );
+	    $this->sendDebug( "RCTPower", "Response lenght: ".strlen($SingleResponses[$x]), 0 );
             if ( ord( $SingleResponses[$x][2] ) + 5 == strlen( $SingleResponses[$x] ) )
 		$this->sendDebug( "RCTPower", "Response ok", 0 );
 	  }
