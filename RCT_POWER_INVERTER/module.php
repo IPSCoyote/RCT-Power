@@ -39,7 +39,7 @@
             $this->GetBuffer( "ReceiveBuffer", "" );
 	    $this->SetBuffer( "RCT_ExpectedLength", 0 );
 		  
-          }
+          } 
           return true;
         }
         
