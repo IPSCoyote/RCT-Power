@@ -60,7 +60,7 @@
 		
           ///--- INIT CONNECTION ----------------------------------------------------------------------------------------
           // send command to RCT Power Inverter		
-	  $this->sendDebug( "RCTPower", $this->requestData( "400F015B", 4 ), 0);
+	  $this->sendDebug( "RCTPower", $this->requestData( "400F015B", 4, "FLOAT" ), 0);
 
         } 
         
@@ -69,7 +69,7 @@
         }
        
         //=== Tool Functions ============================================================================================
-	function requestData( string $command, int $length ) {
+	function requestData( string $command, int $length, string $format ) {
 	  // does not work for string requests!!!
           // build command		
 	  $hexlength = strtoupper( dechex($length) );
@@ -98,7 +98,15 @@
 		
 	  if ( $CRC == substr( $response, strlen( $response ) - 4, 4 ) )
 	    // Response is correct, so return it
-	    return substr( $response, 14, $length*2 );
+	    $result = substr( $response, 14, $length*2 );
+	    switch ( $format ) {
+              case 'FLOAT': 
+	        $float = 0.0;
+	        $float = hexTo32Float($result);
+	        return $float;
+                break;
+              default: return $result;	    	    
+	    }
 	  else
 	    return false;		
 	}  
