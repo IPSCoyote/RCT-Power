@@ -63,7 +63,7 @@
 	  $command = "2B".$command.$this->calcCRC( $command );
 	  $hexCommand = "";
 	  for( $x=0; $x<strlen($command)/2;$x++)
-	    $hexCommand = $hexCommand."\x".substr( $command, $x*2, 2 );
+	    $hexCommand = $hexCommand.chr(hexdec(substr( $command, $x*2, 2 )));
 		
 		
 	  $this->sendDebug( "RCTPower", $hexCommand, 0 );
