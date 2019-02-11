@@ -24,7 +24,7 @@
 		
           // Process data
 	  $response = "";
-	  for ( $x=0; $x<strlen($data->Buffer); 0 ) {
+	  for ( $x=0; $x<strlen($data->Buffer); $x++ ) {
 	    $response = $response.dechex( ord($data->Buffer[$x]) );
 	  }
 	  $this->sendDebug( "RCTPower", $response, 0 );
