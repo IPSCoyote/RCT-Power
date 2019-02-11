@@ -21,18 +21,21 @@
           $data = json_decode($JSONString);
 	  $FullResponse = utf8_decode( $data->Buffer );
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
-	  for ($x=1; $x<count($SingleResponses); $x++) {
-		  
-            $response = "";
-	    for ( $y=0; $y<strlen($SingleResponses[$x]); $y++ ) {
-	      $hex = strtoupper( dechex( ord($SingleResponses[$x][$y]) ) );
-              if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
-	      $response = $response.$hex." ";
-	    }	    
-	    $this->sendDebug( "RCTPower", "Response: ".$response, 0 );
-	    $this->sendDebug( "RCTPower", "Response lenght: ".strlen($SingleResponses[$x]), 0 );
-            if ( ord( $SingleResponses[$x][1] ) + 4 == strlen( $SingleResponses[$x] ) )
-		$this->sendDebug( "RCTPower", "Response ok", 0 );
+	  for ($x=1; $x<count($SingleResponses); $x++) {  
+            if ( ord( $SingleResponses[$x][1] ) + 4 == strlen( $SingleResponses[$x] ) ) {
+	      // lenght of response package is correct, so check CRC
+              $response = "";
+	      for ( $y=0; $y<strlen($SingleResponses[$x]); $y++ ) {
+	        $hex = strtoupper( dechex( ord($SingleResponses[$x][$y]) ) );
+                if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
+	        $response = $response.$hex;
+	      }	     
+	      $CRC = $this->calcCRC( substr( $response,0,ord( $SingleResponses[$x][1] )*2 );
+	
+	      $this->sendDebug( "RCTPower", "Response: ".$response, 0 );
+	      $this->sendDebug( "RCTPower", "Response CRC:".$CRC, 0 );
+		    
+	    }
 	  }
       
           return true;
