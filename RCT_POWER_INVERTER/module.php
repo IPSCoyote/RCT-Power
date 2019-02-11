@@ -23,7 +23,7 @@
           $data = json_decode($JSONString);	
 		
           // Process data
-          $this->sendDebug( "RCTPower", $data, 0 );
+          $this->sendDebug( "RCTPower", $data->Buffer, 0 );
 
           $this->sendDebug( "RCTPower", "ReceiveData End", 0 );
           return true;
