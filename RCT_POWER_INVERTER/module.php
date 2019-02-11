@@ -75,9 +75,9 @@
 	    $result = substr( $response, 14, $length*2 );
 	    switch ( $format ) {
               case 'FLOAT': 
-	        $float = 0.0;
-	        $float = $this->hexTo32Float($result);
-	        return $float;
+	        $returnFloat = 0;
+	        $returnFloat = round( $this->hexTo32Float($result), 0 );
+	        return $returnFloat;
                 break;
               default: return $result;	    	    
 	    }
