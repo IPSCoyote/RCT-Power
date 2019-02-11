@@ -43,12 +43,12 @@
           ///--- INIT CONNECTION ----------------------------------------------------------------------------------------
           // send command to RCT Power Inverter
 		
-	  $command = "2B0104400F015B58B4";	
+	  $command = "\x2B\x01\x04\x40\x0F\x01\x5B\x58\xB4";	
 		
 	  for ( $x=1; $x <= strlen($command); $x++ );	
 		
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
-						    "Buffer" => $this->encodeCommand($command) )));
+						    "Buffer" => utf8_encode($command) )));
 
         } 
         
