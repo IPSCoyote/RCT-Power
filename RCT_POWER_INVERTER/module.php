@@ -19,8 +19,7 @@
           // Receive data from serial port I/O
 	  $this->sendDebug( "RCTPower", "ReceiveData", 0 );
           $data = json_decode($JSONString);	
-	  
-	  $responses = explode( $data->buffer, chr(43)); // split on 0x2B ('+')
+	  $responses = explode( $data->buffer, chr(43).chr(5) ); // split on 0x2B ('+' + '05' = Response)
 	  $this->sendDebug( "RCTPower", "Received Datarecord: ".count($responses), 0 );
       
           return true;
