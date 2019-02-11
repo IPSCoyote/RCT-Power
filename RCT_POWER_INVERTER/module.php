@@ -25,7 +25,7 @@
             if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
 	    $response = $response.$hex;
 	  }
-	  $this->SetBuffer("RCT_Response", $response);
+	  $this->SetBuffer("RCT_Response", utf8_decode( $data->Buffer ));
           return true;
         }
         
