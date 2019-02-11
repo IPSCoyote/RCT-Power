@@ -102,7 +102,7 @@
 	    switch ( $format ) {
               case 'FLOAT': 
 	        $float = 0.0;
-	        $float = hexTo32Float($result);
+	        $float = $this->hexTo32Float($result);
 	        return $float;
                 break;
               default: return $result;	    	    
