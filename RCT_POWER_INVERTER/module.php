@@ -20,7 +20,7 @@
 	  $this->sendDebug( "RCTPower", "ReceiveData", 0 );
           $data = json_decode($JSONString);	
 	  
-	  $responses = encode( utf8_decode( $data->buffer ), chr(hexdec('2B')));
+	  $responses = encode( utf8_decode( $data->buffer ), chr(43)); // split on 0x2B ('+')
 	  $this->sendDebug( "RCTPower", "Received Datarecord: ".count($responses), 0 );
       
           return true;
