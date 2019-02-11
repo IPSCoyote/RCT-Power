@@ -68,7 +68,7 @@
 	  // clear expected Response and send Data to Parent...
 	  $this->SetBuffer("RCT_Response", "");
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
-						    "Buffer" => utf8_encode($hexcommand) )));
+						    "Buffer" => utf8_encode($hexCommand) )));
 	  // and wait for response
 	  while ( $this->GetBuffer( "RCT_Response" ) == "" ) usleep( 250000 ); // wait a 1/4 second
 	  
