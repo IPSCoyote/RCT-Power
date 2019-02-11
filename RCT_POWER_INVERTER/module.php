@@ -58,6 +58,7 @@
        
         //=== Tool Functions ============================================================================================
         function encodeCommand( string $command ) {
+	  $newCommand = "";
 	  for ( $x=0; $x<strlen($command)/2; $x++ )
             $newCommand = $newCommand.chr(hexdec(substr( $command, $x*2, 2 )));
           return $newCommand;
