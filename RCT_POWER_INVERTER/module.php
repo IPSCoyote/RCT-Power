@@ -1,5 +1,5 @@
 <?
-  class ViessControl extends IPSModule {
+  class RCTPowerInverter extends IPSModule {
  
 	const COMPORT_OPEN           = 'Open';             // Comport was just opened
 	const COMPORT_PREINIT        = 'PreInit';          // Viessmann INIT was requested (0x04)
@@ -18,61 +18,20 @@
           /* Called on 'apply changes' in the configuration UI and after creation of the instance */
           parent::ApplyChanges();
 		
-          $this->SetReceiveDataFilter(".*018EF6B5-AB94-40C6-AA53-46943E824ACF.*");
+          $this->SetReceiveDataFilter(".*7A1272A4-CBDB-46EF-BFC6-DCF4A53D2FC7.*");
         }
  
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
 	
-	  $this->sendDebug( "Viess", "ReceiveData Begin", 0 );	
-	  $this->sendDebug( "Viess", "  Mode: ".$this->GetBuffer( "PortState" ), 0 );
+	  $this->sendDebug( "RCTPower", "ReceiveData Begin", 0 );	
 		
           // Receive data from serial port I/O
           $data = json_decode($JSONString);	
 		
           // Process data
-	  switch ( $this->GetBuffer( "PortState" ) )
-	  {
-	    case ViessControl::COMPORT_PREINIT:
-	      // 0x04 send, 0x05 confirms this and has to be replied immediately by 0x16 0x00 0x00 
-	      if ( $data->Buffer == "\x05" )
-		$this->SetBuffer( "PortState", ViessControl::COMPORT_INIT );    
-	        $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
-						          "Buffer" => utf8_encode("\x16\x00\x00") )));		         
-	      break;
-			  
-	    case ViessControl::COMPORT_INIT:
-	      // 0x16 0x00 0x00 send, 0x06 confirms (periodic send of 0x05 ends) 
-	      if ( $data->Buffer == "\x06" )
-		$this->SetBuffer( "PortState", ViessControl::COMPORT_READY );    
-	      break;
-			  
-	    case ViessControl::COMPORT_DATA_REQUESTED:
-	      // data was requested from the control
-	      // expected answer is like 0x06 41 07 01 01 55 25 02 07 01 8D
-	      $receivedData = $this->GetBuffer( "ReceiveBuffer" );     // Get previously received data
-	      $receivedData = $receivedData.$data->Buffer;             // Append newly received data
-	      $this->SetBuffer( "ReceiveBuffer", $receivedData );      // Store fully received data to buffer
-			  
-	      $receivedData = utf8_decode($receivedData);
-			  
-	      // Check, if answer to data request is complete
-	      if ( strlen( $receivedData ) >= 3 ) // 0x06 is the simple ACK flag, 2nd byte needed
-	      {	      
-		 $this->sendDebug( "Viess", "  Check all data is there... ", 0 );
-		 // in the 3nd byte the length of the payload (ACK + 0x41 package start first) is defined
-		 $expectedPayloadLength = ord($receivedData[2])+ 4; // Start 06 41 + length + Checksum  
-		      
-		 if ( strlen( $receivedData ) >= $expectedPayloadLength )
-		 {
-		   // Get requested Payload from transmitted data
-		   $this->SetBuffer( "RequestedData", substr($receivedData, 8, 2) );
-	           $this->SetBuffer( "PortState", ViessControl::COMPORT_READY );  // Communication done 
-		 }
-	      }
-	      break;
-	  }
-          $this->sendDebug( "Viess", "ReceiveData End", 0 );
+
+          $this->sendDebug( "RCTPower", "ReceiveData End", 0 );
           return true;
         }
         
@@ -85,21 +44,10 @@
             
           $ModuleID = IPS_GetInstance($SerialPortInstanceID)['ModuleInfo']['ModuleID'];      
           if ( $ModuleID !== '{6DC3D946-0D31-450F-A8C6-C42DB8D7D4F1}' ) return false; // wrong parent type
-            
-          // open serial port
-          if ( IPS_GetProperty( $SerialPortInstanceID, "Open" ) != true )
-          {
-	        IPS_SetProperty( $SerialPortInstanceID, "Open", true );
-	        IPS_ApplyChanges( $SerialPortInstanceID );
-          }
-		
-	  if ( IPS_GetProperty( $SerialPortInstanceID, "Open" ) != true ) return false; // Port not open
-		
-          $this->SetBuffer( "PortState", ViessControl::COMPORT_OPEN );
 		
           ///--- INIT CONNECTION ----------------------------------------------------------------------------------------
           // send 0x04 to bring communication into a defined state (Protocol 300)
-	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
+	  $this->SendDataToParent(json_encode(Array("DataID" => "{C8792760-65CF-4C53-B5C7-A30FCC84FEFE}", 
 						    "Buffer" => utf8_encode("\x04") )));
           $this->SetBuffer( "PortState", ViessControl::COMPORT_PREINIT );
 		
