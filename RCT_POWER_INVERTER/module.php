@@ -440,7 +440,7 @@
 		
 		
           $this->RegisterVariableInteger("BatteryVoltage",     "Batterie Spannung","RCTPOWER_Voltage",20);
-	  $this->RegisterVariableInteger("BatteryPower",       "Batterie Spannung","RCTPOWER_Power",21);	
+	  $this->RegisterVariableInteger("BatteryPower",       "Batterie Leistung","RCTPOWER_Power",21);	
 	  $this->RegisterVariableFloat("BatteryGrossCapacity", "Batterie Brutto-Kapazität","RCTPOWER_Capacity.2",22);
 	  $this->RegisterVariableFloat("BatterySoC",           "Batterie Ladestand","~Valve.F",23);
 	  $this->RegisterVariableFloat("BatteryUpperSoC",      "Batterie Ladegrenze","~Valve.F",24);	
