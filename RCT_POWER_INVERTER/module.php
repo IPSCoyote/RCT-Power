@@ -236,11 +236,14 @@
         }    
 	  
         function hexTo32Float($strHex) {
+          $bin = str_pad(base_convert($strHex, 16, 2), 32, "0", STR_PAD_LEFT); 
+          $sign = $bin[0]; 
           $v = hexdec($strHex);
           $x = ($v & ((1 << 23) - 1)) + (1 << 23) * ($v >> 31 | 1);
           $exp = ($v >> 23 & 0xFF) - 127;
-          return $x * pow(2, $exp - 23);
+          return $x * pow(2, $exp - 23) * ($sign ? -1 : 1); ;
         }
+
 		
 		
         //=== Module Prefix Functions ===================================================================================
