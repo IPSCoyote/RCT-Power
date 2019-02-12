@@ -11,6 +11,7 @@
           $this->RegisterPropertyInteger("InputANominalPowerPerPanel", 0);
           $this->RegisterPropertyInteger("InputBPanelCount", 0); 
           $this->RegisterPropertyInteger("InputBNominalPowerPerPanel", 0);
+	  $this->RegisterPropertyInteger("LowerSoCLevel", 0);
           $this->RegisterPropertyInteger("UpdateInterval", 0);
 		
           // Timer
@@ -474,6 +475,7 @@
           $this->RegisterVariableInteger("BatteryVoltage",     "Batterie Spannung","RCTPOWER_Voltage",20);
 	  $this->RegisterVariableInteger("BatteryPower",       "Batterie Leistung","RCTPOWER_Power",21);	
 	  $this->RegisterVariableFloat("BatteryGrossCapacity", "Batterie Brutto-Kapazität","RCTPOWER_Capacity.2",22);
+	  $this->RegisterVariableFloat("BatteryRemainingNetCapacity","Batterie verf. Restkapazität","RCTPOWER_Capacity.2",22);	
 	  $this->RegisterVariableFloat("BatterySoC",           "Batterie Ladestand","~Valve.F",23);
 	  $this->RegisterVariableFloat("BatteryUpperSoC",      "Batterie Ladegrenze","~Valve.F",24);	
 	  $this->RegisterVariableFloat("BatteryTemperature",   "Batterie Temperatur","~Temperature",25);	
