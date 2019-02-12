@@ -331,6 +331,67 @@
 	  // return result
           return true;
         }
+	  
+        //=== Module Register Functions =============================================================================
         
+	 protected function registerProfiles() {
+            // Generate Variable Profiles          
+		 
+	    //--- Boolean (Type 0)
+		 
+	    //--- Integer (Type 1)
+            if ( !IPS_VariableProfileExists('RCTPOWER_Ampere') ) {
+                IPS_CreateVariableProfile('RCTPOWER_Ampere', 1 );
+                IPS_SetVariableProfileDigits('RCTPOWER_Ampere', 0 );
+                IPS_SetVariableProfileIcon('RCTPOWER_Ampere', 'Electricity' );
+                IPS_SetVariableProfileText('RCTPOWER_Ampere', "", " A" );
+            }
+		 
+            if ( !IPS_VariableProfileExists('RCTPOWER_Voltage') ) {
+                IPS_CreateVariableProfile('RCTPOWER_Voltage', 1 );
+                IPS_SetVariableProfileDigits('RCTPOWER_Voltage', 0 );
+                IPS_SetVariableProfileIcon('RCTPOWER_Voltage', 'Electricity' );
+                IPS_SetVariableProfileText('RCTPOWER_Voltage', "", " V" );
+            }   
+            
+            if ( !IPS_VariableProfileExists('RCTPOWER_Power') ) {
+                IPS_CreateVariableProfile('RCTPOWER_Power', 1 );
+                IPS_SetVariableProfileDigits('RCTPOWER_Power', 0 );
+                IPS_SetVariableProfileIcon('RCTPOWER_Power', 'Electricity' );
+                IPS_SetVariableProfileText('RCTPOWER_Power', "", " W" );
+            }   
+		 
+            if ( !IPS_VariableProfileExists('RCTPOWER_Energy') ) {
+                IPS_CreateVariableProfile('RCTPOWER_Energy', 1 );
+                IPS_SetVariableProfileDigits('RCTPOWER_Energy', 0 );
+                IPS_SetVariableProfileIcon('RCTPOWER_Energy', 'Electricity' );
+                IPS_SetVariableProfileText('RCTPOWER_Energy', "", " Wh" );
+            }   
+		 
+            //--- Float (Type 2)
+            if ( !IPS_VariableProfileExists('RCTPOWER_Capacity.2') ) {
+                IPS_CreateVariableProfile('RCTPOWER_Capacity.2', 2 );
+                IPS_SetVariableProfileDigits('RCTPOWER_Capacity.2', 2 );
+                IPS_SetVariableProfileIcon('RCTPOWER_Capacity.2', 'Battery' );
+                IPS_SetVariableProfileText('RCTPOWER_Capacity.2', "", " kwh" );
+            }
+            
+            if ( !IPS_VariableProfileExists('RCTPOWER_SoC.1') ) {
+                IPS_CreateVariableProfile('RCTPOWER_SoC.1', 2 );
+                IPS_SetVariableProfileDigits('RCTPOWER_SoC.1', 2 );
+                IPS_SetVariableProfileIcon('RCTPOWER_SoC.1', 'Battery' );
+                IPS_SetVariableProfileText('RCTPOWER_SoC.1', "", " %" );
+            }
+		 
+	    //--- String (Type 3)
+		 
+        }
+        
+        protected function registerVariables() {
+            
+            
+        }
+	  
+	  
     }
 ?>
