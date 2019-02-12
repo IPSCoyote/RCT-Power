@@ -6,7 +6,7 @@
       { "type": "NumberSpinner", "name": "InputANominalPowerPerPanel", "caption": "Nennleistung je Panel", "digits": 0 , "hex": false, "suffix": "Watt"},
       { "type": "Label", "label": "Basic Data - INPUT B" },  
       { "type": "NumberSpinner", "name": "InputBPanelCount", "caption": "Anzahl der Panel", "digits": 0 , "hex": false, "suffix": "Panel"},
-      { "type": "NumberSpinner", "name": "InputBANominalPowerPerPanel", "caption": "Nennleistung je Panel", "digits": 0 , "hex": false, "suffix": "Watt"},
+      { "type": "NumberSpinner", "name": "InputBNominalPowerPerPanel", "caption": "Nennleistung je Panel", "digits": 0 , "hex": false, "suffix": "Watt"},
       { "type": "Label", "label": "Update Interval" },
       { "type": "NumberSpinner", "name": "UpdateInterval", "caption": "Update Interval", "digits": 0 , "hex": false, "suffix": "Sekunden"}
     ],
