@@ -213,7 +213,7 @@
 			  SetValue($this->GetIDForIdent("BatteryUpperSoC"), round( $float*100, 0 ) );
 			  
 			  $GrossCapacity = GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"));
-			  $SoCLevel = GetValueInteger($this->GetIDForIdent("BatteryUpperSoC"));
+			  $SoCLevel = GetValueFloat($this->GetIDForIdent("BatteryUpperSoC"));
 			  $LowerSoCLevel = $this->ReadPropertyInteger("LowerSoCLevel");
 			  $RemainingPercentage = $SoCLevel - $LowerSoCLevel;
 			  $this->sendDebug("RCTPower", "Remaining Percentage: ".number_format( $RemainingPercentage, 2 ), 0 );
