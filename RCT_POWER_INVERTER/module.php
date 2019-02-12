@@ -119,7 +119,8 @@
 			  $this->sendDebug( "RCTPower", "Battery power (positive if discharge) [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
 			  
-		  case "902AFAFB": // Battery temperature [Grad C], Float	
+		  case "902AFAFB": // Battery temperature [Grad C], Float
+			  SetValue($this->GetIDForIdent("BatteryTemperature"), $float ); 
 			  $this->sendDebug( "RCTPower", "Battery temperature [Grad C]: ".number_format( $float, 1 )."C", 0 );
 	      		  break;
 			  
