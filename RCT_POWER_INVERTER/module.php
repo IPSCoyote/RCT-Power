@@ -99,12 +99,11 @@
 			  
 		  case "DB11855B": // DC input A power [W], Float
 			  SetValue($this->GetIDForIdent("DCInputAPower"), round( $float, 0 ) ); 
-			  $this->sendDebug( "RCTPower", "Debug", 0 );
 			  $PanelMaxA = $this->ReadPropertyInteger("InputAPanelCount") * $this->ReadPropertyInteger("InputANominalPowerPerPanel" );
 			  $PanelMaxB = $this->ReadPropertyInteger("InputBPanelCount") * $this->ReadPropertyInteger("InputBNominalPowerPerPanel" );
-			  $this->sendDebug( "RCTPower", "PanelMax A ".number_format( $PanelMaxA, 1 ), 0 );
 			  if ( $PanelMax > 0 ) {
 			    $Utilization = $float / $PanelMaxA * 100;	  
+			    $this->sendDebug( "RCTPower", "A Utilization ".number_format( $Utilization, 1 ), 0 );
 			    SetValue($this->GetIDForIdent("DCInputAUtilization"), round( $Utilization, 1 ) );   
 			    if ( $PanelMaxB == 0 )
 			      SetValue($this->GetIDForIdent("DCInputUtilization"), round( $Utilization, 1 ) );   
