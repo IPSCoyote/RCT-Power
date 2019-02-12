@@ -117,7 +117,7 @@
 	      		  break;
 			  
 		  case "959930BF": // Battery State of Charge (SoC) [0..1], Float
-			  SetValue($this->GetIDForIdent("BatterySoC"), $float*100 ) ); 
+			  SetValue($this->GetIDForIdent("BatterySoC"), round( $float*100, 1 ) ); 
 			  //$this->sendDebug( "RCTPower", "Battery State of Charge: ".number_format( $float*100, 1 )."%", 0 );
 	      		  break;
 			  
@@ -127,7 +127,7 @@
 	      		  break;
 			  
 		  case "902AFAFB": // Battery temperature [Grad C], Float
-			  SetValue($this->GetIDForIdent("BatteryTemperature"), $float ); 
+			  SetValue($this->GetIDForIdent("BatteryTemperature"), round( $float, 1) ); 
 			  //$this->sendDebug( "RCTPower", "Battery temperature [Grad C]: ".number_format( $float, 1 )."C", 0 );
 	      		  break;
 			  
@@ -175,12 +175,12 @@
 			  
 		  //--- NOT DOCUMENTED !!! -------------------------------------------------------------------------
 		  case "8B9FF008": // Upper load boundary in %
-			  SetValue($this->GetIDForIdent("BatteryUpperSoC"), $float*100 );
+			  SetValue($this->GetIDForIdent("BatteryUpperSoC"), round( $float*100, 0 );
 			  //$this->sendDebug( "RCTPower", "Upper battery charge level [0..1]: ".number_format( $float*100, 0 )."%", 0 );
 	      		  break;
 			  
 		  case "4BC0F974": // gross battery capacity kwh
-			  SetValue($this->GetIDForIdent("BatteryGrossCapacity"), $float/1000 );
+			  SetValue($this->GetIDForIdent("BatteryGrossCapacity"), round( $float/1000, 2 ) );
 			  //$this->sendDebug( "RCTPower", "Gross Battery Capacity [kwh]: ".number_format( $float/1000, 2 )."kwh", 0 );
 	      		  break;
 			  
