@@ -99,20 +99,26 @@
 			  
 		  case "DB11855B": // DC input A power [W], Float
 			  SetValue($this->GetIDForIdent("DCInputAPower"), round( $float, 0 ) ); 
-			  if ( ( ReadPropertyInteger("InputAPanelCount") > 0 ) and ( ReadPropertyInteger("InputANominalPowerPerPanel" ) > 0 ) ) {
-			    $PanelMax = ReadPropertyInteger("InputAPanelCount") * ReadPropertyInteger("InputANominalPowerPerPanel" );
-			    $Utilization = $float / $PanelMax * 100;	  
-			    SetValue($this->GetIDForIdent("DCInputAUtilization"), round( $Utilization, 1 ) );     
+			  $PanelMaxA = ReadPropertyInteger("InputAPanelCount") * ReadPropertyInteger("InputANominalPowerPerPanel" );
+			  $PanelMaxB = ReadPropertyInteger("InputBPanelCount") * ReadPropertyInteger("InputBNominalPowerPerPanel" );
+			  if ( $PanelMax > 0 ) ) {
+			    $Utilization = $float / $PanelMaxA * 100;	  
+			    SetValue($this->GetIDForIdent("DCInputAUtilization"), round( $Utilization, 1 ) );   
+			    if ( $PanelMaxB == 0 )
+			      SetValue($this->GetIDForIdent("DCInputUtilization"), round( $Utilization, 1 ) );   
 			  }
 			  //$this->sendDebug( "RCTPower", "DC Input A power [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
 			  
 		  case "0CB5D21B": // DC input B power [W], Float
 			  SetValue($this->GetIDForIdent("DCInputBPower"), round( $float, 0 ) ); 
-			  if ( ( ReadPropertyInteger("InputBPanelCount") > 0 ) and ( ReadPropertyInteger("InputBNominalPowerPerPanel" ) > 0 ) ) {
-			    $PanelMax = ReadPropertyInteger("InputBPanelCount") * ReadPropertyInteger("InputBNominalPowerPerPanel" );
-			    $Utilization = $float / $PanelMax * 100;	  
-			    SetValue($this->GetIDForIdent("DCInputBUtilization"), round( $Utilization, 1 ) );     
+			  $PanelMaxA = ReadPropertyInteger("InputAPanelCount") * ReadPropertyInteger("InputANominalPowerPerPanel" );
+			  $PanelMaxB = ReadPropertyInteger("InputBPanelCount") * ReadPropertyInteger("InputBNominalPowerPerPanel" );
+			  if ( $PanelMaxB > 0 ) {
+			    $Utilization = $float / $PanelMaxB * 100;	  
+			    SetValue($this->GetIDForIdent("DCInputBUtilization"), round( $Utilization, 1 ) ); 
+			    if ( $PanelMaxA == 0 )
+			      SetValue($this->GetIDForIdent("DCInputUtilization"), round( $Utilization, 1 ) );     
 			  }
 			  //$this->sendDebug( "RCTPower", "DC Input B power [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
