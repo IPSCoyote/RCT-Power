@@ -137,7 +137,7 @@
 			  
 		  case "10970E9D": // This month energy [Wh], Float	
 			  $this->sendDebug( "RCTPower", "This month energy [Wh]: ".number_format( $float, 0 )."Wh", 0 );
-	      		  break;
+	      		  break; 
 			  
 		  case "C0CC81B6": // This year energy [Wh], Float	
 			  $this->sendDebug( "RCTPower", "This year energy [Wh]: ".number_format( $float, 0 )."Wh", 0 );
