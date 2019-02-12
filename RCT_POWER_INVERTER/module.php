@@ -148,6 +148,20 @@
 			  $this->sendDebug( "RCTPower", "Current House Power Consumption [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
 			  
+		  case "37F9D5CA": // Bit-coded fault word 0
+			  break;
+		  case "234B4736": // Bit-coded fault word 1
+			  break;
+		  case "3B7FCD47": // Bit-coded fault word 2
+			  break;
+		  case "7F813D73": // Bit-coded fault word 3
+			  break;
+			  
+		  //--- Ignore -------------------------------------------------------------------------------------
+		  case "EBC62737": // Inverter Description 
+			  break;	  
+			  
+		  //--- Default Handling ---------------------------------------------------------------------------
 		  default:         // Unknown response
 			  $this->sendDebug( "RCTPower", "Unkown Response Address ".$address." with data ".$data, 0 );
 			  
