@@ -111,7 +111,7 @@
 			  if ( $PanelMaxTotal == 0 ) 
 		            SetValue($this->GetIDForIdent("DCInputUtilization"), 0 );   
 			  else {
-			    $TotalPowerInput = GetValueInteger($this->GetIDForIdent("DCInputAPower") + GetValueInteger($this->GetIDForIdent("DCInputBPower");
+			    $TotalPowerInput = GetValue($this->GetIDForIdent("DCInputAPower") + GetValue($this->GetIDForIdent("DCInputBPower");
 			    $Utilization = $TotalPowerInput / $PanelMaxTotal * 100;	
 			    SetValue($this->GetIDForIdent("DCInputUtilization"), round( $Utilization, 1 ) ); 										       
 			  }
@@ -133,7 +133,7 @@
 			  if ( $PanelMaxTotal == 0 ) 
 		            SetValue($this->GetIDForIdent("DCInputUtilization"), 0 );   
 			  else {
-			    $TotalPowerInput = GetValueInteger($this->GetIDForIdent("DCInputAPower") + GetValueInteger($this->GetIDForIdent("DCInputBPower");
+			    $TotalPowerInput = GetValue($this->GetIDForIdent("DCInputAPower") + GetValue($this->GetIDForIdent("DCInputBPower");
 			    $Utilization = $TotalPowerInput / $PanelMaxTotal * 100;	
 			    SetValue($this->GetIDForIdent("DCInputUtilization"), round( $Utilization, 1 ) ); 										       
 			  }
