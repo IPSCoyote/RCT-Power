@@ -11,7 +11,13 @@
           $this->RegisterPropertyInteger("InputANominalPowerPerPanel", 0);
           $this->RegisterPropertyInteger("InputBPanelCount", 0); 
           $this->RegisterPropertyInteger("InputBNominalPowerPerPanel", 0);
-          $this->RegisterPropertyInteger("UpdateInterval", 0);  
+          $this->RegisterPropertyInteger("UpdateInterval", 0);
+		
+	  // Hidden Properties
+	  $this->RegisterPropertyString("FaultWord0", "00000000");
+	  $this->RegisterPropertyString("FaultWord1", "00000000");
+          $this->RegisterPropertyString("FaultWord2", "00000000");
+	  $this->RegisterPropertyString("FaultWord3", "00000000");
 		
           // Timer
           $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
@@ -190,15 +196,24 @@
 	      		  break;
 			  
 		  case "37F9D5CA": // Bit-coded fault word 0
-			  if ( $data != '00000000' ) { $error = true; }
+			  SetValue($this->GetIDForIdent("FaultWord0"), $data ) );
+			  if ( ReadPropertyString ("FaultWord0") != '00000000' OR 
+			       ReadPropertyString ("FaultWord1") != '00000000'
+			       ReadPropertyString ("FaultWord2") != '00000000'
+			       ReadPropertyString ("FaultWord3") != '00000000' )
+			    SetValue($this->GetIDForIdent("Errorstatus"), true ); 
+			  else
+			    SetValue($this->GetIDForIdent("Errorstatus"), false ); 
 			  break;
 		  case "234B4736": // Bit-coded fault word 1
-			  if ( $data != '00000000' ) { $error = true; }
+			  SetValue($this->GetIDForIdent("FaultWord1"), $data ) );
 			  break;
 		  case "3B7FCD47": // Bit-coded fault word 2
+			  SetValue($this->GetIDForIdent("FaultWord2"), $data ) );
 			  if ( $data != '00000000' ) { $error = true; }
 			  break;
 		  case "7F813D73": // Bit-coded fault word 3
+			  SetValue($this->GetIDForIdent("FaultWord3"), $data ) );
 			  if ( $data != '00000000' ) { $error = true; }
 			  break;
 			  
