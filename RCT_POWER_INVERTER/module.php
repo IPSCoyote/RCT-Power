@@ -211,6 +211,15 @@
 		  //--- NOT DOCUMENTED !!! -------------------------------------------------------------------------
 		  case "8B9FF008": // Upper load boundary in %
 			  SetValue($this->GetIDForIdent("BatteryUpperSoC"), round( $float*100, 0 ) );
+			  
+			  $GrossCapacity = GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"));
+			  $SoCLevel = GetValueInteger($this->GetIDForIdent("BatteryUpperSoC"));
+			  $LowerSoCLevel = $this->ReadPropertyInteger("LowerSoCLevel");
+			  $RemainingPercentage = $SoCLevel - $LowerSoCLevel;
+			  if ( $RemainingPercentage < 0 ) $RemainingPercentage = 0;
+			  $RemainingCapacity = $GrossCapacity/100*$RemainingPercentage;
+			  SetValue($this->GetIDForIdent("BatteryRemainingNetCapacity"), round( $RemainingCapacity, 2 ) );
+			  
 			  //$this->sendDebug( "RCTPower", "Upper battery charge level [0..1]: ".number_format( $float*100, 0 )."%", 0 );
 	      		  break;
 			  
