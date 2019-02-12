@@ -99,11 +99,21 @@
 			  
 		  case "DB11855B": // DC input A power [W], Float
 			  SetValue($this->GetIDForIdent("DCInputAPower"), round( $float, 0 ) ); 
+			  if ( ( ReadPropertyInteger("InputAPanelCount") > 0 ) and ( ReadPropertyInteger("InputANominalPowerPerPanel" ) > 0 ) ) {
+			    $PanelMax = ReadPropertyInteger("InputAPanelCount") * ReadPropertyInteger("InputANominalPowerPerPanel" );
+			    $Utilization = $float / $PanelMax * 100;	  
+			    SetValue($this->GetIDForIdent("DCInputAUtilization"), round( $Utilization, 1 ) );     
+			  }
 			  //$this->sendDebug( "RCTPower", "DC Input A power [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
 			  
 		  case "0CB5D21B": // DC input B power [W], Float
 			  SetValue($this->GetIDForIdent("DCInputBPower"), round( $float, 0 ) ); 
+			  if ( ( ReadPropertyInteger("InputBPanelCount") > 0 ) and ( ReadPropertyInteger("InputBNominalPowerPerPanel" ) > 0 ) ) {
+			    $PanelMax = ReadPropertyInteger("InputBPanelCount") * ReadPropertyInteger("InputBNominalPowerPerPanel" );
+			    $Utilization = $float / $PanelMax * 100;	  
+			    SetValue($this->GetIDForIdent("DCInputBUtilization"), round( $Utilization, 1 ) );     
+			  }
 			  //$this->sendDebug( "RCTPower", "DC Input B power [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
 			  
@@ -431,9 +441,11 @@
 		
           $this->RegisterVariableInteger("DCInputAVoltage", "Eingang A Spannung","RCTPOWER_Voltage",1);
           $this->RegisterVariableInteger("DCInputAPower",   "Eingang A Leistung","RCTPOWER_Power",2);
+	  $this->RegisterVariableFloat("DCInputAUtilization", "Eingang A Auslastung PV Module","~Valve.F",3);
           $this->RegisterVariableInteger("DCInputBVoltage", "Eingang B Spannung","RCTPOWER_Voltage",5);
           $this->RegisterVariableInteger("DCInputBPower",   "Eingang B Leistung","RCTPOWER_Power",6);
-		
+	  $this->RegisterVariableFloat("DCInputBUtilization", "Eingang A Auslastung PV Module","~Valve.F",7);
+	  $this->RegisterVariableFloat("DCInputUtilization", "Auslastung PV Module gesamt","~Valve.F",9);
 		
           $this->RegisterVariableInteger("BatteryVoltage",     "Batterie Spannung","RCTPOWER_Voltage",20);
 	  $this->RegisterVariableInteger("BatteryPower",       "Batterie Leistung","RCTPOWER_Power",21);	
