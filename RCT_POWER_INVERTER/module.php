@@ -149,12 +149,16 @@
 	      		  break;
 			  
 		  case "37F9D5CA": // Bit-coded fault word 0
+			  if ( $data != '00000000' ) { $error = true; }
 			  break;
 		  case "234B4736": // Bit-coded fault word 1
+			  if ( $data != '00000000' ) { $error = true; }
 			  break;
 		  case "3B7FCD47": // Bit-coded fault word 2
+			  if ( $data != '00000000' ) { $error = true; }
 			  break;
 		  case "7F813D73": // Bit-coded fault word 3
+			  if ( $data != '00000000' ) { $error = true; }
 			  break;
 			  
 		  //--- Ignore -------------------------------------------------------------------------------------
@@ -302,6 +306,14 @@
           // External load demand [W] (positive = feed in / 0=internal
           $this->requestData( "872F380B", 4 );	
           usleep( 100000 );
+	  // Bit-coded fault word 0-3	
+          $this->requestData( "37F9D5CA", 4 );
+	  usleep( 100000 );
+	  $this->requestData( "234B4736", 4 );
+	  usleep( 100000 );
+	  $this->requestData( "3B7FCD47, 4 );
+	  usleep( 100000 );
+	  $this->requestData( "7F813D73", 4);
 		
           //--- NOT DOCUMENTED -------------------------------------------------------------------------
 	  // Upper load boundary in %
