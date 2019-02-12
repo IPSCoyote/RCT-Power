@@ -415,8 +415,32 @@
         }
         
         protected function registerVariables() {
-            
-            
+		
+          $this->RegisterVariableInteger("DCInputAVoltage", "Eingang A Spannung","RCTPOWER_Voltage",1);
+          $this->RegisterVariableInteger("DCInputAPower",   "Eingang A Leistung","RCTPOWER_Power",2);
+          $this->RegisterVariableInteger("DCInputBVoltage", "Eingang B Spannung","RCTPOWER_Voltage",5);
+          $this->RegisterVariableInteger("DCInputAPower",   "Eingang B Leistung","RCTPOWER_Power",6);
+		
+		
+          $this->RegisterVariableInteger("BatteryVoltage",     "Batterie Spannung","RCTPOWER_Voltage",20);
+	  $this->RegisterVariableInteger("BatteryPower",       "Batterie Spannung","RCTPOWER_Power",21);	
+	  $this->RegisterVariableFloat("BatteryGrossCapacity", "Batterie Brutto-Kapazität","RCTPOWER_Capacity.2",22);
+	  $this->RegisterVariableFloat("BatterySoC",           "Batterie Ladestand","~Valve.F",23);
+	  $this->RegisterVariableFloat("BatteryUpperSoC",      "Batterie Ladegrenze","~Valve.F",24);	
+	  $this->RegisterVariableFloat("BatteryTemperature",   "Batterie Temperatur","~Temperature",25);	
+		
+	  $this->RegisterVariableInteger("ExternalPower",  "Generator Leistung","RCTPOWER_Power",30); 
+		
+          $this->RegisterVariableInteger("PublicGridPower","Aussennetz Leistung","RCTPOWER_Power",40); 
+		
+          $this->RegisterVariableInteger("EnergyToday",     "PV Energie Tag","RCTPOWER_Energy",50);
+	  $this->RegisterVariableInteger("EnergyThisMonth", "PV Energie Monat","RCTPOWER_Energy",51);
+          $this->RegisterVariableInteger("EnergyThisYear",  "PV Energie Jahr","RCTPOWER_Energy",52);
+          $this->RegisterVariableInteger("EnergyTotal",     "PV Energie Gesamt","RCTPOWER_Energy",53);
+
+          $this->RegisterVariableInteger("HousePowerCurrent","Haus Leistung","RCTPOWER_Power",60);
+	
+	  $this->RegisterVariableBoolean("Errorstatus",      "Fehlerstatus","~Alert",70);
         }
 	  
 	  
