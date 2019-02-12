@@ -175,7 +175,7 @@
 			  
 		  //--- NOT DOCUMENTED !!! -------------------------------------------------------------------------
 		  case "8B9FF008": // Upper load boundary in %
-			  SetValue($this->GetIDForIdent("BatteryUpperSoC"), round( $float*100, 0 );
+			  SetValue($this->GetIDForIdent("BatteryUpperSoC"), round( $float*100, 0 ) );
 			  //$this->sendDebug( "RCTPower", "Upper battery charge level [0..1]: ".number_format( $float*100, 0 )."%", 0 );
 	      		  break;
 			  
