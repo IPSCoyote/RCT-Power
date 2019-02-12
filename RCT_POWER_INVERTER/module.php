@@ -14,7 +14,7 @@
           $this->RegisterPropertyInteger("UpdateInterval", 0);  
 		
           // Timer
-          //$this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_Update($_IPS[\'TARGET\']);');
+          $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
         }
  
         public function ApplyChanges() { 
@@ -26,8 +26,10 @@
           $this->registerVariables();  
 		
           $this->SetReceiveDataFilter(".*018EF6B5-AB94-40C6-AA53-46943E824ACF.*");
-	  //if ( $this->ReadPropertyInteger("UpdateInterval") >= 0 ) {
-	  //  $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", $this->ReadPropertyInteger("UpdateCharging")*1000);	
+	  if ( $this->ReadPropertyInteger("UpdateInterval") >= 10 )
+	    $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", $this->ReadPropertyInteger("UpdateInterval")*1000);	
+          else
+            $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", 0);	  
         }
  
         public function Destroy() {
