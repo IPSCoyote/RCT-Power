@@ -197,10 +197,7 @@
 			  
 		  case "37F9D5CA": // Bit-coded fault word 0
 			  WriteAttributeString("FaultWord0", $data );
-			  if ( ReadAttributeString ("FaultWord0") != '00000000' OR 
-			       ReadAttributeString ("FaultWord1") != '00000000' OR
-			       ReadAttributeString ("FaultWord2") != '00000000' OR
-			       ReadAttributeString ("FaultWord3") != '00000000' )
+			  if ( ReadAttributeString ("FaultWord0") != '00000000' OR ReadAttributeString ("FaultWord1") != '00000000' OR ReadAttributeString ("FaultWord2") != '00000000' OR ReadAttributeString ("FaultWord3") != '00000000' )
 			    SetValue($this->GetIDForIdent("Errorstatus"), true ); 
 			  else
 			    SetValue($this->GetIDForIdent("Errorstatus"), false ); 
