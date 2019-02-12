@@ -100,8 +100,8 @@
 		  case "DB11855B": // DC input A power [W], Float
 			  SetValue($this->GetIDForIdent("DCInputAPower"), round( $float, 0 ) ); 
 			  $this->sendDebug( "RCTPower", "Debug", 0 );
-			  $PanelMaxA = ReadPropertyInteger("InputAPanelCount") * ReadPropertyInteger("InputANominalPowerPerPanel" );
-			  $PanelMaxB = ReadPropertyInteger("InputBPanelCount") * ReadPropertyInteger("InputBNominalPowerPerPanel" );
+			  $PanelMaxA = $this->ReadPropertyInteger("InputAPanelCount") * $this->ReadPropertyInteger("InputANominalPowerPerPanel" );
+			  $PanelMaxB = $this->ReadPropertyInteger("InputBPanelCount") * $this->ReadPropertyInteger("InputBNominalPowerPerPanel" );
 			  $this->sendDebug( "RCTPower", "PanelMax A ".number_format( $PanelMaxA, 1 ), 0 );
 			  if ( $PanelMax > 0 ) {
 			    $Utilization = $float / $PanelMaxA * 100;	  
@@ -118,8 +118,8 @@
 			  
 		  case "0CB5D21B": // DC input B power [W], Float
 			  SetValue($this->GetIDForIdent("DCInputBPower"), round( $float, 0 ) ); 
-			  $PanelMaxA = ReadPropertyInteger("InputAPanelCount") * ReadPropertyInteger("InputANominalPowerPerPanel" );
-			  $PanelMaxB = ReadPropertyInteger("InputBPanelCount") * ReadPropertyInteger("InputBNominalPowerPerPanel" );
+			  $PanelMaxA = $this->ReadPropertyInteger("InputAPanelCount") * $this->ReadPropertyInteger("InputANominalPowerPerPanel" );
+			  $PanelMaxB = $this->ReadPropertyInteger("InputBPanelCount") * $this->ReadPropertyInteger("InputBNominalPowerPerPanel" );
 			  if ( $PanelMaxB > 0 ) {
 			    $Utilization = $float / $PanelMaxB * 100;	  
 			    SetValue($this->GetIDForIdent("DCInputBUtilization"), round( $Utilization, 1 ) ); 
