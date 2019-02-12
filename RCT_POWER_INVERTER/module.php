@@ -11,6 +11,10 @@
           /* Called on 'apply changes' in the configuration UI and after creation of the instance */
           parent::ApplyChanges();
 		
+          // Generate Profiles & Variables
+          $this->registerProfiles();
+          $this->registerVariables();  
+		
           $this->SetReceiveDataFilter(".*018EF6B5-AB94-40C6-AA53-46943E824ACF.*");
         }
  
