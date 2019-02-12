@@ -63,11 +63,11 @@
 			  $this->sendDebug( "RCTPower", "Phase L3 voltage [V]: ".number_format( $float, 0 )."V", 0 );
 	      		  break; 
 			  
-		  case "418CF140": // DC input A voltage [V], Float (by Documentation B298395D!)	
+		  case "B55BA2CE": // DC input A voltage [V], Float (by Documentation B298395D!)	
 			  $this->sendDebug( "RCTPower", "DC Input A voltage [V]: ".number_format( $float, 0 )."V", 0 );
 	      		  break;
 			  
-		  case "4268C565": // DC input B voltage [V], Float (by Documentation 5BB8075A)
+		  case "B0041187": // DC input B voltage [V], Float (by Documentation 5BB8075A)
 			  $this->sendDebug( "RCTPower", "DC Input B voltage [V]: ".number_format( $float, 0 )."V", 0 );
 	      		  break;
 			  
@@ -235,10 +235,10 @@
 	  $this->requestData( "2545E22D", 4 );
 	  usleep( 100000 );
           // DC input A voltage [V] (by Documentation B298395D)
-          $this->requestData( "418CF140", 4 );
+          $this->requestData( "B55BA2CE", 4 );
           usleep( 100000 );
           // DC input B voltage [V] (by Documentation 5BB8075A)
-          $this->requestData( "4268C565", 4 );
+          $this->requestData( "B0041187", 4 );
           usleep( 100000 );
           // DC input A power [W]
           $this->requestData( "DB11855B", 4 );
