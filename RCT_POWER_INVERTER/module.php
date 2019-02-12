@@ -103,7 +103,6 @@
 			  $PanelMaxB = $this->ReadPropertyInteger("InputBPanelCount") * $this->ReadPropertyInteger("InputBNominalPowerPerPanel" );
 			  if ( $PanelMaxA > 0 ) {
 			    $Utilization = $float / $PanelMaxA * 100;	  
-			    $this->sendDebug( "RCTPower", "A Utilization ".number_format( $Utilization, 1 ), 0 );
 			    SetValue($this->GetIDForIdent("DCInputAUtilization"), round( $Utilization, 1 ) );   
 			    if ( $PanelMaxB == 0 )
 			      SetValue($this->GetIDForIdent("DCInputUtilization"), round( $Utilization, 1 ) );   
@@ -111,6 +110,11 @@
 			  $PanelMaxTotal = $PanelMaxA + $PanelMaxB;
 			  if ( $PanelMaxTotal == 0 ) 
 		            SetValue($this->GetIDForIdent("DCInputUtilization"), 0 );   
+			  else {
+			    $TotalPowerInput = GetValueInteger($this->GetIDForIdent("DCInputAPower") + GetValueInteger($this->GetIDForIdent("DCInputBPower");
+			    $Utilization = $TotalPowerInput / $PanelMaxTotal * 100;	
+			    SetValue($this->GetIDForIdent("DCInputUtilization"), round( $Utilization, 1 ) ); 										       
+			  }
 			  
 			  //$this->sendDebug( "RCTPower", "DC Input A power [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
@@ -128,6 +132,11 @@
 			  $PanelMaxTotal = $PanelMaxA + $PanelMaxB;
 			  if ( $PanelMaxTotal == 0 ) 
 		            SetValue($this->GetIDForIdent("DCInputUtilization"), 0 );   
+			  else {
+			    $TotalPowerInput = GetValueInteger($this->GetIDForIdent("DCInputAPower") + GetValueInteger($this->GetIDForIdent("DCInputBPower");
+			    $Utilization = $TotalPowerInput / $PanelMaxTotal * 100;	
+			    SetValue($this->GetIDForIdent("DCInputUtilization"), round( $Utilization, 1 ) ); 										       
+			  }
 			  
 			  //$this->sendDebug( "RCTPower", "DC Input B power [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
