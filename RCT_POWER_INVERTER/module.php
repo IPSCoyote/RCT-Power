@@ -311,7 +311,7 @@
 	  usleep( 100000 );
 	  $this->requestData( "234B4736", 4 );
 	  usleep( 100000 );
-	  $this->requestData( "3B7FCD47, 4 );
+	  $this->requestData( "3B7FCD47", 4 );
 	  usleep( 100000 );
 	  $this->requestData( "7F813D73", 4);
 		
