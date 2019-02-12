@@ -210,7 +210,7 @@
 		  default:         // Unknown response
 			  $this->sendDebug( "RCTPower", "Unkown Response Address ".$address." with data ".$data." (as Float ".number_format( $float, 2 ).")", 0 );
 			  
-	  }
+	  } 
 		
 	}
 	  
