@@ -436,7 +436,7 @@
           $this->RegisterVariableInteger("DCInputAVoltage", "Eingang A Spannung","RCTPOWER_Voltage",1);
           $this->RegisterVariableInteger("DCInputAPower",   "Eingang A Leistung","RCTPOWER_Power",2);
           $this->RegisterVariableInteger("DCInputBVoltage", "Eingang B Spannung","RCTPOWER_Voltage",5);
-          $this->RegisterVariableInteger("DCInputAPower",   "Eingang B Leistung","RCTPOWER_Power",6);
+          $this->RegisterVariableInteger("DCInputBPower",   "Eingang B Leistung","RCTPOWER_Power",6);
 		
 		
           $this->RegisterVariableInteger("BatteryVoltage",     "Batterie Spannung","RCTPOWER_Voltage",20);
