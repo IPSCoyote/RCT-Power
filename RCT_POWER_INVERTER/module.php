@@ -107,6 +107,10 @@
 			    if ( $PanelMaxB == 0 )
 			      SetValue($this->GetIDForIdent("DCInputUtilization"), round( $Utilization, 1 ) );   
 			  }
+			  $PanelMaxTotal = $PanelMaxA + $PanelMaxB;
+			  if ( $PanelMaxTotal == 0 ) 
+		            SetValue($this->GetIDForIdent("DCInputUtilization"), 0 );   
+			  
 			  //$this->sendDebug( "RCTPower", "DC Input A power [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
 			  
@@ -120,6 +124,10 @@
 			    if ( $PanelMaxA == 0 )
 			      SetValue($this->GetIDForIdent("DCInputUtilization"), round( $Utilization, 1 ) );     
 			  }
+			  $PanelMaxTotal = $PanelMaxA + $PanelMaxB;
+			  if ( $PanelMaxTotal == 0 ) 
+		            SetValue($this->GetIDForIdent("DCInputUtilization"), 0 );   
+			  
 			  //$this->sendDebug( "RCTPower", "DC Input B power [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
 			  
