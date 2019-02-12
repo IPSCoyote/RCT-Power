@@ -101,7 +101,7 @@
 			  SetValue($this->GetIDForIdent("DCInputAPower"), round( $float, 0 ) ); 
 			  $PanelMaxA = ReadPropertyInteger("InputAPanelCount") * ReadPropertyInteger("InputANominalPowerPerPanel" );
 			  $PanelMaxB = ReadPropertyInteger("InputBPanelCount") * ReadPropertyInteger("InputBNominalPowerPerPanel" );
-			  if ( $PanelMax > 0 ) ) {
+			  if ( $PanelMax > 0 ) {
 			    $Utilization = $float / $PanelMaxA * 100;	  
 			    SetValue($this->GetIDForIdent("DCInputAUtilization"), round( $Utilization, 1 ) );   
 			    if ( $PanelMaxB == 0 )
