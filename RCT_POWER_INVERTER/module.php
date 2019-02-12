@@ -101,7 +101,7 @@
 			  SetValue($this->GetIDForIdent("DCInputAPower"), round( $float, 0 ) ); 
 			  $PanelMaxA = $this->ReadPropertyInteger("InputAPanelCount") * $this->ReadPropertyInteger("InputANominalPowerPerPanel" );
 			  $PanelMaxB = $this->ReadPropertyInteger("InputBPanelCount") * $this->ReadPropertyInteger("InputBNominalPowerPerPanel" );
-			  if ( $PanelMax > 0 ) {
+			  if ( $PanelMaxA > 0 ) {
 			    $Utilization = $float / $PanelMaxA * 100;	  
 			    $this->sendDebug( "RCTPower", "A Utilization ".number_format( $Utilization, 1 ), 0 );
 			    SetValue($this->GetIDForIdent("DCInputAUtilization"), round( $Utilization, 1 ) );   
