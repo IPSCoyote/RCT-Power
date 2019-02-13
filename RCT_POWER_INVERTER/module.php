@@ -242,7 +242,7 @@
 			  $float = $float * -1;
 			  SetValue($this->GetIDForIdent("EnergyMonthGridFeedIn"), round( $float, 0 ) ); 
 		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyMonthGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningTotal")) * 100;	     
+                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyMonthGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyMonthEnergy")) * 100;	     
                           SetValue($this->GetIDForIdent("EnergyMonthGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
 			  $SelfConsumptionLevel = 100 - $FeedInLevel;
                           SetValue($this->GetIDForIdent("EnergyMonthSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
