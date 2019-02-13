@@ -183,22 +183,22 @@
 	      		  break;
 			 
 		  case "BD55905F": // Todays energy [Wh], Float
-			  SetValue($this->GetIDForIdent("EnergyToday"), round( $float, 0 ) ); 
+			  SetValue($this->GetIDForIdent("EnergyDayPVEarningTotal"), round( $float, 0 ) ); 
 			  //$this->sendDebug( "RCTPower", "Todays energy [Wh]: ".number_format( $float, 0 )."Wh", 0 );
 	      		  break;
 			  
 		  case "10970E9D": // This month energy [Wh], Float	
-			  SetValue($this->GetIDForIdent("EnergyThisMonth"), round( $float, 0 ) );
+			  SetValue($this->GetIDForIdent("EnergyMonthPVEarningTotal"), round( $float, 0 ) );
 			  //$this->sendDebug( "RCTPower", "This month energy [Wh]: ".number_format( $float, 0 )."Wh", 0 );
 	      		  break; 
 			  
 		  case "C0CC81B6": // This year energy [Wh], Float	
-			  SetValue($this->GetIDForIdent("EnergyThisYear"), round( $float, 0 ) );
+			  SetValue($this->GetIDForIdent("EnergyYearPVEarningTotal"), round( $float, 0 ) );
 			  //$this->sendDebug( "RCTPower", "This year energy [Wh]: ".number_format( $float, 0 )."Wh", 0 );
 	      		  break;
 			  
 		  case "B1EF67CE": // Total Energy [Wh], Float	
-			  SetValue($this->GetIDForIdent("EnergyTotal"), round( $float, 0 ) );
+			  SetValue($this->GetIDForIdent("EnergyTotalPVEarningTotal"), round( $float, 0 ) );
 			  //$this->sendDebug( "RCTPower", "Total Energy [Wh]: ".number_format( $float, 0 )."Wh", 0 );
 	      		  break;
 			  
@@ -328,93 +328,80 @@
           // Init Communication -----------------------------------------------------------------------------------------
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
-          // Actual inverters AC-power [W]
-	  $this->requestData( "DB2D69AE", 4 );
-          usleep( 100000 );
-          // Phase L1 voltage [V]
-	  $this->requestData( "CF053085", 4 );
-	  usleep( 100000 );
-          // Phase L2 voltage [V]
-	  $this->requestData( "54B4684E", 4 );
-	  usleep( 100000 );
-          // Phase L3 voltage [V]
-	  $this->requestData( "2545E22D", 4 );
-	  usleep( 100000 );
-          // DC input A voltage [V] (by Documentation B298395D)
-          $this->requestData( "B55BA2CE", 4 );
-          usleep( 100000 );
-          // DC input B voltage [V] (by Documentation 5BB8075A)
-          $this->requestData( "B0041187", 4 );
-          usleep( 100000 );
-          // DC input A power [W]
-          $this->requestData( "DB11855B", 4 );
-          usleep( 100000 );
-          // DC input B power [W]
-          $this->requestData( "0CB5D21B", 4 );
-          usleep( 100000 );
-          //// Battery current measured by inverter, low pass filter with Tau = 1s [A]
-	  // $this->requestData( "B408E40A", 4 );
-          usleep( 10000 );
-          // Battery voltage [V]
-          $this->requestData( "A7FA5C5D", 4 );
-          usleep( 100000 );
-          // Battery State of Charge (SoC) [0..1]
-          $this->requestData( "959930BF", 4 );	
-          usleep( 100000 );
-          // Battery power (positive if discharge) [W]
-          $this->requestData( "400F015B", 4 );
-          usleep( 100000 );
-          // Battery temperature [°C]
-          $this->requestData( "902AFAFB", 4 );
-          usleep( 100000 );
-          // Public grid power (house connection, negative by feed-in) [W]
-          $this->requestData( "91617C58", 4 );
-          usleep( 100000 );
-          // External power (additional inverters/generators in house internal grid) [W]
-          $this->requestData( "E96F1844", 4 );
-          usleep( 100000 );
-          // Todays energy [Wh]
-          $this->requestData( "BD55905F", 4 );
-          usleep( 100000 );
-          // This month energy [Wh]
-          $this->requestData( "10970E9D", 4 );
-          usleep( 100000 );
-          // This year energy [Wh]
-          $this->requestData( "C0CC81B6", 4 );
-          usleep( 100000 );
-          // Total Energy [Wh]
-          $this->requestData( "B1EF67CE", 4 );
-          usleep( 100000 );
-          // External Power Limit [0..1]
-          $this->requestData( "FE1AA500", 4 );
-          usleep( 100000 );
-          // External battery power target [W] (positive = discharge)
-          $this->requestData( "BD008E29", 4 );
-          usleep( 100000 );
-          // External load demand [W] (positive = feed in / 0=internal
-          $this->requestData( "872F380B", 4 );	
-          usleep( 100000 );
+          
+	  $this->requestData( "DB2D69AE",4 ); usleep( 100000 ); // Actual inverters AC-power [W]
+          
+	  $this->requestData( "CF053085",4 ); usleep( 100000 ); // Phase L1 voltage [V]
+	  $this->requestData( "54B4684E",4 ); usleep( 100000 ); // Phase L2 voltage [V]
+	  $this->requestData( "2545E22D",4 ); usleep( 100000 ); // Phase L3 voltage [V]
+
+          
+          $this->requestData( "B55BA2CE",4 ); usleep( 100000 ); // DC input A voltage [V] (by Documentation B298395D) 
+          $this->requestData( "DB11855B",4 ); usleep( 100000 ); // DC input A power [W]
+
+	  $this->requestData( "B0041187",4 ); usleep( 100000 ); // DC input B voltage [V] (by Documentation 5BB8075A)
+          $this->requestData( "0CB5D21B",4 ); usleep( 100000 ); // DC input B power [W]
+
+	  // $this->requestData( "B408E40A", 4 ); usleep( 100000 ); // Battery current measured by inverter, low pass filter with Tau = 1s [A]
+
+          $this->requestData( "A7FA5C5D",4 ); usleep( 100000 ); // Battery voltage [V]
+          $this->requestData( "959930BF",4 ); usleep( 100000 ); // Battery State of Charge (SoC) [0..1]
+          $this->requestData( "400F015B",4 ); usleep( 100000 ); // Battery power (positive if discharge) [W]
+          $this->requestData( "902AFAFB",4 ); usleep( 100000 ); // Battery temperature [°C]
+
+          
+          $this->requestData( "91617C58",4 ); usleep( 100000 ); // Public grid power (house connection, negative by feed-in) [W]
+          
+          $this->requestData( "E96F1844",4 ); usleep( 100000 ); // External power (additional inverters/generators in house internal grid) [W]
+		
+	  //--- Request Energies -------------------------------------
+          // Todays Energy
+          $this->requestData( "BD55905F",4 ); usleep( 100000 ); // Todays energy [Wh]
+          $this->requestData( "2AE703F2",4 ); usleep( 100000 ); // Tagesenergie Ertrag Input A in Wh
+          $this->requestData( "FBF3CE97",4 ); usleep( 100000 ); // Tagesenergie Ertrag Input B in Wh
+          $this->requestData( "3C87C4F5",4 ); usleep( 100000 ); // Tagesenergie Netzeinspeisung in -Wh
+          $this->requestData( "867DEF7D",4 ); usleep( 100000 ); // Tagesenergie Netzverbrauch	in Wh
+          $this->requestData( "F0BE6429",4 ); usleep( 100000 ); // Tagesenergie Haushalt in Wh	
+	
+          // Month Energy
+          $this->requestData( "10970E9D",4 ); usleep( 100000 ); // This month energy [Wh]
+          $this->requestData( "81AE960B",4 ); usleep( 100000 ); // Monatsenergie Ertrag Input A in Wh
+          $this->requestData( "7AB9B045",4 ); usleep( 100000 ); // Monatsenergie Ertrag Input B in Wh
+          $this->requestData( "65B624AB",4 ); usleep( 100000 ); // Monatsenergie Netzeinspeisung ins Netz in -Wh
+          $this->requestData( "126ABC86",4 ); usleep( 100000 ); // Monatsenergie Netzverbrauch in Wh
+          $this->requestData( "F0BE6429",4 ); usleep( 100000 ); // Monatsenergie Haushalt in Wh
+		
+          // Year Energy
+          $this->requestData( "C0CC81B6",4 ); usleep( 100000 ); // This year energy [Wh]
+          $this->requestData( "AF64D0FE",4 ); usleep( 100000 ); // Jahresenergie Ertrag Input A in Wh
+          $this->requestData( "BD55D796",4 ); usleep( 100000 ); // Jahresenergie Ertrag Input B in Wh
+          $this->requestData( "26EFFC2F",4 ); usleep( 100000 ); // Jahresenergie Netzinspeisung ins Netz in -Wh
+          $this->requestData( "DE17F021",4 ); usleep( 100000 ); // Jahresenergie Netzverbrauch in Wh
+          $this->requestData( "C7D3B479",4 ); usleep( 100000 ); // Jahresenergie Haushalt in Wh	
+		
+          // Total Energy
+          $this->requestData( "B1EF67CE",4 ); usleep( 100000 ); // Total Energy [Wh]
+          $this->requestData( "FC724A9E",4 ); usleep( 100000 ); // Gesamtenergie Ertrag Input A in Wh
+          $this->requestData( "68EEFD3D",4 ); usleep( 100000 ); // Gesamtenergie Ertrag Input B in Wh
+          $this->requestData( "44D4C533",4 ); usleep( 100000 ); // Gesamtenergie Netzeinspeisung in -Wh
+          $this->requestData( "62FBE7DC",4 ); usleep( 100000 ); // Gesamtenergie Netzverbrauch in Wh
+          $this->requestData( "EFF4B537",4 ); usleep( 100000 ); // Gesamtenergie Haushalt in Wh
+		
+		
+          $this->requestData( "FE1AA500",4 ); usleep( 100000 ); // External Power Limit [0..1]
+          $this->requestData( "BD008E29",4 ); usleep( 100000 ); // External battery power target [W] (positive = discharge)
+          $this->requestData( "872F380B",4 ); usleep( 100000 ); // External load demand [W] (positive = feed in / 0=internal
+		
 	  // Bit-coded fault word 0-3	
-          $this->requestData( "37F9D5CA", 4 );
-	  usleep( 100000 );
-	  $this->requestData( "234B4736", 4 );
-	  usleep( 100000 );
-	  $this->requestData( "3B7FCD47", 4 );
-	  usleep( 100000 );
-	  $this->requestData( "7F813D73", 4);
+          $this->requestData( "37F9D5CA",4 ); usleep( 100000 );
+	  $this->requestData( "234B4736",4 ); usleep( 100000 );
+	  $this->requestData( "3B7FCD47",4 ); usleep( 100000 );
+	  $this->requestData( "7F813D73",4 ); usleep( 100000 );
 		
           //--- NOT DOCUMENTED -------------------------------------------------------------------------
-	  // Upper load boundary in %
-	  $this->requestData( "8B9FF008", 4 );
-          usleep( 100000 );
-		
-	  // gross battery capacity kwh
-	  $this->requestData( "4BC0F974", 4 );
-          usleep( 100000 );
-		
-	  // Current House power consumption
-	  $this->requestData( "1AC87AA0", 4 );
-	  usleep( 100000 );
+	  $this->requestData( "8B9FF008", 4 ); usleep( 100000 ); // Upper load boundary in %
+	  $this->requestData( "4BC0F974", 4 ); usleep( 100000 ); // gross battery capacity kwh
+	  $this->requestData( "1AC87AA0", 4 ); usleep( 100000 ); // Current House power consumption
 		
 	  // return result
           return true;
@@ -498,12 +485,41 @@
 	  $this->RegisterVariableInteger("ExternalPower",  "Generator Leistung","RCTPOWER_Power",30); 
 		
           $this->RegisterVariableInteger("PublicGridPower","Aussennetz Leistung","RCTPOWER_Power",40); 
+	  
+	  // Energy Earnings and Consumption
+	  // Day
+          $this->RegisterVariableInteger("EnergyDayPVEarningTotal",  "Tag - PV Gesamtertrag","RCTPOWER_Energy",50);
+	  $this->RegisterVariableInteger("EnergyDayPVEarningInputA", "Tag - PV Ertrag Eingang A","RCTPOWER_Energy",51);
+	  $this->RegisterVariableInteger("EnergyDayPVEarningInputB", "Tag - PV Ertrag Eingang B","RCTPOWER_Energy",52);	
+	  $this->RegisterVariableInteger("EnergyDayGridFeedIn",      "Tag - Netzeinspeisung","RCTPOWER_Energy",53);
+	  $this->RegisterVariableInteger("EnergyDayGridUsage",       "Tag - Netzverbrauch","RCTPOWER_Energy",54);
+	  $this->RegisterVariableInteger("EnergyDayHouseholdTotal",  "Tag - Haushalt gesamt","RCTPOWER_Energy",55);
 		
-          $this->RegisterVariableInteger("EnergyToday",     "PV Energie Tag","RCTPOWER_Energy",50);
-	  $this->RegisterVariableInteger("EnergyThisMonth", "PV Energie Monat","RCTPOWER_Energy",51);
-          $this->RegisterVariableInteger("EnergyThisYear",  "PV Energie Jahr","RCTPOWER_Energy",52);
-          $this->RegisterVariableInteger("EnergyTotal",     "PV Energie Gesamt","RCTPOWER_Energy",53);
+	  // Month
+	  $this->RegisterVariableInteger("EnergyMonthPVEarningTotal",  "Monat - PV Gesamtertrag","RCTPOWER_Energy",60);
+	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputA", "Monat - PV Ertrag Eingang A","RCTPOWER_Energy",61);
+	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputB", "Monat - PV Ertrag Eingang B","RCTPOWER_Energy",62);	
+	  $this->RegisterVariableInteger("EnergyMonthGridFeedIn",      "Monat - Netzeinspeisung","RCTPOWER_Energy",63);
+	  $this->RegisterVariableInteger("EnergyMonthGridUsage",       "Monat - Netzverbrauch","RCTPOWER_Energy",64);
+	  $this->RegisterVariableInteger("EnergyMonthHouseholdTotal",  "Monat - Haushalt gesamt","RCTPOWER_Energy",65);
+		
+          // Year
+	  $this->RegisterVariableInteger("EnergyYearPVEarningTotal",  "Jahr - PV Gesamtertrag","RCTPOWER_Energy",70);
+	  $this->RegisterVariableInteger("EnergyYearPVEarningInputA", "Jahr - PV Ertrag Eingang A","RCTPOWER_Energy",71);
+	  $this->RegisterVariableInteger("EnergyYearPVEarningInputB", "Jahr - PV Ertrag Eingang B","RCTPOWER_Energy",72);	
+	  $this->RegisterVariableInteger("EnergyYearGridFeedIn",      "Jahr - Netzeinspeisung","RCTPOWER_Energy",73);
+	  $this->RegisterVariableInteger("EnergyYearGridUsage",       "Jahr - Netzverbrauch","RCTPOWER_Energy",74);
+	  $this->RegisterVariableInteger("EnergyYearHouseholdTotal",  "Jahr - Haushalt gesamt","RCTPOWER_Energy",75);
+		
+	  // Total
+	  $this->RegisterVariableInteger("EnergyTotalPVEarningTotal",  "Gesamt - PV Ertrag","RCTPOWER_Energy",80);
+	  $this->RegisterVariableInteger("EnergyTotalPVEarningInputA", "Gesamt - PV Ertrag Eingang A","RCTPOWER_Energy",81);
+	  $this->RegisterVariableInteger("EnergyTotalPVEarningInputB", "Gesamt - PV Ertrag Eingang B","RCTPOWER_Energy",82);	
+	  $this->RegisterVariableInteger("EnergyTotalGridFeedIn",      "Gesamt - Netzeinspeisung","RCTPOWER_Energy",83);
+	  $this->RegisterVariableInteger("EnergyTotalGridUsage",       "Gesamt - Netzverbrauch","RCTPOWER_Energy",84);
+	  $this->RegisterVariableInteger("EnergyTotalHouseholdTotal",  "Gesamt - Haushalt gesamt","RCTPOWER_Energy",85);
 
+		
           $this->RegisterVariableInteger("HousePowerCurrent","Haus Leistung","RCTPOWER_Power",60);
 	
 	  $this->RegisterVariableBoolean("Errorstatus",      "Fehlerstatus","~Alert",70);
