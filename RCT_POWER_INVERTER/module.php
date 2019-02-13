@@ -185,28 +185,23 @@
 		  //--- Energy Today		     
 		  case "BD55905F": // Todays energy [Wh], Float
 			  SetValue($this->GetIDForIdent("EnergyDayPVEarningTotal"), round( $float, 0 ) ); 
+		          // Calculate FeedInLevel etc.
+                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningTotal")) * 100;	     
+                          SetValue($this->GetIDForIdent("EnergyDayGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
+			  $SelfConsumptionLevel = 100 - $FeedInLevel;
+                          SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
 	      		  break;    
 		  case "2AE703F2": // Tagesenergie Ertrag Input A in Wh
 			  SetValue($this->GetIDForIdent("EnergyDayPVEarningInputA"), round( $float, 0 ) ); 
-		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputB")) ) * 100;	     
-                          SetValue($this->GetIDForIdent("EnergyDayGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
-			  $SelfConsumptionLevel = 100 - $FeedInLevel;
-                          SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
-	      		  break;    
+			  break;
 		  case "FBF3CE97": // Tagesenergie Ertrag Input B in Wh
 			  SetValue($this->GetIDForIdent("EnergyDayPVEarningInputB"), round( $float, 0 ) ); 
-		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputB")) ) * 100;	     
-                          SetValue($this->GetIDForIdent("EnergyDayGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
-			  $SelfConsumptionLevel = 100 - $FeedInLevel;
-                          SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
-	      		  break;    
+		          break;    
 		  case "3C87C4F5": // Tagesenergie Netzeinspeisung in -Wh
 			  $float = $float * -1;
 			  SetValue($this->GetIDForIdent("EnergyDayGridFeedIn"), round( $float, 0 ) ); 
 		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputB")) ) * 100;	     
+                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningTotal")) * 100;	
                           SetValue($this->GetIDForIdent("EnergyDayGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
 			  $SelfConsumptionLevel = 100 - $FeedInLevel;
                           SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
@@ -231,28 +226,23 @@
 		  //--- Energy Month  
 		  case "10970E9D": // This month energy [Wh], Float	
 			  SetValue($this->GetIDForIdent("EnergyMonthPVEarningTotal"), round( $float, 0 ) );
+		          // Calculate FeedInLevel etc.
+                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyMonthGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningTotal")) * 100;	     
+                          SetValue($this->GetIDForIdent("EnergyMonthGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
+			  $SelfConsumptionLevel = 100 - $FeedInLevel;
+                          SetValue($this->GetIDForIdent("EnergyMonthSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
 	      		  break; 
 		  case "81AE960B": // Monatsenergie Ertrag Input A in Wh
 			  SetValue($this->GetIDForIdent("EnergyMonthPVEarningInputA"), round( $float, 0 ) ); 
-		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = -GetValueInteger($this->GetIDForIdent("EnergyMonthGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningInputB")) ) * 100;	     
-                          SetValue($this->GetIDForIdent("EnergyMonthGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
-			  $SelfConsumptionLevel = 100 - $FeedInLevel;
-                          SetValue($this->GetIDForIdent("EnergyMonthSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
 	      		  break; 
 		  case "7AB9B045": // Monatsenergie Ertrag Input B in Wh
 			  SetValue($this->GetIDForIdent("EnergyMonthPVEarningInputB"), round( $float, 0 ) ); 
-		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = -GetValueInteger($this->GetIDForIdent("EnergyMonthGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningInputB")) ) * 100;	     
-                          SetValue($this->GetIDForIdent("EnergyMonthGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
-			  $SelfConsumptionLevel = 100 - $FeedInLevel;
-                          SetValue($this->GetIDForIdent("EnergyMonthSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
 	      		  break; 
 		  case "65B624AB": // Monatsenergie Netzeinspeisung ins Netz in -Wh
 			  $float = $float * -1;
 			  SetValue($this->GetIDForIdent("EnergyMonthGridFeedIn"), round( $float, 0 ) ); 
 		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyMonthGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningInputB")) ) * 100;	     
+                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyMonthGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningTotal")) * 100;	     
                           SetValue($this->GetIDForIdent("EnergyMonthGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
 			  $SelfConsumptionLevel = 100 - $FeedInLevel;
                           SetValue($this->GetIDForIdent("EnergyMonthSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
@@ -277,31 +267,26 @@
 		  //--- Energy Year
 		  case "C0CC81B6": // This year energy [Wh], Float	
 			  SetValue($this->GetIDForIdent("EnergyYearPVEarningTotal"), round( $float, 0 ) );
+		          // Calculate FeedInLevel etc.
+                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyYearGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyYearPVEarningTotal")) * 100;	
+                          SetValue($this->GetIDForIdent("EnergyYearGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
+			  $SelfConsumptionLevel = 100 - $FeedInLevel;
+                          SetValue($this->GetIDForIdent("EnergyYearSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
 	      		  break;
 		  case "AF64D0FE": // Jahresenergie Ertrag Input A in Wh
 			  SetValue($this->GetIDForIdent("EnergyYearPVEarningInputA"), round( $float, 0 ) ); 
-		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyYearGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyYearPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyYearPVEarningInputB")) ) * 100;	     
-                          SetValue($this->GetIDForIdent("EnergyYearGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
-			  $SelfConsumptionLevel = 100 - $FeedInLevel;
-                          SetValue($this->GetIDForIdent("EnergyYearSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
 	      		  break;     
 		  case "BD55D796": // Jahresenergie Ertrag Input B in Wh
 			  SetValue($this->GetIDForIdent("EnergyYearPVEarningInputB"), round( $float, 0 ) ); 
-		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyYearGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyYearPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyYearPVEarningInputB")) ) * 100;	     
-                          SetValue($this->GetIDForIdent("EnergyYearGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
-			  $SelfConsumptionLevel = 100 - $FeedInLevel;
-                          SetValue($this->GetIDForIdent("EnergyYearSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
 	      		  break;    
 		  case "26EFFC2F": // Jahresenergie Netzinspeisung ins Netz in -Wh
 			  $float = $float * -1;
 			  SetValue($this->GetIDForIdent("EnergyYearGridFeedIn"), round( $float, 0 ) ); 
 		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyYearGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyYearPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyYearPVEarningInputB")) ) * 100;	     
+                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyYearGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyYearPVEarningTotal")) * 100;	
                           SetValue($this->GetIDForIdent("EnergyYearGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
 			  $SelfConsumptionLevel = 100 - $FeedInLevel;
-                          SetValue($this->GetIDForIdent("EnergyYearSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
+                          SetValue($this->GetIDForIdent("EnergyYearSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) ); 
 	      		  break;    
 		  case "DE17F021": // Jahresenergie Netzverbrauch in Wh
 			  SetValue($this->GetIDForIdent("EnergyYearGridUsage"), round( $float, 0 ) ); 
@@ -323,31 +308,26 @@
 		  //--- Energy Total
 		  case "B1EF67CE": // Total Energy [Wh], Float	
 			  SetValue($this->GetIDForIdent("EnergyTotalPVEarningTotal"), round( $float, 0 ) );
+		          // Calculate FeedInLevel etc.
+                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyTotalGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningTotal")) * 100;	
+                          SetValue($this->GetIDForIdent("EnergyTotalGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
+			  $SelfConsumptionLevel = 100 - $FeedInLevel;
+                          SetValue($this->GetIDForIdent("EnergyTotalSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) ); 
 	      		  break;
 		  case "FC724A9E": // Gesamtenergie Ertrag Input A in Wh
-			  SetValue($this->GetIDForIdent("EnergyTotalPVEarningInputA"), round( $float, 0 ) ); 
-		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyTotalGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputB")) ) * 100;	     
-                          SetValue($this->GetIDForIdent("EnergyTotalGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
-			  $SelvConsumptionLevel = 100 - $FeedInLevel;
-                          SetValue($this->GetIDForIdent("EnergyTotalSelfConsumptionLevel"), round( $SelvConsumptionLevel, 0 ) );   
+			  SetValue($this->GetIDForIdent("EnergyTotalPVEarningInputA"), round( $float, 0 ) );   
 	      		  break; 	     
 		  case "68EEFD3D": // Gesamtenergie Ertrag Input B in Wh
-			  SetValue($this->GetIDForIdent("EnergyTotalPVEarningInputB"), round( $float, 0 ) ); 
-		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyTotalGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputB")) ) * 100;	     
-                          SetValue($this->GetIDForIdent("EnergyTotalGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
-			  $SelvConsumptionLevel = 100 - $FeedInLevel;
-                          SetValue($this->GetIDForIdent("EnergyTotalSelfConsumptionLevel"), round( $SelvConsumptionLevel, 0 ) );      
+			  SetValue($this->GetIDForIdent("EnergyTotalPVEarningInputB"), round( $float, 0 ) );     
 	      		  break;  	     
 		  case "44D4C533": // Gesamtenergie Netzeinspeisung in -Wh
 			  $float = $float * -1;
 			  SetValue($this->GetIDForIdent("EnergyTotalGridFeedIn"), round( $float, 0 ) ); 
 		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyTotalGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputB")) ) * 100;	     
+                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyTotalGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningTotal")) * 100;	
                           SetValue($this->GetIDForIdent("EnergyTotalGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
-			  $SelvConsumptionLevel = 100 - $FeedInLevel;
-                          SetValue($this->GetIDForIdent("EnergyTotalSelfConsumptionLevel"), round( $SelvConsumptionLevel, 0 ) );   
+			  $SelfConsumptionLevel = 100 - $FeedInLevel;
+                          SetValue($this->GetIDForIdent("EnergyTotalSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
 	      		  break;	     
 		  case "62FBE7DC": // Gesamtenergie Netzverbrauch in Wh
 			  SetValue($this->GetIDForIdent("EnergyTotalGridUsage"), round( $float, 0 ) ); 
