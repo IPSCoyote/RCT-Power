@@ -632,7 +632,7 @@
 	  
 	  // Energy Earnings and Consumption
 	  // Day
-          $this->RegisterVariableInteger("EnergyDayEnergy",               "Tag - Tagesenergie","RCTPOWER_Energy",50);
+          $this->RegisterVariableInteger("EnergyDayEnergy",               "Tag - PV Energie ans Haus (Kolletor/Batterie)","RCTPOWER_Energy",50);
 	  $this->RegisterVariableInteger("EnergyDayPVEarningInputA",      "Tag - PV Ertrag Eingang A","RCTPOWER_Energy",51);
 	  $this->RegisterVariableInteger("EnergyDayPVEarningInputB",      "Tag - PV Ertrag Eingang B","RCTPOWER_Energy",52);	
 	  $this->RegisterVariableInteger("EnergyDayGridFeedIn",           "Tag - Netzeinspeisung","RCTPOWER_Energy",53);
@@ -644,7 +644,7 @@
 	  $this->RegisterVariableInteger("EnergyDayGridFeedInLevel",      "Tag - % PV Netzeinspeisung","~Valve", 59); 
 		
 	  // Month
-	  $this->RegisterVariableInteger("EnergyMonthEnergy",               "Monat - Monatsenergie","RCTPOWER_Energy",60);
+	  $this->RegisterVariableInteger("EnergyMonthEnergy",               "Monat - PV Energie ans Haus (Kolletor/Batterie)","RCTPOWER_Energy",60);
 	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputA",      "Monat - PV Ertrag Eingang A","RCTPOWER_Energy",61);
 	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputB",      "Monat - PV Ertrag Eingang B","RCTPOWER_Energy",62);	
 	  $this->RegisterVariableInteger("EnergyMonthGridFeedIn",           "Monat - Netzeinspeisung","RCTPOWER_Energy",63);
@@ -656,7 +656,7 @@
 	  $this->RegisterVariableInteger("EnergyMonthGridFeedInLevel",      "Monat - % PV Netzeinspeisung","~Valve", 69); 
 		
           // Year
-	  $this->RegisterVariableInteger("EnergyYearEnergy",               "Jahr - Jahresenergie","RCTPOWER_Energy",70);
+	  $this->RegisterVariableInteger("EnergyYearEnergy",               "Jahr - PV Energie ans Haus (Kolletor/Batterie)","RCTPOWER_Energy",70);
 	  $this->RegisterVariableInteger("EnergyYearPVEarningInputA",      "Jahr - PV Ertrag Eingang A","RCTPOWER_Energy",71);
 	  $this->RegisterVariableInteger("EnergyYearPVEarningInputB",      "Jahr - PV Ertrag Eingang B","RCTPOWER_Energy",72);	
 	  $this->RegisterVariableInteger("EnergyYearGridFeedIn",           "Jahr - Netzeinspeisung","RCTPOWER_Energy",73);
@@ -668,7 +668,7 @@
 	  $this->RegisterVariableInteger("EnergyYearGridFeedInLevel",      "Jahr - % PV Netzeinspeisung","~Valve", 79); 
 		
 	  // Total
-	  $this->RegisterVariableInteger("EnergyTotalEnergy",               "Gesamt - Gesamtenergie","RCTPOWER_Energy",80);
+	  $this->RegisterVariableInteger("EnergyTotalEnergy",               "Gesamt - PV Energie ans Haus (Kolletor/Batterie)","RCTPOWER_Energy",80);
 	  $this->RegisterVariableInteger("EnergyTotalPVEarningInputA",      "Gesamt - PV Ertrag Eingang A","RCTPOWER_Energy",81);
 	  $this->RegisterVariableInteger("EnergyTotalPVEarningInputB",      "Gesamt - PV Ertrag Eingang B","RCTPOWER_Energy",82);	
 	  $this->RegisterVariableInteger("EnergyTotalGridFeedIn",           "Gesamt - Netzeinspeisung","RCTPOWER_Energy",83);
