@@ -698,7 +698,7 @@
           $this->RegisterVariableInteger("HousePowerCurrent","Haus Leistung","RCTPOWER_Power",90);
 	
 	  $this->RegisterVariableBoolean("Errorstatus",      "Fehlerstatus","~Alert",100);
-        }
+        } 
 	  
 	  
     }
