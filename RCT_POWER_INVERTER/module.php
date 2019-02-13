@@ -117,7 +117,7 @@
 			    $TotalPowerInput = GetValueInteger($this->GetIDForIdent("DCInputAPower")) + GetValueInteger($this->GetIDForIdent("DCInputBPower"));
 			    $Utilization = $TotalPowerInput / $PanelMaxTotal * 100;	
 			    SetValue($this->GetIDForIdent("DCInputUtilization"), round( $Utilization, 1 ) ); 
-			    SetValue(%this->GetIDForIdent("DCInputPower", round( $TotalPowerInput, 0 ) );
+			    SetValue($this->GetIDForIdent("DCInputPower", round( $TotalPowerInput, 0 ) );
 			  }
 			  
 			  //$this->sendDebug( "RCTPower", "DC Input A power [W]: ".number_format( $float, 0 )."W", 0 );
@@ -142,7 +142,7 @@
 			    $TotalPowerInput = GetValueInteger($this->GetIDForIdent("DCInputAPower")) + GetValueInteger($this->GetIDForIdent("DCInputBPower"));
 		            $Utilization = $TotalPowerInput / $PanelMaxTotal * 100;	
 			    SetValue($this->GetIDForIdent("DCInputUtilization"), round( $Utilization, 1 ) ); 
-			    SetValue(%this->GetIDForIdent("DCInputPower", round( $TotalPowerInput, 0 ) );
+			    SetValue($this->GetIDForIdent("DCInputPower", round( $TotalPowerInput, 0 ) );
 			  }
 			  
 			  //$this->sendDebug( "RCTPower", "DC Input B power [W]: ".number_format( $float, 0 )."W", 0 );
