@@ -218,7 +218,7 @@
 			  $AutonomousPowerLevel = 100 - $GridPowerLevel;
 			  SetValue($this->GetIDForIdent("EnergyDayAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );         
 	      		  break;  
-		  case "45B034E4": // Tagesenergie Haushalt in Wh     
+		  case "2F3C1D7D": // Tagesenergie Haushalt in Wh     
 			  SetValue($this->GetIDForIdent("EnergyDayHouseholdTotal"), round( $float, 0 ) ); 
 			  // Calculate AutonomousPowerLevel etc.
 			  $GridPowerLevel= GetValueInteger($this->GetIDForIdent("EnergyDayGridUsage")) / GetValueInteger($this->GetIDForIdent("EnergyDayHouseholdTotal")) * 100;
@@ -521,7 +521,7 @@
           $this->requestData( "FBF3CE97",4 ); usleep( 100000 ); // Tagesenergie Ertrag Input B in Wh
           $this->requestData( "3C87C4F5",4 ); usleep( 100000 ); // Tagesenergie Netzeinspeisung in -Wh
           $this->requestData( "867DEF7D",4 ); usleep( 100000 ); // Tagesenergie Netzverbrauch	in Wh
-          $this->requestData( "45B034E4",4 ); usleep( 100000 ); // Tagesenergie Haushalt in Wh	
+          $this->requestData( "2F3C1D7D",4 ); usleep( 100000 ); // Tagesenergie Haushalt in Wh	
 	
           // Month Energy
           $this->requestData( "10970E9D",4 ); usleep( 100000 ); // This month energy [Wh]
