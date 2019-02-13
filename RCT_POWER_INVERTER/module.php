@@ -265,7 +265,7 @@
 		  case "44D4C533": // Gesamtenergie Netzeinspeisung in -Wh
 			  SetValue($this->GetIDForIdent("EnergyTotalGridFeedIn"), round( $float, 0 ) ); 
 		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyTotalGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputB")) ) * 100;	     
+                          $FeedInLevel = -1 * GetValueInteger($this->GetIDForIdent("EnergyTotalGridFeedIn")) / ( GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputB")) ) * 100;	     
                           SetValue($this->GetIDForIdent("EnergyTotalGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
 			  $SelvConsumptionLevel = 100 - $FeedInLevel;
                           SetValue($this->GetIDForIdent("EnergyTotalSelfConsumptionLevel"), round( $SelvConsumptionLevel, 0 ) );   
@@ -615,10 +615,10 @@
 	  $this->RegisterVariableInteger("EnergyTotalGridFeedIn",           "Gesamt - Netzeinspeisung","RCTPOWER_Energy",83);
 	  $this->RegisterVariableInteger("EnergyTotalGridUsage",            "Gesamt - Netzverbrauch","RCTPOWER_Energy",84);
 	  $this->RegisterVariableInteger("EnergyTotalHouseholdTotal",       "Gesamt - Haushalt gesamt","RCTPOWER_Energy",85);
-	  $this->RegisterVariableInteger("EnergyTotalAutonomousPowerLevel", "Gesamt - % autonome Energie","~Valve", 76); 
-	  $this->RegisterVariableInteger("EnergyTotalGridPowerLevel",       "Gesamt - % Netz Energie","~Valve", 77); 
-	  $this->RegisterVariableInteger("EnergyTotalSelfConsumptionLevel", "Gesamt - % Selbstverbrauch","~Valve", 78); 
-	  $this->RegisterVariableInteger("EnergyTotalGridFeedInLevel",      "Gesamt - % Netzeinspeisung","~Valve", 79); 
+	  $this->RegisterVariableInteger("EnergyTotalAutonomousPowerLevel", "Gesamt - % autonome Energie","~Valve", 86); 
+	  $this->RegisterVariableInteger("EnergyTotalGridPowerLevel",       "Gesamt - % Netz Energie","~Valve", 87); 
+	  $this->RegisterVariableInteger("EnergyTotalSelfConsumptionLevel", "Gesamt - % Selbstverbrauch","~Valve", 88); 
+	  $this->RegisterVariableInteger("EnergyTotalGridFeedInLevel",      "Gesamt - % Netzeinspeisung","~Valve", 89); 
 		
           $this->RegisterVariableInteger("HousePowerCurrent","Haus Leistung","RCTPOWER_Power",90);
 	
