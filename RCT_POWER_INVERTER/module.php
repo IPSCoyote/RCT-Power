@@ -579,10 +579,10 @@
 	  $this->RegisterVariableInteger("EnergyDayGridFeedIn",           "Tag - Netzeinspeisung","RCTPOWER_Energy",53);
 	  $this->RegisterVariableInteger("EnergyDayGridUsage",            "Tag - Netzverbrauch","RCTPOWER_Energy",54);
 	  $this->RegisterVariableInteger("EnergyDayHouseholdTotal",       "Tag - Haushalt gesamt","RCTPOWER_Energy",55);
-	  $this->RegisterVariableInteger("EnergyDayAutonomousPowerLevel", "Tag - % autonome Energie","~Valve.F", 56); 
-	  $this->RegisterVariableInteger("EnergyDayGridPowerLevel",       "Tag - % Netz Energie","~Valve.F", 57); 
-	  $this->RegisterVariableInteger("EnergyDaySelfConsumptionLevel", "Tag - % Selbstverbrauch","~Valve.F", 58); 
-	  $this->RegisterVariableInteger("EnergyDayGridFeedInLevel",      "Tag - % Netzeinspeisung","~Valve.F", 59); 
+	  $this->RegisterVariableInteger("EnergyDayAutonomousPowerLevel", "Tag - % autonome Energie","~Valve", 56); 
+	  $this->RegisterVariableInteger("EnergyDayGridPowerLevel",       "Tag - % Netz Energie","~Valve", 57); 
+	  $this->RegisterVariableInteger("EnergyDaySelfConsumptionLevel", "Tag - % Selbstverbrauch","~Valve", 58); 
+	  $this->RegisterVariableInteger("EnergyDayGridFeedInLevel",      "Tag - % Netzeinspeisung","~Valve", 59); 
 		
 	  // Month
 	  $this->RegisterVariableInteger("EnergyMonthPVEarningTotal",       "Monat - PV Gesamtertrag","RCTPOWER_Energy",60);
@@ -591,10 +591,10 @@
 	  $this->RegisterVariableInteger("EnergyMonthGridFeedIn",           "Monat - Netzeinspeisung","RCTPOWER_Energy",63);
 	  $this->RegisterVariableInteger("EnergyMonthGridUsage",            "Monat - Netzverbrauch","RCTPOWER_Energy",64);
 	  $this->RegisterVariableInteger("EnergyMonthHouseholdTotal",       "Monat - Haushalt gesamt","RCTPOWER_Energy",65);
-	  $this->RegisterVariableInteger("EnergyMonthAutonomousPowerLevel", "Monat - % autonome Energie","~Valve.F", 66); 
-	  $this->RegisterVariableInteger("EnergyMonthGridPowerLevel",       "Monat - % Netz Energie","~Valve.F", 67); 
-	  $this->RegisterVariableInteger("EnergyMonthSelfConsumptionLevel", "Monat - % Selbstverbrauch","~Valve.F", 68); 
-	  $this->RegisterVariableInteger("EnergyMonthGridFeedInLevel",      "Monat - % Netzeinspeisung","~Valve.F", 69); 
+	  $this->RegisterVariableInteger("EnergyMonthAutonomousPowerLevel", "Monat - % autonome Energie","~Valve", 66); 
+	  $this->RegisterVariableInteger("EnergyMonthGridPowerLevel",       "Monat - % Netz Energie","~Valve", 67); 
+	  $this->RegisterVariableInteger("EnergyMonthSelfConsumptionLevel", "Monat - % Selbstverbrauch","~Valve", 68); 
+	  $this->RegisterVariableInteger("EnergyMonthGridFeedInLevel",      "Monat - % Netzeinspeisung","~Valve", 69); 
 		
           // Year
 	  $this->RegisterVariableInteger("EnergyYearPVEarningTotal",       "Jahr - PV Gesamtertrag","RCTPOWER_Energy",70);
@@ -603,10 +603,10 @@
 	  $this->RegisterVariableInteger("EnergyYearGridFeedIn",           "Jahr - Netzeinspeisung","RCTPOWER_Energy",73);
 	  $this->RegisterVariableInteger("EnergyYearGridUsage",            "Jahr - Netzverbrauch","RCTPOWER_Energy",74);
 	  $this->RegisterVariableInteger("EnergyYearHouseholdTotal",       "Jahr - Haushalt gesamt","RCTPOWER_Energy",75);
-	  $this->RegisterVariableInteger("EnergyYearAutonomousPowerLevel", "Jahr - % autonome Energie","~Valve.F", 76); 
-	  $this->RegisterVariableInteger("EnergyYearGridPowerLevel",       "Jahr - % Netz Energie","~Valve.F", 77); 
-	  $this->RegisterVariableInteger("EnergyYearSelfConsumptionLevel", "Jahr - % Selbstverbrauch","~Valve.F", 78); 
-	  $this->RegisterVariableInteger("EnergyYearGridFeedInLevel",      "Jahr - % Netzeinspeisung","~Valve.F", 79); 
+	  $this->RegisterVariableInteger("EnergyYearAutonomousPowerLevel", "Jahr - % autonome Energie","~Valve", 76); 
+	  $this->RegisterVariableInteger("EnergyYearGridPowerLevel",       "Jahr - % Netz Energie","~Valve", 77); 
+	  $this->RegisterVariableInteger("EnergyYearSelfConsumptionLevel", "Jahr - % Selbstverbrauch","~Valve", 78); 
+	  $this->RegisterVariableInteger("EnergyYearGridFeedInLevel",      "Jahr - % Netzeinspeisung","~Valve", 79); 
 		
 	  // Total
 	  $this->RegisterVariableInteger("EnergyTotalPVEarningTotal",       "Gesamt - PV Ertrag","RCTPOWER_Energy",80);
@@ -615,14 +615,14 @@
 	  $this->RegisterVariableInteger("EnergyTotalGridFeedIn",           "Gesamt - Netzeinspeisung","RCTPOWER_Energy",83);
 	  $this->RegisterVariableInteger("EnergyTotalGridUsage",            "Gesamt - Netzverbrauch","RCTPOWER_Energy",84);
 	  $this->RegisterVariableInteger("EnergyTotalHouseholdTotal",       "Gesamt - Haushalt gesamt","RCTPOWER_Energy",85);
-	  $this->RegisterVariableInteger("EnergyTotalAutonomousPowerLevel", "Gesamt - % autonome Energie","~Valve.F", 76); 
-	  $this->RegisterVariableInteger("EnergyTotalGridPowerLevel",       "Gesamt - % Netz Energie","~Valve.F", 77); 
-	  $this->RegisterVariableInteger("EnergyTotalSelfConsumptionLevel", "Gesamt - % Selbstverbrauch","~Valve.F", 78); 
-	  $this->RegisterVariableInteger("EnergyTotalGridFeedInLevel",      "Gesamt - % Netzeinspeisung","~Valve.F", 79); 
+	  $this->RegisterVariableInteger("EnergyTotalAutonomousPowerLevel", "Gesamt - % autonome Energie","~Valve", 76); 
+	  $this->RegisterVariableInteger("EnergyTotalGridPowerLevel",       "Gesamt - % Netz Energie","~Valve", 77); 
+	  $this->RegisterVariableInteger("EnergyTotalSelfConsumptionLevel", "Gesamt - % Selbstverbrauch","~Valve", 78); 
+	  $this->RegisterVariableInteger("EnergyTotalGridFeedInLevel",      "Gesamt - % Netzeinspeisung","~Valve", 79); 
 		
-          $this->RegisterVariableInteger("HousePowerCurrent","Haus Leistung","RCTPOWER_Power",60);
+          $this->RegisterVariableInteger("HousePowerCurrent","Haus Leistung","RCTPOWER_Power",90);
 	
-	  $this->RegisterVariableBoolean("Errorstatus",      "Fehlerstatus","~Alert",70);
+	  $this->RegisterVariableBoolean("Errorstatus",      "Fehlerstatus","~Alert",100);
         }
 	  
 	  
