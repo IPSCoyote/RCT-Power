@@ -237,7 +237,7 @@
 	      		  break;       
 		  case "DE17F021": // Jahresenergie Netzverbrauch in Wh
 			  SetValue($this->GetIDForIdent("EnergyYearGridUsage"), round( $float, 0 ) ); 
-	      		  break     
+	      		  break;     
 		  case "C7D3B479": // Jahresenergie Haushalt in Wh    
 			  SetValue($this->GetIDForIdent("EnergyYearHouseholdTotal"), round( $float, 0 ) ); 
 	      		  break;    
