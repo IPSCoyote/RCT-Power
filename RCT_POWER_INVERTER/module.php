@@ -181,27 +181,88 @@
 			  SetValue($this->GetIDForIdent("ExternalPower"), round( $float, 0 ) ); 
 			  //$this->sendDebug( "RCTPower", "External power (additional inverters/generators in house internal grid) [W]: ".number_format( $float, 0 )."W", 0 );
 	      		  break;
-			 
+			
+		  //--- Energy Today		     
 		  case "BD55905F": // Todays energy [Wh], Float
 			  SetValue($this->GetIDForIdent("EnergyDayPVEarningTotal"), round( $float, 0 ) ); 
-			  //$this->sendDebug( "RCTPower", "Todays energy [Wh]: ".number_format( $float, 0 )."Wh", 0 );
+	      		  break;    
+		  case "2AE703F2": // Tagesenergie Ertrag Input A in Wh
+			  SetValue($this->GetIDForIdent("EnergyDayPVEarningInputA"), round( $float, 0 ) ); 
 	      		  break;
-			  
+		  case "FBF3CE97": // Tagesenergie Ertrag Input B in Wh
+			  SetValue($this->GetIDForIdent("EnergyDayPVEarningInputB"), round( $float, 0 ) ); 
+	      		  break;
+		  case "3C87C4F5": // Tagesenergie Netzeinspeisung in -Wh
+			  SetValue($this->GetIDForIdent("EnergyDayGridFeedIn"), round( $float, 0 ) ); 
+	      		  break;     
+		  case "867DEF7D": // Tagesenergie Netzverbrauch in Wh
+			  SetValue($this->GetIDForIdent("EnergyDayGridUsage"), round( $float, 0 ) ); 
+	      		  break;
+		  case "F0BE6429": // Tagesenergie Haushalt in Wh     
+			  SetValue($this->GetIDForIdent("EnergyDayHouseholdTotal"), round( $float, 0 ) ); 
+	      		  break;
+				     
+		  //--- Energy Month  
 		  case "10970E9D": // This month energy [Wh], Float	
 			  SetValue($this->GetIDForIdent("EnergyMonthPVEarningTotal"), round( $float, 0 ) );
-			  //$this->sendDebug( "RCTPower", "This month energy [Wh]: ".number_format( $float, 0 )."Wh", 0 );
 	      		  break; 
-			  
+		  case "81AE960B": // Monatsenergie Ertrag Input A in Wh
+			  SetValue($this->GetIDForIdent("EnergyMonthPVEarningInputA"), round( $float, 0 ) ); 
+	      		  break;
+		  case "7AB9B045": // Monatsenergie Ertrag Input B in Wh
+			  SetValue($this->GetIDForIdent("EnergyMonthPVEarningInputB"), round( $float, 0 ) ); 
+	      		  break;
+		  case "65B624AB": // Monatsenergie Netzeinspeisung ins Netz in -Wh
+			  SetValue($this->GetIDForIdent("EnergyMonthGridFeedIn"), round( $float, 0 ) ); 
+	      		  break;
+		  case "126ABC86": // Monatsenergie Netzverbrauch in Wh
+			  SetValue($this->GetIDForIdent("EnergyMonthGridUsage"), round( $float, 0 ) ); 
+	      		  break;
+		  case "F0BE6429": // Monatsenergie Haushalt in Wh	     
+			  SetValue($this->GetIDForIdent("EnergyMonthHouseholdTotal"), round( $float, 0 ) ); 
+	      		  break;    
+				     
+		  //--- Energy Year
 		  case "C0CC81B6": // This year energy [Wh], Float	
 			  SetValue($this->GetIDForIdent("EnergyYearPVEarningTotal"), round( $float, 0 ) );
-			  //$this->sendDebug( "RCTPower", "This year energy [Wh]: ".number_format( $float, 0 )."Wh", 0 );
 	      		  break;
-			  
+		  case "AF64D0FE": // Jahresenergie Ertrag Input A in Wh
+			  SetValue($this->GetIDForIdent("EnergyYearPVEarningInputA"), round( $float, 0 ) ); 
+	      		  break;  
+		  case "BD55D796": // Jahresenergie Ertrag Input B in Wh
+			  SetValue($this->GetIDForIdent("EnergyYearPVEarningInputB"), round( $float, 0 ) ); 
+	      		  break;
+		  case "26EFFC2F": // Jahresenergie Netzinspeisung ins Netz in -Wh
+			  SetValue($this->GetIDForIdent("EnergyYearGridFeedIn"), round( $float, 0 ) ); 
+	      		  break;       
+		  case "DE17F021": // Jahresenergie Netzverbrauch in Wh
+			  SetValue($this->GetIDForIdent("EnergyYearGridUsage"), round( $float, 0 ) ); 
+	      		  break     
+		  case "C7D3B479": // Jahresenergie Haushalt in Wh    
+			  SetValue($this->GetIDForIdent("EnergyYearHouseholdTotal"), round( $float, 0 ) ); 
+	      		  break;    
+				     
+		  //--- Energy Total
 		  case "B1EF67CE": // Total Energy [Wh], Float	
 			  SetValue($this->GetIDForIdent("EnergyTotalPVEarningTotal"), round( $float, 0 ) );
-			  //$this->sendDebug( "RCTPower", "Total Energy [Wh]: ".number_format( $float, 0 )."Wh", 0 );
 	      		  break;
-			  
+		  case "FC724A9E": // Gesamtenergie Ertrag Input A in Wh
+			  SetValue($this->GetIDForIdent("EnergyTotalPVEarningInputA"), round( $float, 0 ) ); 
+	      		  break; 	     
+		  case "68EEFD3D": // Gesamtenergie Ertrag Input B in Wh
+			  SetValue($this->GetIDForIdent("EnergyTotalPVEarningInputB"), round( $float, 0 ) ); 
+	      		  break;  	     
+		  case "44D4C533": // Gesamtenergie Netzeinspeisung in -Wh
+			  SetValue($this->GetIDForIdent("EnergyTotalGridFeedIn"), round( $float, 0 ) ); 
+	      		  break;	     
+		  case "62FBE7DC": // Gesamtenergie Netzverbrauch in Wh
+			  SetValue($this->GetIDForIdent("EnergyTotalGridUsage"), round( $float, 0 ) ); 
+	      		  break; 	     
+		  case "EFF4B537": // Gesamtenergie Haushalt in Wh     
+			  SetValue($this->GetIDForIdent("EnergyTotalHouseholdTotal"), round( $float, 0 ) ); 
+	      		  break;    
+				     
+				     
 		  case "FE1AA500": // External Power Limit [0..1], Float	
 			  //$this->sendDebug( "RCTPower", "External Power Limit [0..1]: ".number_format( $float*100, 0 )."%", 0 );
 	      		  break;
