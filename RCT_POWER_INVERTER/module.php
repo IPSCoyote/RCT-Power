@@ -13,6 +13,7 @@
           $this->RegisterPropertyInteger("InputBNominalPowerPerPanel", 0);
 	  $this->RegisterPropertyInteger("LowerSoCLevel", 0);
           $this->RegisterPropertyInteger("UpdateInterval", 0);
+	  $this->RegisterPropertyBoolean("DebugSwitch", false );
 		
           // Timer
           $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
@@ -67,36 +68,37 @@
         //=== Tool Functions ============================================================================================
 	function analyzeResponse( string $address, string $data ) {
 		
+	  $Debugging = ReadPropertyBoolean ("DebugSwitch");	
+		
 	  // precalculation
 	  $float = 0.0;
 	  if ( strlen( $data ) == 8 ) $float = $this->hexTo32Float( $data );
-	  $this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as Float ".number_format( $float, 2 ).")", 0 );	
+		
+	  // Debug output
+	  if ( $Debugging == true ) {
+	    $this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as Float ".number_format( $float, 2 ).")", 0 );	
+	  }
+		
 	  switch ($address) {
 		  case "DB2D69AE": // Actual inverters AC-power [W], Float
-			  //$this->sendDebug( "RCTPower", "Actual inverters AC-power [W]: ".number_format( $float, 0 )."W", 0 );
-	      		  break;
+			 break;
 			  
 		  case "CF053085": // Phase L1 voltage [V], Float
-			  //$this->sendDebug( "RCTPower", "Phase L1 voltage [V]: ".round( $float, 0 )."V", 0 );
-	      		  break;
+			  break;
 			  
 		  case "54B4684E": // Phase L2 voltage [V], Float	
-			  //$this->sendDebug( "RCTPower", "Phase L2 voltage [V]: ".number_format( $float, 0 )."V", 0 );
-	      		  break;
+			  break;
 			  
 		  case "2545E22D": // Phase L3 voltage [V], Float	
-			  //$this->sendDebug( "RCTPower", "Phase L3 voltage [V]: ".number_format( $float, 0 )."V", 0 );
-	      		  break; 
+			  break; 
 			  
 		  case "B55BA2CE": // DC input A voltage [V], Float (by Documentation B298395D!)
 			  SetValue($this->GetIDForIdent("DCInputAVoltage"), round( $float, 0 ) ); 
-			  //$this->sendDebug( "RCTPower", "DC Input A voltage [V]: ".number_format( $float, 0 )."V", 0 );
-	      		  break;
+			  break;
 			  
 		  case "B0041187": // DC input B voltage [V], Float (by Documentation 5BB8075A)
 			  SetValue($this->GetIDForIdent("DCInputBVoltage"), round( $float, 0 ) ); 
-			  //$this->sendDebug( "RCTPower", "DC Input B voltage [V]: ".number_format( $float, 0 )."V", 0 );
-	      		  break;
+			  break;
 			  
 		  case "DB11855B": // DC input A power [W], Float
 			  SetValue($this->GetIDForIdent("DCInputAPower"), round( $float, 0 ) ); 
@@ -145,42 +147,34 @@
 			    SetValue($this->GetIDForIdent("DCInputPower"), round( $TotalPowerInput, 0 ) );
 			  }
 			  
-			  //$this->sendDebug( "RCTPower", "DC Input B power [W]: ".number_format( $float, 0 )."W", 0 );
-	      		  break;
+			  break;
 			  
 		  case "B408E40A": // Battery current measured by inverter, low pass filter with Tau = 1s [A], Float	
-			  //$this->sendDebug( "RCTPower", "Battery current measured by inverter, low pass filter with Tau = 1s [A]: ".number_format( $float, 0 )."A", 0 );
-	      		  break;
+			  break;
 		
 		  case "A7FA5C5D": // "Battery voltage [V], Float
 			  SetValue($this->GetIDForIdent("BatteryVoltage"), round( $float, 0 ) ); 
-			  //$this->sendDebug( "RCTPower", "Battery voltage [V]: ".number_format( $float, 0 )."V", 0 );
-	      		  break;
+			  break;
 			  
 		  case "959930BF": // Battery State of Charge (SoC) [0..1], Float
 			  SetValue($this->GetIDForIdent("BatterySoC"), round( $float*100, 1 ) ); 
-			  //$this->sendDebug( "RCTPower", "Battery State of Charge: ".number_format( $float*100, 1 )."%", 0 );
-	      		  break;
+			  break;
 			  
 		  case "400F015B": // Battery power (positive if discharge) [W], Float	
 			  SetValue($this->GetIDForIdent("BatteryPower"), round( $float, 0 ) ); 
-			  //$this->sendDebug( "RCTPower", "Battery power (positive if discharge) [W]: ".number_format( $float, 0 )."W", 0 );
-	      		  break;
+			  break;
 			  
 		  case "902AFAFB": // Battery temperature [Grad C], Float
 			  SetValue($this->GetIDForIdent("BatteryTemperature"), round( $float, 1) ); 
-			  //$this->sendDebug( "RCTPower", "Battery temperature [Grad C]: ".number_format( $float, 1 )."C", 0 );
-	      		  break;
+			  break;
 			  
 		  case "91617C58": // Public grid power (house connection, negative by feed-in) [W], Float
 			  SetValue($this->GetIDForIdent("PublicGridPower"), round( $float, 0 ) ); 
-			  //$this->sendDebug( "RCTPower", "Public grid power (house connection, negative by feed-in) [W]: ".number_format( $float, 0 )."W", 0 );
-	      		  break;
+			  break;
 			  
 		  case "E96F1844": // External power (additional inverters/generators in house internal grid) [W], Float	
 			  SetValue($this->GetIDForIdent("ExternalPower"), round( $float, 0 ) ); 
-			  //$this->sendDebug( "RCTPower", "External power (additional inverters/generators in house internal grid) [W]: ".number_format( $float, 0 )."W", 0 );
-	      		  break;
+			  break;
 			
 		  //--- Energy Today		     
 		  case "BD55905F": // Todays energy [Wh], Float
@@ -364,16 +358,13 @@
 				     
 				     
 		  case "FE1AA500": // External Power Limit [0..1], Float	
-			  //$this->sendDebug( "RCTPower", "External Power Limit [0..1]: ".number_format( $float*100, 0 )."%", 0 );
-	      		  break;
+			 break;
 			  
 		  case "BD008E29": // External battery power target [W] (positive = discharge), Float	
-			  //$this->sendDebug( "RCTPower", "External battery power target [W] (positive = discharge): ".number_format( $float, 0 )."W", 0 );
-	      		  break;
+			  break;
 			  
 		  case "872F380B": // External load demand [W] (positive = feed in / 0=internal ), Float	
-			  //$this->sendDebug( "RCTPower", "External load demand [W] (positive = feed in / 0=internal ): ".number_format( $float, 0 )."W", 0 );
-	      		  break;
+			  break;
 			  
 		  //--- NOT DOCUMENTED !!! -------------------------------------------------------------------------
 		  case "8B9FF008": // Upper load boundary in %
@@ -385,18 +376,15 @@
 			  $RemainingCapacity = $GrossCapacity/100*$RemainingPercentage;
 			  SetValue($this->GetIDForIdent("BatteryRemainingNetCapacity"), round( $RemainingCapacity, 2 ) );
 			  
-			  //$this->sendDebug( "RCTPower", "Upper battery charge level [0..1]: ".number_format( $float*100, 0 )."%", 0 );
-	      		  break;
+			  break;
 			  
 		  case "4BC0F974": // gross battery capacity kwh
 			  SetValue($this->GetIDForIdent("BatteryGrossCapacity"), round( $float/1000, 2 ) );
-			  //$this->sendDebug( "RCTPower", "Gross Battery Capacity [kwh]: ".number_format( $float/1000, 2 )."kwh", 0 );
-	      		  break;
+			  break;
 			  
 		  case "1AC87AA0": // Current House power consumption
 			  SetValue($this->GetIDForIdent("HousePowerCurrent"), round( $float, 0 ) );
-			  //$this->sendDebug( "RCTPower", "Current House Power Consumption [W]: ".number_format( $float, 0 )."W", 0 );
-	      		  break;
+			  break;
 			  
 		  case "37F9D5CA": // Bit-coded fault word 0
 			  break;
