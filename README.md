@@ -25,13 +25,19 @@ Es sollen Zustandsdaten (gelieferte Energie, Momentanverbrauch, Ladezustand des 
 ## 3. Installation
 
 ### Vorbereitung des RCT-Power Inverters / Wechselrichters
-Vor der Installation des Moduls in IPSymcon muss der RCT-Power Inverter/Wechselrichter vollständig eingerichtet sein. Da dieses Modul lokal auf den Inverter/Wechselrichter zugreift, muss dieser im lokalen WLAN (nicht dem WLAN des Inverters/Wechselrichters!) oder lokalen LAN mit einer statischen IP erreichbar sein. Der Zugriff erfolgt über eine übergeordnete ClientServer Instanz auf die IP des Wechselrichters mit Port 8899.
+Vor der Installation des Moduls in IPSymcon muss der RCT-Power Inverter/Wechselrichter vollständig eingerichtet sein. Da dieses Modul lokal auf den Inverter/Wechselrichter zugreift, muss dieser im lokalen WLAN (nicht dem WLAN des Inverters/Wechselrichters!) oder lokalen LAN mit einer statischen IP erreichbar sein. 
+
+Der Zugriff auf den RCT Power Inverter erfolgt über eine ClientServer TCP Instanz auf die IP des Wechselrichters mit Port 8899.
 
 <p align="center">
   <img width="753" height="571" src="./images/TCP%20Schnittstelle.jpg">
 </p>
 
+Dem RCT Power Inverter Modul muss diese Instanz zugewiesen werden
 
+<p align="center">
+  <img width="753" height="571" src="./images/RCT%20Power%20Inverter.jpg">
+</p>
 
 
 
