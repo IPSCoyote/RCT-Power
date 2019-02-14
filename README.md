@@ -33,7 +33,7 @@ Der Zugriff auf den RCT Power Inverter erfolgt über eine ClientServer TCP Insta
   <img width="753" height="571" src="./images/TCP%20Schnittstelle.jpg">
 </p>
 
-Dem RCT Power Inverter Modul muss diese Instanz zugewiesen werden
+Dem RCT Power Inverter Modul muss diese als übergeordnete Instanz zugewiesen werden
 
 <p align="center">
   <img width="753" height="571" src="./images/RCT%20Power%20Inverter.jpg">
