@@ -545,7 +545,7 @@
           $this->requestData( "68EEFD3D",4 ); usleep( 100000 ); // Gesamtenergie Ertrag Input B in Wh
           $this->requestData( "44D4C533",4 ); usleep( 100000 ); // Gesamtenergie Netzeinspeisung in -Wh
           $this->requestData( "62FBE7DC",4 ); usleep( 100000 ); // Gesamtenergie Netzverbrauch in Wh
-          $this->requestData( "EFF4B537",4 ); usleep( 100000 ); // Gesamtenergie Haushalt in Wh
+          $this->requestData( "EFF4B537",4 ); usleep( 100000 ); // Gesamtenergie Haushalt in Wh 
 		
 		
           $this->requestData( "FE1AA500",4 ); usleep( 100000 ); // External Power Limit [0..1]
