@@ -193,9 +193,13 @@
 	      		  break;    
 		  case "2AE703F2": // Tagesenergie Ertrag Input A in Wh
 			  SetValue($this->GetIDForIdent("EnergyDayPVEarningInputA"), round( $float, 0 ) ); 
+			  $AB = GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputB"));	
+	      		  SetValue($this->GetIDForIdent("EnergyDayPVEarningInputAB"), round( $AB, 0 ) );   
 			  break;
 		  case "FBF3CE97": // Tagesenergie Ertrag Input B in Wh
 			  SetValue($this->GetIDForIdent("EnergyDayPVEarningInputB"), round( $float, 0 ) ); 
+			  $AB = GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputB"));	
+	      		  SetValue($this->GetIDForIdent("EnergyDayPVEarningInputAB"), round( $AB, 0 ) );   
 		          break;    
 		  case "3C87C4F5": // Tagesenergie Netzeinspeisung in -Wh
 			  $float = $float * -1;
@@ -234,9 +238,13 @@
 	      		  break; 
 		  case "81AE960B": // Monatsenergie Ertrag Input A in Wh
 			  SetValue($this->GetIDForIdent("EnergyMonthPVEarningInputA"), round( $float, 0 ) ); 
+			  $AB = GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningInputB"));	
+	      		  SetValue($this->GetIDForIdent("EnergyMonthPVEarningInputAB"), round( $AB, 0 ) );   
 	      		  break; 
 		  case "7AB9B045": // Monatsenergie Ertrag Input B in Wh
 			  SetValue($this->GetIDForIdent("EnergyMonthPVEarningInputB"), round( $float, 0 ) ); 
+			  $AB = GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyMonthPVEarningInputB"));	
+	      		  SetValue($this->GetIDForIdent("EnergyMonthPVEarningInputAB"), round( $AB, 0 ) );   
 	      		  break; 
 		  case "65B624AB": // Monatsenergie Netzeinspeisung ins Netz in -Wh
 			  $float = $float * -1;
@@ -275,9 +283,13 @@
 	      		  break;
 		  case "AF64D0FE": // Jahresenergie Ertrag Input A in Wh
 			  SetValue($this->GetIDForIdent("EnergyYearPVEarningInputA"), round( $float, 0 ) ); 
+			  $AB = GetValueInteger($this->GetIDForIdent("EnergyYearPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyYearPVEarningInputB"));	
+	      		  SetValue($this->GetIDForIdent("EnergyYearPVEarningInputAB"), round( $AB, 0 ) );   
 	      		  break;     
 		  case "BD55D796": // Jahresenergie Ertrag Input B in Wh
 			  SetValue($this->GetIDForIdent("EnergyYearPVEarningInputB"), round( $float, 0 ) ); 
+			  $AB = GetValueInteger($this->GetIDForIdent("EnergyYearPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyYearPVEarningInputB"));	
+	      		  SetValue($this->GetIDForIdent("EnergyYearPVEarningInputAB"), round( $AB, 0 ) );   
 	      		  break;    
 		  case "26EFFC2F": // Jahresenergie Netzinspeisung ins Netz in -Wh
 			  $float = $float * -1;
@@ -316,9 +328,13 @@
 	      		  break;
 		  case "FC724A9E": // Gesamtenergie Ertrag Input A in Wh
 			  SetValue($this->GetIDForIdent("EnergyTotalPVEarningInputA"), round( $float, 0 ) );   
-	      		  break; 	     
+			  $AB = GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputB"));	
+	      		  SetValue($this->GetIDForIdent("EnergyTotalPVEarningInputAB"), round( $AB, 0 ) );   
+			  break; 	     
 		  case "68EEFD3D": // Gesamtenergie Ertrag Input B in Wh
-			  SetValue($this->GetIDForIdent("EnergyTotalPVEarningInputB"), round( $float, 0 ) );     
+			  SetValue($this->GetIDForIdent("EnergyTotalPVEarningInputB"), round( $float, 0 ) );   
+			  $AB = GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyTotalPVEarningInputB"));	
+	      		  SetValue($this->GetIDForIdent("EnergyTotalPVEarningInputAB"), round( $AB, 0 ) );   
 	      		  break;  	     
 		  case "44D4C533": // Gesamtenergie Netzeinspeisung in -Wh
 			  $float = $float * -1;
@@ -632,9 +648,10 @@
 	  
 	  // Energy Earnings and Consumption
 	  // Day
-          $this->RegisterVariableInteger("EnergyDayEnergy",               "Tag - PV Energie ans Haus (Kolletor/Batterie)","RCTPOWER_Energy",50);
+          $this->RegisterVariableInteger("EnergyDayEnergy",               "Tag - PV Energie ans Haus (via Batteriepuffer)","RCTPOWER_Energy",50);
 	  $this->RegisterVariableInteger("EnergyDayPVEarningInputA",      "Tag - PV Ertrag Eingang A","RCTPOWER_Energy",51);
-	  $this->RegisterVariableInteger("EnergyDayPVEarningInputB",      "Tag - PV Ertrag Eingang B","RCTPOWER_Energy",52);	
+	  $this->RegisterVariableInteger("EnergyDayPVEarningInputB",      "Tag - PV Ertrag Eingang B","RCTPOWER_Energy",52);
+	  $this->RegisterVariableInteger("EnergyDayPVEarningInputAB"      "Tag - PV Ertrag Eingänge A+B","RCTPOWER_Energy",52);
 	  $this->RegisterVariableInteger("EnergyDayGridFeedIn",           "Tag - Netzeinspeisung","RCTPOWER_Energy",53);
 	  $this->RegisterVariableInteger("EnergyDayGridUsage",            "Tag - Netzverbrauch","RCTPOWER_Energy",54);
 	  $this->RegisterVariableInteger("EnergyDayHouseholdTotal",       "Tag - Haushalt gesamt","RCTPOWER_Energy",55);
@@ -644,9 +661,10 @@
 	  $this->RegisterVariableInteger("EnergyDayGridFeedInLevel",      "Tag - % PV Netzeinspeisung","~Valve", 59); 
 		
 	  // Month
-	  $this->RegisterVariableInteger("EnergyMonthEnergy",               "Monat - PV Energie ans Haus (Kolletor/Batterie)","RCTPOWER_Energy",60);
+	  $this->RegisterVariableInteger("EnergyMonthEnergy",               "Monat - PV Energie ans Haus (via Batteriepuffer)","RCTPOWER_Energy",60);
 	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputA",      "Monat - PV Ertrag Eingang A","RCTPOWER_Energy",61);
-	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputB",      "Monat - PV Ertrag Eingang B","RCTPOWER_Energy",62);	
+	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputB",      "Monat - PV Ertrag Eingang B","RCTPOWER_Energy",62);
+	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputAB"      "Monat - PV Ertrag Eingänge A+B","RCTPOWER_Energy",62);
 	  $this->RegisterVariableInteger("EnergyMonthGridFeedIn",           "Monat - Netzeinspeisung","RCTPOWER_Energy",63);
 	  $this->RegisterVariableInteger("EnergyMonthGridUsage",            "Monat - Netzverbrauch","RCTPOWER_Energy",64);
 	  $this->RegisterVariableInteger("EnergyMonthHouseholdTotal",       "Monat - Haushalt gesamt","RCTPOWER_Energy",65);
@@ -656,9 +674,10 @@
 	  $this->RegisterVariableInteger("EnergyMonthGridFeedInLevel",      "Monat - % PV Netzeinspeisung","~Valve", 69); 
 		
           // Year
-	  $this->RegisterVariableInteger("EnergyYearEnergy",               "Jahr - PV Energie ans Haus (Kolletor/Batterie)","RCTPOWER_Energy",70);
+	  $this->RegisterVariableInteger("EnergyYearEnergy",               "Jahr - PV Energie ans Haus (via Batteriepuffer)","RCTPOWER_Energy",70);
 	  $this->RegisterVariableInteger("EnergyYearPVEarningInputA",      "Jahr - PV Ertrag Eingang A","RCTPOWER_Energy",71);
-	  $this->RegisterVariableInteger("EnergyYearPVEarningInputB",      "Jahr - PV Ertrag Eingang B","RCTPOWER_Energy",72);	
+	  $this->RegisterVariableInteger("EnergyYearPVEarningInputB",      "Jahr - PV Ertrag Eingang B","RCTPOWER_Energy",72);
+	  $this->RegisterVariableInteger("EnergyYearPVEarningInputAB"      "Jahr - PV Ertrag Eingänge A+B","RCTPOWER_Energy",72);
 	  $this->RegisterVariableInteger("EnergyYearGridFeedIn",           "Jahr - Netzeinspeisung","RCTPOWER_Energy",73);
 	  $this->RegisterVariableInteger("EnergyYearGridUsage",            "Jahr - Netzverbrauch","RCTPOWER_Energy",74);
 	  $this->RegisterVariableInteger("EnergyYearHouseholdTotal",       "Jahr - Haushalt gesamt","RCTPOWER_Energy",75);
@@ -668,9 +687,10 @@
 	  $this->RegisterVariableInteger("EnergyYearGridFeedInLevel",      "Jahr - % PV Netzeinspeisung","~Valve", 79); 
 		
 	  // Total
-	  $this->RegisterVariableInteger("EnergyTotalEnergy",               "Gesamt - PV Energie ans Haus (Kolletor/Batterie)","RCTPOWER_Energy",80);
+	  $this->RegisterVariableInteger("EnergyTotalEnergy",               "Gesamt - PV Energie ans Haus (via Batteriepuffer)","RCTPOWER_Energy",80);
 	  $this->RegisterVariableInteger("EnergyTotalPVEarningInputA",      "Gesamt - PV Ertrag Eingang A","RCTPOWER_Energy",81);
-	  $this->RegisterVariableInteger("EnergyTotalPVEarningInputB",      "Gesamt - PV Ertrag Eingang B","RCTPOWER_Energy",82);	
+	  $this->RegisterVariableInteger("EnergyTotalPVEarningInputB",      "Gesamt - PV Ertrag Eingang B","RCTPOWER_Energy",82);
+	  $this->RegisterVariableInteger("EnergyTotalPVEarningInputAB"      "Gesamt - PV Ertrag Eingänge A+B","RCTPOWER_Energy",82);
 	  $this->RegisterVariableInteger("EnergyTotalGridFeedIn",           "Gesamt - Netzeinspeisung","RCTPOWER_Energy",83);
 	  $this->RegisterVariableInteger("EnergyTotalGridUsage",            "Gesamt - Netzverbrauch","RCTPOWER_Energy",84);
 	  $this->RegisterVariableInteger("EnergyTotalHouseholdTotal",       "Gesamt - Haushalt gesamt","RCTPOWER_Energy",85);
