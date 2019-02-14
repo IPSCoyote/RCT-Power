@@ -41,10 +41,13 @@ Dem RCT Power Inverter Modul muss diese als übergeordnete Instanz zugewiesen we
 
 Weitere Einstellungen:
 - **Grunddaten - Input A und B**
+
 Hier kann die Anzahl der Panel sowie deren jeweilige (je Panel) Nennleistung eingestellt werden. Diese Werte dienen der Berechnung der %-Ausnutzung der Panel/Eingänge.
 - **RCT Wechselrichter Einstellungen**
+
 Hier kann die untere Entladeschwelle einer angeschlossenen Batterie (RCT Power Storage) eingestellt werden. Das Attribute für die verfügbare Restkapazität der Batterie bezieht sich auf die verfügbare Batterie-Kapazität zwischen der im Wechselrichter eingestellten unteren sowie der oberen Ladeschwelle (die obere Schwelle sowie die Brutto-Kapazität wird automatisch ermittelt).
 - **Update Interval**
+
 Für das regelmäßige aktualisieren der Daten muss ein Update-Inverval eingestellt werden. Dabei steht 0 für keine Updates! Weniger als 10 Sekunden sollte man aus Performance-Gründen nicht wählen, da das Abrufen der Daten ein paar Sekunden dauert.
 
 ## 4. Module
