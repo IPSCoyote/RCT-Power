@@ -68,7 +68,7 @@
         //=== Tool Functions ============================================================================================
 	function analyzeResponse( string $address, string $data ) {
 		
-	  $Debugging = ReadPropertyBoolean ("DebugSwitch");	
+	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 		
 	  // precalculation
 	  $float = 0.0;
