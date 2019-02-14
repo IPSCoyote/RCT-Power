@@ -70,7 +70,7 @@
 	  // precalculation
 	  $float = 0.0;
 	  if ( strlen( $data ) == 8 ) $float = $this->hexTo32Float( $data );
-		
+	  $this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as Float ".number_format( $float, 2 ).")", 0 );	
 	  switch ($address) {
 		  case "DB2D69AE": // Actual inverters AC-power [W], Float
 			  //$this->sendDebug( "RCTPower", "Actual inverters AC-power [W]: ".number_format( $float, 0 )."W", 0 );
