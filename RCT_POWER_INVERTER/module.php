@@ -660,7 +660,7 @@
 	  $this->RegisterVariableInteger("EnergyDaySelfConsumptionLevel", "Tag - % PV Selbstverbrauch","~Valve", 58); 
 	  $this->RegisterVariableInteger("EnergyDayGridFeedInLevel",      "Tag - % PV Netzeinspeisung","~Valve", 59); 
 		
-	  // Month
+	  // Month 
 	  $this->RegisterVariableInteger("EnergyMonthEnergy",               "Monat - PV Energie ans Haus (via Batteriepuffer)","RCTPOWER_Energy",60);
 	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputA",      "Monat - PV Ertrag Eingang A","RCTPOWER_Energy",61);
 	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputB",      "Monat - PV Ertrag Eingang B","RCTPOWER_Energy",62);
