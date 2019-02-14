@@ -192,6 +192,7 @@
                           SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
 	      		  break;    
 		  case "2AE703F2": // Tagesenergie Ertrag Input A in Wh
+			  $this->sendDebug( "RCTPower", "Tages Ertrag Input A: ".number_format( $float, 0 )."W", 0 );
 			  SetValue($this->GetIDForIdent("EnergyDayPVEarningInputA"), round( $float, 0 ) ); 
 			  $AB = GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputB"));	
 	      		  SetValue($this->GetIDForIdent("EnergyDayPVEarningInputAB"), round( $AB, 0 ) );   
