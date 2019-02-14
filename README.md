@@ -56,3 +56,6 @@ Derzeit bietet das GIT nur das Modul "RCT_POWER_INVERTER" für die direkte Anbin
 ### 4.1. RCT_POWER_INVERTER
 
 Das Modul "RCT_POWER_INVERTER" dient als Schnittstelle zu einem lokal installierten RCT-Power Inverter/Wechselrichter. Es liefert die Daten des Inverter/Wechselrichter als Statusvariablen. Der RCT-Power Inverter/Wechselrichter muss dabei lokal über eine IP-Adresse erreichbar (siehe Installation) und das Update Interval entsprechend eingestellt sein.
+
+### Hinweis
+Das Modul reagiert auf Nachrichten vom Wechselrichter über die geöffnete TCP Schnittstelle. Das Update Interval dient faktisch nur der regelmäßigen Anforderung der Daten. Wenn die TCP-Schnittstelle geöffnet ist reagiert das Modul auch auf Nachrichten, die ggf. parallel über die RCT Android/iOS App vom Wechselrichter angefordert wurden.
