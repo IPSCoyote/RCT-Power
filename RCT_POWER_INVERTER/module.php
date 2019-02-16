@@ -122,8 +122,7 @@
 			    SetValue($this->GetIDForIdent("DCInputPower"), round( $TotalPowerInput, 0 ) );
 			  }
 			  
-			  //$this->sendDebug( "RCTPower", "DC Input A power [W]: ".number_format( $float, 0 )."W", 0 );
-	      		  break;
+			  break;
 			  
 		  case "0CB5D21B": // DC input B power [W], Float
 			  SetValue($this->GetIDForIdent("DCInputBPower"), round( $float, 0 ) ); 
