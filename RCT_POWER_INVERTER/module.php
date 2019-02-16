@@ -619,7 +619,7 @@
           $this->RegisterVariableInteger("DCInputBPower",     "Eingang B Leistung","RCTPOWER_Power",104);
 	  $this->RegisterVariableFloat("DCInputBUtilization", "Eingang B Auslastung PV Module","~Valve.F",105);
 	  $this->RegisterVariableInteger("DCInputPower",      "Eingang Gesamtleistung","RCTPOWER_Power",106);
-	  $this->RegisterVariableFloat("DCInputUtilization",  "Auslastung PV Module gesamt","~Valve.F",107;
+	  $this->RegisterVariableFloat("DCInputUtilization",  "Auslastung PV Module gesamt","~Valve.F",107);
 		
 		
           $this->RegisterVariableInteger("BatteryVoltage",     "Batterie Spannung","RCTPOWER_Voltage",200);
