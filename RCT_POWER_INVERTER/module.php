@@ -186,7 +186,7 @@
 			  SetValue($this->GetIDForIdent("EnergyDayGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
 			  if ( $this->GetIDForIdent("EnergyDayGridFeedIn") > 0 )
 			    $SelfConsumptionLevel = 100 - $FeedInLevel;
-			  elseif ( GetValueInteger($this->GetIDForIdent("EnergyDayEnergy") > 0 )
+			  elseif ( GetValueInteger($this->GetIDForIdent("EnergyDayEnergy") ) > 0 )
 			    $SelfConsumptionLevel = 100;
 			  else
 			    $SelfConsumptionLevel = 0;	  
@@ -214,7 +214,7 @@
 			  SetValue($this->GetIDForIdent("EnergyDayGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
 			  if ( $this->GetIDForIdent("EnergyDayGridFeedIn") > 0 )
 			    $SelfConsumptionLevel = 100 - $FeedInLevel;
-			  elseif ( GetValueInteger($this->GetIDForIdent("EnergyDayEnergy") > 0 )
+			  elseif ( GetValueInteger($this->GetIDForIdent("EnergyDayEnergy") ) > 0 )
 			    $SelfConsumptionLevel = 100;
 			  else
 			    $SelfConsumptionLevel = 0;	  
