@@ -205,7 +205,7 @@
 		          // Calculate FeedInLevel etc.
 			  $FeedInLevel = 0.0;
 			  if ( ( $this->GetIDForIdent("EnergyDayGridFeedIn") > 0 ) and ( $this->GetIDForIdent("EnergyDayEnergy") > 0 ) ) {
-$this->sendDebug( "RCTPower", "FeedIn1 ".round( $FeedInLevel, 0 ), 0 );	
+$this->sendDebug( "RCTPower", "FeedIn1 ".$this->GetIDForIdent("EnergyDayGridFeedIn")." - ".$this->GetIDForIdent("EnergyDayEnergy"), 0 );	
 				  $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyDayEnergy")) * 100;	
 			  } 
 			  SetValue($this->GetIDForIdent("EnergyDayGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
