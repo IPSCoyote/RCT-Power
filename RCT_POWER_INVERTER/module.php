@@ -179,10 +179,17 @@
 		  case "BD55905F": // Todays energy [Wh], Float
 			  SetValue($this->GetIDForIdent("EnergyDayEnergy"), round( $float, 0 ) ); 
 		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyDayEnergy")) * 100;	     
-                          if ( $FeedInLevel > 100 ) $FeedInLevel = 100;
+			  if ( $this->GetIDForIdent("EnergyDayGridFeedIn") > 0 )
+                            $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyDayEnergy")) * 100;	     
+                          else
+		            $FeedInLevel = 0;
 			  SetValue($this->GetIDForIdent("EnergyDayGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
-			  $SelfConsumptionLevel = 100 - $FeedInLevel;
+			  if ( $this->GetIDForIdent("EnergyDayGridFeedIn") > 0 )
+			    $SelfConsumptionLevel = 100 - $FeedInLevel;
+			  elseif ( GetValueInteger($this->GetIDForIdent("EnergyDayEnergy") > 0 )
+			    $SelfConsumptionLevel = 100;
+			  else
+			    $SelfConsumptionLevel = 0;	  
                           SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
 	      		  break;    
 		  case "2AE703F2": // Tagesenergie Ertrag Input A in Wh
@@ -200,12 +207,19 @@
 			  $float = $float * -1;
 			  SetValue($this->GetIDForIdent("EnergyDayGridFeedIn"), round( $float, 0 ) ); 
 		          // Calculate FeedInLevel etc.
-                          $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyDayEnergy")) * 100;	
-                          if ( $FeedInLevel > 100 ) $FeedInLevel = 100;
+			  if ( $this->GetIDForIdent("EnergyDayGridFeedIn") > 0 )
+                            $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyDayEnergy")) * 100;	     
+                          else
+		            $FeedInLevel = 0;
 			  SetValue($this->GetIDForIdent("EnergyDayGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
-			  $SelfConsumptionLevel = 100 - $FeedInLevel;
-                          SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );   
-	      		  break;    
+			  if ( $this->GetIDForIdent("EnergyDayGridFeedIn") > 0 )
+			    $SelfConsumptionLevel = 100 - $FeedInLevel;
+			  elseif ( GetValueInteger($this->GetIDForIdent("EnergyDayEnergy") > 0 )
+			    $SelfConsumptionLevel = 100;
+			  else
+			    $SelfConsumptionLevel = 0;	  
+                          SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
+	      		  break;     
 		  case "867DEF7D": // Tagesenergie Netzverbrauch in Wh
 			  SetValue($this->GetIDForIdent("EnergyDayGridUsage"), round( $float, 0 ) ); 
 			  // Calculate AutonomousPowerLevel etc.
