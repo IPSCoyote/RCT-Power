@@ -179,11 +179,11 @@
 		  case "BD55905F": // Todays energy [Wh], Float
 			  SetValue($this->GetIDForIdent("EnergyDayEnergy"), round( $float, 0 ) ); 
 		          // Calculate FeedInLevel etc.
-			  $FeedInLevel = 0;
+			  $FeedInLevel = 0.0;
 			  if ( ( $this->GetIDForIdent("EnergyDayGridFeedIn") > 0 ) and ( $this->GetIDForIdent("EnergyDayEnergy") > 0 ) )
                             $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyDayEnergy")) * 100;	     
 			  SetValue($this->GetIDForIdent("EnergyDayGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
-			  $SelfConsumptionLevel = 0;  
+			  $SelfConsumptionLevel = 0.0;  
 			  if ( $this->GetIDForIdent("EnergyDayEnergy") > 0 )
 			    $SelfConsumptionLevel = 100 - $FeedInLevel;
                           SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
@@ -203,12 +203,12 @@
 			  $float = $float * -1;
 			  SetValue($this->GetIDForIdent("EnergyDayGridFeedIn"), round( $float, 0 ) ); 
 		          // Calculate FeedInLevel etc.
-			  $FeedInLevel = 0;
+			  $FeedInLevel = 0.0;
 			  if ( ( $this->GetIDForIdent("EnergyDayGridFeedIn") > 0 ) and ( $this->GetIDForIdent("EnergyDayEnergy") > 0 ) )
                             $FeedInLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridFeedIn")) / GetValueInteger($this->GetIDForIdent("EnergyDayEnergy")) * 100;	     
 			  SetValue($this->GetIDForIdent("EnergyDayGridFeedInLevel"), round( $FeedInLevel, 0 ) ); 
 $this->sendDebug( "RCTPower", "FeedIn ".round( $FeedInLevel, 0 ), 0 );	
-			  $SelfConsumptionLevel = 0;  
+			  $SelfConsumptionLevel = 0.0;  
 			  if ( $this->GetIDForIdent("EnergyDayEnergy") > 0 )
 			    $SelfConsumptionLevel = 100 - $FeedInLevel;
                           SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
