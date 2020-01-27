@@ -1,4 +1,4 @@
-<?
+<?php
   class RCTPowerInverter extends IPSModule {
 
         public function Create() {
