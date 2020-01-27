@@ -30,13 +30,13 @@ Vor der Installation des Moduls in IPSymcon muss der RCT-Power Inverter/Wechselr
 Der Zugriff auf den RCT Power Inverter erfolgt über eine ClientServer TCP Instanz auf die IP des Wechselrichters mit Port 8899.
 
 <p align="center">
-  <img width="753" height="571" src="./images/TCP%20Schnittstelle.jpg">
+  <img width="753" height="571" src="./imgs/TCP%20Schnittstelle.jpg">
 </p>
 
 Dem RCT Power Inverter Modul muss diese als übergeordnete Instanz zugewiesen werden
 
 <p align="center">
-  <img width="753" height="571" src="./images/RCT%20Power%20Inverter.jpg">
+  <img width="753" height="571" src="./imgs/RCT%20Power%20Inverter.jpg">
 </p>
 
 Weitere Einstellungen:
