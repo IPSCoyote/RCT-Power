@@ -1,15 +1,15 @@
 {
     "elements": 
     [
-      { "type": "Label", "label": "Basic Data - INPUT A" },
+      { "type": "Label", "caption": "Basic Data - INPUT A" },
       { "type": "NumberSpinner", "name": "InputAPanelCount", "caption": "Anzahl der Panel", "digits": 0 , "hex": false, "suffix": "Panel"},
       { "type": "NumberSpinner", "name": "InputANominalPowerPerPanel", "caption": "Nennleistung je Panel", "digits": 0 , "hex": false, "suffix": "Watt"},
-      { "type": "Label", "label": "Basic Data - INPUT B" },  
+      { "type": "Label", "caption": "Basic Data - INPUT B" },  
       { "type": "NumberSpinner", "name": "InputBPanelCount", "caption": "Anzahl der Panel", "digits": 0 , "hex": false, "suffix": "Panel"},
       { "type": "NumberSpinner", "name": "InputBNominalPowerPerPanel", "caption": "Nennleistung je Panel", "digits": 0 , "hex": false, "suffix": "Watt"},
-      { "type": "Label", "label": "RCT Wechselrichter Einstellungen" },  
+      { "type": "Label", "caption": "RCT Wechselrichter Einstellungen" },  
       { "type": "NumberSpinner", "name": "LowerSoCLevel", "caption": "Untere Entladeschwelle", "digits": 0 , "hex": false, "suffix": "%"},  
-      { "type": "Label", "label": "Update Interval" },
+      { "type": "Label", "caption": "Update Intervals" },
       { "type": "NumberSpinner", "name": "UpdateInterval", "caption": "Update Interval", "digits": 0 , "hex": false, "suffix": "Sekunden"},
       { "type": "Label", "label": "Tools" }, 
       { "type": "CheckBox", "name": "DebugSwitch", "caption": "Debuginformationen ausgeben" }  
