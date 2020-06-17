@@ -1,6 +1,8 @@
 {
     "translations": {
         "de": { 
+            "Basic Data - INPUT A": "Grunddaten - Eingang A",
+            "Basic Data - INPUT B": "Grunddaten - Eingang B",
             "Basic Data": "Grunddaten",
             "IP Address": "IP Adresse",
             "Fuse protection": "el. Absicherung",
