@@ -544,9 +544,9 @@
 			  
 		  case "5939EC5D": // Battery Stack 6 serial number
 			  if ( substr( $string, 1, 3 ) <> "181" ) {
-			  $this->sendDebug( "RCTPower", "No Panel 6", 0 ); }
+			  $this->sendDebug( "RCTPower", "No Panel 6 installed (".$string.")", 0 ); }
 			  else {
-			  $this->sendDebug( "RCTPower", "No Panel 6", 0 );	}
+			  $this->sendDebug( "RCTPower", "Panel 6 installed (".$string.")", 0 );	}
 			  
 			  if ( substr( $string, 1, 3 ) <> "181" )
 			    // we don't have a 6th stack panel -> Battery Capacity is max. 11.5kWh
