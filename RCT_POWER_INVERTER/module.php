@@ -498,7 +498,7 @@
 	}
 	  
 	  
-	protected function requestData( string $command, int $length ) {
+	function requestData( string $command, int $length ) {
           // build command		
 	  $hexlength = strtoupper( dechex($length) );
           if ( strlen( $hexlength ) == 1 ) $hexlength = '0'.$hexlength;
