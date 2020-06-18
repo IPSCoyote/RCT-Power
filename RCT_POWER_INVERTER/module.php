@@ -83,7 +83,6 @@
 	      elseif ( $Debugging == true ) {
 	        $this->sendDebug( "RCTPower", "CRC Error", 0 );	
 	    }
-	    }
 	  }
           return true;
         }
