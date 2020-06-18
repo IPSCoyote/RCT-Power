@@ -15,6 +15,7 @@
 	  $this->RegisterPropertyInteger("LowerSoCLevel", 0);
           $this->RegisterPropertyInteger("UpdateInterval", 0);
 	  $this->RegisterPropertyBoolean("DebugSwitch", false );
+          $this->RegisterPropertyBoolean("ReactOnForeignPolls, false );
 
           // Timer
           $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
