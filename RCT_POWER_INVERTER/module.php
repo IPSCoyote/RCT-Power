@@ -83,11 +83,11 @@
 	        $response = $response.$hex;
 	      }	     
               $CRC = $this->calcCRC( substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ));
-	     // if ( $CRC == substr( $response, -4 ) ) {
+	      if ( $CRC == substr( $response, -4 ) ) {
 		// CRC is also ok, so analyze the response
 	        $this->analyzeResponse( substr( $response, 4, 8 ), substr( $response, 12, ord( $SingleResponses[$x][1] )*2-8) );
-	     // }
-	     // elseif ( $Debugging == true ) $this->sendDebug( "RCTPower", "CRC Issue on ".substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ).", calculated is CRC is ".$CRC. ", expected is ".substr( $response, -4 ), 0 );	
+	      }
+	      elseif ( $Debugging == true ) $this->sendDebug( "RCTPower", "CRC Issue on ".substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ).", calculated is CRC is ".$CRC. ", expected is ".substr( $response, -4 ), 0 );	
 	    }
 	  }
           return true;
