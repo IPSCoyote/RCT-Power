@@ -72,7 +72,7 @@
 	      // lenght of response package is correct, so check CRC
 		    
 	      // Special case if 2D is the last Byte as this is a STOP Byte -> Exchange to 2B(!)
-	      if ( substr( $SingleResponses[$x], -1 ) ) == chr(45) )
+	      if ( substr( $SingleResponses[$x], -1 ) == chr(45) )
 		$SingleResponses[$x][strlen( $SingleResponses[$x] ) - 1] = chr(43);     
 		    
 	      // first convert into 0xYY format
