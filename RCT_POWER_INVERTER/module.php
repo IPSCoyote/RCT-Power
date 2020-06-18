@@ -84,7 +84,7 @@
         }
        
         //=== Tool Functions ============================================================================================
-	function analyzeResponse( string $address, string $data ) {
+	protected function analyzeResponse( string $address, string $data ) {
 		
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 		
@@ -484,7 +484,7 @@
 	}
 	  
 	  
-	function requestData( string $command, int $length ) {
+	protected function requestData( string $command, int $length ) {
           // build command		
 	  $hexlength = strtoupper( dechex($length) );
           if ( strlen( $hexlength ) == 1 ) $hexlength = '0'.$hexlength;
@@ -499,7 +499,7 @@
 	  					    "Buffer" => utf8_encode($hexCommand) )));	
 	}  
 	  
-	function calcCRC( string $command ) {
+	protected function calcCRC( string $command ) {
           // Command with an odd byte length (add 0x00 to make odd!) without(!) start byte (0x2B)
           $commandLength = strlen( $command ) / 2;
           $crc = 0xFFFF; 	
@@ -518,7 +518,7 @@
 	  return $crc;
         }    
 	  
-        function hexTo32Float(string $strHex) {
+        protected function hexTo32Float(string $strHex) {
           $bin = str_pad(base_convert($strHex, 16, 2), 32, "0", STR_PAD_LEFT); 
           $sign = $bin[0]; 
           $v = hexdec($strHex);
