@@ -65,8 +65,11 @@
 	  $FullResponse = utf8_decode( $data->Buffer );
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
 	  for ($x=1; $x<count($SingleResponses); $x++) {  
+	    if ( $Debugging == true ) $this->sendDebug( "RCTPower", "A1", 0 );	
             if ( strlen( $SingleResponses[$x] ) < 2 ) continue;  // strange short response
+		  	    if ( $Debugging == true ) $this->sendDebug( "RCTPower", "A2", 0 );	
 	    if ( ord( $SingleResponses[$x][0] ) <> 5 ) continue; // no short response
+		  	    if ( $Debugging == true ) $this->sendDebug( "RCTPower", "A3", 0 );	
             if ( ord( $SingleResponses[$x][1] ) + 4 == strlen( $SingleResponses[$x] ) ) {
 	      // lenght of response package is correct, so check CRC
 	      // first convert into 0xYY format
@@ -76,6 +79,7 @@
                 if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
 	        $response = $response.$hex;
 	      }	     
+		    	    if ( $Debugging == true ) $this->sendDebug( "RCTPower", "A4", 0 );	
 	      $CRC = $this->calcCRC( substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ));
 	      if ( $CRC == substr( $response, -4 ) )
 		// CRC is also ok, so analyze the response
@@ -89,9 +93,7 @@
 	protected function analyzeResponse( string $address, string $data ) {
 		
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
-	    if ( $Debugging == true ) {
-	      $this->sendDebug( "RCTPower", "Address ".$address, 0 );	
-	    }
+
 	  // precalculation
 	  $float = 0.0;
 	  if ( strlen( $data ) == 8 ) {
