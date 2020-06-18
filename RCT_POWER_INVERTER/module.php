@@ -444,6 +444,33 @@
 		  case "7F813D73": // Bit-coded fault word 3
 			  break;
 			  
+		  case "EBC62737": // android description
+			  break;
+			  
+		  case "7924ABD9": // Inverter serial number
+			  break;
+			  
+  		  case "FBF6D834": // Battery Stack 0 serial number
+			  break;
+			  
+		  case "99396810": // Battery Stack 1 serial number
+			  break;
+			  
+		  case "73489528": // Battery Stack 2 serial number
+			  break;
+			  
+		  case "257B7612": // Battery Stack 3 serial number
+			  break;
+			  
+		  case "4E699086": // Battery Stack 4 serial number
+			  break;
+			  
+		  case "162491E8": // Battery Stack 5 serial number
+			  break;
+			  
+		  case "5939EC5D": // Battery Stack 5 serial number
+			  break;
+			  
 		  //--- Ignore -------------------------------------------------------------------------------------
 		  case "EBC62737": // Inverter Description 
 			  break;	  
@@ -458,7 +485,6 @@
 	  
 	  
 	function requestData( string $command, int $length ) {
-	  // does not work for string requests!!!
           // build command		
 	  $hexlength = strtoupper( dechex($length) );
           if ( strlen( $hexlength ) == 1 ) $hexlength = '0'.$hexlength;
@@ -467,10 +493,8 @@
 	  $hexCommand = "";
 	  for( $x=0; $x<strlen($command)/2;$x++)
 	    $hexCommand = $hexCommand.chr(hexdec(substr( $command, $x*2, 2 )));
-				 
-	  $expectedLength = 9 + $length; // 
 		
-	  // clear expected Response and send Data to Parent...
+	  // send Data to Parent (IO)...
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
 	  					    "Buffer" => utf8_encode($hexCommand) )));	
 	}  
@@ -596,9 +620,20 @@
 	  $this->requestData( "3B7FCD47",4 ); usleep( 100000 );
 	  $this->requestData( "7F813D73",4 ); usleep( 100000 );
 		
+	  // Serial numbers and Descriptions
+	  $this->requestData( "EBC62737", 4 ); usleep( 100000 ); // android description
+          $this->requestData( "7924ABD9", 4 ); usleep( 100000 ); // Inverter serial number
+          $this->requestData( "FBF6D834", 4 ); usleep( 100000 ); // Battery Stack 0 serial number
+          $this->requestData( "99396810", 4 ); usleep( 100000 ); // Battery Stack 1 serial number
+          $this->requestData( "73489528", 4 ); usleep( 100000 ); // Battery Stack 2 serial number
+          $this->requestData( "257B7612", 4 ); usleep( 100000 ); // Battery Stack 3 serial number
+          $this->requestData( "4E699086", 4 ); usleep( 100000 ); // Battery Stack 4 serial number
+          $this->requestData( "162491E8", 4 ); usleep( 100000 ); // Battery Stack 5 serial number
+          $this->requestData( "5939EC5D", 4 ); usleep( 100000 ); // Battery Stack 5 serial number
+			     
           //--- NOT DOCUMENTED -------------------------------------------------------------------------
 	  $this->requestData( "8B9FF008", 4 ); usleep( 100000 ); // Upper load boundary in %
-	  $this->requestData( "4BC0F974", 4 ); usleep( 100000 ); // gross battery capacity kwh
+	  $this->requestData( "4BC0F974", 4 ); usleep( 100000 ); // Installed PV Panel kWp
 	  $this->requestData( "1AC87AA0", 4 ); usleep( 100000 ); // Current House power consumption
 		
 	  // return result
