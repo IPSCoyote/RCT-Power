@@ -7,6 +7,13 @@
             "Basic Data": "Grunddaten",
             "Update Intervals": "Update Interval",
             "Update Interval": "automatische Aktualisierung alle X Sekunden (0 = aus)",
+            "Keine": "Keine",
+            "2 (3.8 kWh)":  "2 Stackmodule (3.8kWh)",
+            "3 (5.7 kWh)":  "3 Stackmodule (5.7kWh)",
+            "4 (7.6 kWh)":  "4 Stackmodule (7.6kWh)",
+            "5 (9.6 kWh)":  "5 Stackmodule (9.6kWh)",
+            "6 (11.5 kWh)": "6 Stackmodule (11.7kWh)",
+            
             "Check Connection": "Verbindung testen",
             "GO-eCharger identified": "RCT Power Wechselrichter gefunden",
             "Configuration missing": "Konfiguration fehlt",
