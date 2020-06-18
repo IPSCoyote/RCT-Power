@@ -547,12 +547,12 @@
 			    // we don't have a 6th stack panel -> Battery Capacity is max. 11.5kWh
 		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 11.5 )
 			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 11.5 );
-			    $this->sendDebug( "RCTPower", "No Panel 6 installed", 0 ); }
+			    $this->sendDebug( "RCTPower", "No Panel 6 installed", 0 ); 
 			  }
 			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 13.4 ) {
 		            // we have at least 7 stack panels -> Battery Capacity is min. 13.4
 		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 13.4 );	
-			    $this->sendDebug( "RCTPower", "Panel 6 installed", 0 ); }
+			    $this->sendDebug( "RCTPower", "Panel 6 installed", 0 ); 
 			  }
 			  break;
 			  
