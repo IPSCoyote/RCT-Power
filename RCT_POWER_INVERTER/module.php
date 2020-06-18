@@ -68,9 +68,7 @@
 	  for ($x=1; $x<count($SingleResponses); $x++) {  
             if ( strlen( $SingleResponses[$x] ) < 2 ) continue;  // strange short response
 	    if ( ord( $SingleResponses[$x][0] ) <> 5 ) continue; // no short response
-            if ( ord( $SingleResponses[$x][1] ) + 4 == strlen( $SingleResponses[$x] ) ) {
-		    
-		    $this->sendDebug( "RCTPower", "Length: ".ord( $SingleResponses[$x][1] ) + 4, 0 );
+            if ( ord( $SingleResponses[$x][1] ) + 4 == strlen( $SingleResponses[$x] ) ) { 
 	      // lenght of response package is correct, so check CRC
 	      // first convert into 0xYY format
               $response = "";
@@ -80,6 +78,8 @@
 	        $response = $response.$hex;
 	      }	     
 	      
+		     $this->sendDebug( "RCTPower", "CRC on ".substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ), 0 );
+		    
 	      $CRC = $this->calcCRC( substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ));
 	      if ( $CRC == substr( $response, -4 ) ) {
 		// CRC is also ok, so analyze the response
