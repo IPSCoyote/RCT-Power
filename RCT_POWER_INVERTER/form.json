@@ -36,6 +36,7 @@
       { "type": "RowLayout", 
         "items": [
             { "type": "CheckBox", "name": "ReactOnForeignPolls", "caption": "Auf fremde Abfragen reagieren" }, 
+            { "type": "Label", "caption": "   " },
             { "type": "CheckBox", "name": "DebugSwitch",         "caption": "Debuginformationen ausgeben" }   
         ]
       }
