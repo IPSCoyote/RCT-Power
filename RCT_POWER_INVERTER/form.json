@@ -7,7 +7,7 @@
       { "type": "RowLayout", 
         "items": [
             { "type": "NumberSpinner", "name": "InputAPanelCount", "caption": "Anzahl der Panel", "digits": 0 , "hex": false, "suffix": "Panel"},
-            { "type": "Label", caption: "   " },
+            { "type": "Label", "caption": "   " },
             { "type": "NumberSpinner", "name": "InputANominalPowerPerPanel", "caption": "Nennleistung je Panel", "digits": 0 , "hex": false, "suffix": "Watt"}
         ]
       },    
