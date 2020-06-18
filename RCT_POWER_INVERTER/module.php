@@ -15,7 +15,7 @@
 	  $this->RegisterPropertyInteger("LowerSoCLevel", 0);
           $this->RegisterPropertyInteger("UpdateInterval", 0);
 	  $this->RegisterPropertyBoolean("DebugSwitch", false );
-          $this->RegisterPropertyBoolean("ReactOnForeignPolls, false );
+          $this->RegisterPropertyBoolean("ReactOnForeignPolls", false );
 
           // Timer
           $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
@@ -132,6 +132,34 @@
 	      $this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as String ".$string.")", 0 );	
 	    }
 	  }
+		
+	  $RequestedAddresses = $this->GetBuffer( "RequestedAddresses" );
+	  
+	  // Check, if address to be analyzes was requested by this module and we're waiting for it
+	  // this shall avoid that the master power inverter analyzes data of slave power inverters which is also 
+	  // send as additional replies by it!
+	  $RequestAddress = "-".$address;
+	  if ( strpos( $RequestedAddresses, $RequestAddress ) === false ) {
+	    if ( $this->ReadPropertyBoolean("ReactOnForeignPolls") == true ) {
+	      // this address should not be processed as it not requested by this module, but Tool Switch 
+	      // allows processing!
+	      if ( $Debugging == true ) {
+	        $this->sendDebug( "RCTPower", "Address ".$address." wasn't currently requested and should not analyzed, but overruled by Tools Setting!", 0 );	
+	    }
+	    else {
+	      // Don't process this address 
+	      if ( $Debugging == true ) {
+	        $this->sendDebug( "RCTPower", "Address ".$address." wasn't currently requested and is not analyzed!", 0 );	
+	      }
+	      return; 
+	    }
+	  } 
+	  
+	  if ( strpos( $RequestedAddresses, $RequestAddress ) !== false ) {
+            // Remove address from address Requested Address Buffer
+	    strreplace( $RequestAddress, '', $RequestedAddresses );
+	    $this->SetBuffer( "RequestedAddresses", $RequestedAddresses );
+	  }	
 		
 	  switch ($address) {
 		  case "DB2D69AE": // Actual inverters AC-power [W], Float
@@ -581,6 +609,9 @@
 	  
 	  
 	function RequestData( string $command, int $length ) {
+		
+	  $RequestAddress = "-".$command;	
+		
           // build command		
 	  $hexlength = strtoupper( dechex($length) );
           if ( strlen( $hexlength ) == 1 ) $hexlength = '0'.$hexlength;
@@ -589,6 +620,13 @@
 	  $hexCommand = "";
 	  for( $x=0; $x<strlen($command)/2;$x++)
 	    $hexCommand = $hexCommand.chr(hexdec(substr( $command, $x*2, 2 )));
+		
+	  // Store Address to Requested Addresses Buffer
+	  $RequestedAddresses = $this->GetBuffer( "RequestedAddresses" );
+	  if ( strpos( $RequestedAddresses, $RequestAddress ) === false ) {
+	    $RequestedAddresses = $RequestedAddresses.$RequestAddress;	  
+	    $this->SetBuffer( "RequestedAddresses", $RequestedAddresses );
+	  }
 		
 	  // send Data to Parent (IO)...
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
