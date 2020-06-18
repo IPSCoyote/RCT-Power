@@ -486,69 +486,69 @@
 			  
   		  case "FBF6D834": // Battery Stack 0 serial number
 			  if ( substr( $string, 1, 3 ) != "181" )
-			    // we don't have a battery stack panel 0 -> Battery Capacity is 0 kWh
+			    // we don't have a battery stack -> Battery Capacity is 0 kWh
 			    SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 0 );
 			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 1.9 )
 		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 1.9 );		  
 			  break;
 			  
 		  case "99396810": // Battery Stack 1 serial number
-			  if ( substr( $string, 1, 3 ) != "181" )
-			    // we don't have a battery stack panel 1 -> Battery Capacity is max. 1.9
+			  if ( substr( $string, 1, 3 ) <> "181" )
+			    // we don't have a 2nd stack panel -> Battery Capacity is max. 1.9kWh
 		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 1.9 )
 			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 1.9 );
 			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 3.8 )
-		            // we have a battery stack panel 1 -> Battery Capacity is min. 3.8
+		            // we have at least 2 stack panels -> Battery Capacity is min. 3.8
 		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 3.8 );		  
 			  break;
 			  
 		  case "73489528": // Battery Stack 2 serial number
-			  if ( substr( $string, 1, 3 ) != "181" )
-			    // we don't have a battery stack panel 2 -> Battery Capacity is max. 3.8
+			  if ( substr( $string, 1, 3 ) <> "181" )
+			    // we don't have a 3nd stack panel -> Battery Capacity is max. 3.8kWh
 		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 3.8 )
 			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 3.8 );
 			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 5.7 )
-		            // we have a battery stack panel 2 -> Battery Capacity is min. 5.7
+		            // we have at least 3 stack panels -> Battery Capacity is min. 5.7
 		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 5.7 );		  
 			  break;
 			  
 		  case "257B7612": // Battery Stack 3 serial number
-			  if ( substr( $string, 1, 3 ) != "181" )
-			    // we don't have a battery stack panel 3 -> Battery Capacity is max. 5.7
+			  if ( substr( $string, 1, 3 ) <> "181" )
+			    // we don't have a 4th stack panel -> Battery Capacity is max. 5.7kWh
 		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 5.7 )
 			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 5.7 );
 			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 7.6 )
-		            // we have a battery stack panel 3 -> Battery Capacity is min. 7.6
+		            // we have at least 4 stack panels -> Battery Capacity is min. 7.6
 		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 7.6 );		  
 			  break;
 			  
 		  case "4E699086": // Battery Stack 4 serial number
-			  if ( substr( $string, 1, 3 ) != "181" )
-			    // we don't have a battery stack panel 4 -> Battery Capacity is max. 7.6
+			  if ( substr( $string, 1, 3 ) <> "181" )
+			    // we don't have a 5th stack panel -> Battery Capacity is max. 7.6kWh
 		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 7.6 )
 			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 7.6 );
 			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 9.6 )
-		            // we have a battery stack panel 4 -> Battery Capacity is min. 9.6
+		            // we have at least 5 stack panels -> Battery Capacity is min. 9.6
 		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 9.6 );		  
 			  break;
 			  
 		  case "162491E8": // Battery Stack 5 serial number
-			  if ( substr( $string, 1, 3 ) != "181" )
-			    // we don't have a battery stack panel 5 -> Battery Capacity is max. 9.6
+			  if ( substr( $string, 1, 3 ) <> "181" )
+			    // we don't have a 5th stack panel -> Battery Capacity is max. 9.6kWh
 		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 9.6 )
 			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 9.6 );
 			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 11.5 )
-		            // we have a battery stack panel 5 -> Battery Capacity is min. 11.5
+		            // we have at least 6 stack panels -> Battery Capacity is min. 11.5
 		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 11.5 );		  
 			  break;
 			  
 		  case "5939EC5D": // Battery Stack 6 serial number
-			  if ( substr( $string, 1, 3 ) != "181" )
-			    // we don't have a battery stack panel 6 -> Battery Capacity is max. 11.5
+			  if ( substr( $string, 1, 3 ) <> "181" )
+			    // we don't have a 6th stack panel -> Battery Capacity is max. 11.5kWh
 		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 11.5 )
 			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 11.5 );
 			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 13.4 )
-		            // we have a battery stack panel 6 -> Battery Capacity is min. 13.4
+		            // we have at least 7 stack panels -> Battery Capacity is min. 13.4
 		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 13.4 );		  
 			  break;
 			  
