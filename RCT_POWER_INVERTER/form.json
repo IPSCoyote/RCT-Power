@@ -33,7 +33,12 @@
       { "type": "NumberSpinner", "caption": "Update Interval", "digits": 0 , "hex": false, "suffix": "Sekunden"},
       { "type": "Label", "caption": "   " },
       { "type": "Label", "label": "Tools" }, 
-      { "type": "CheckBox", "name": "DebugSwitch", "caption": "Debuginformationen ausgeben" }  
+      { "type": "RowLayout", 
+        "items": [
+            { "type": "CheckBox", "name": "ReactOnForeignPolls", "caption": "Auf fremde Abfragen reagieren" }, 
+            { "type": "CheckBox", "name": "DebugSwitch", "caption": "Debuginformationen ausgeben" }  
+        ]
+      }
     ],
     "status":   
     [
