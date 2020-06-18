@@ -6,7 +6,7 @@
              Status-Variables und Modul-Properties for permanent usage should be created here  */
           parent::Create(); 
 		
-          // Properties Charger
+          // Properties RCT Power Inverter
           $this->RegisterPropertyInteger("InputAPanelCount", 0); 
           $this->RegisterPropertyInteger("InputANominalPowerPerPanel", 0);
           $this->RegisterPropertyInteger("InputBPanelCount", 0); 
@@ -15,6 +15,9 @@
 	  $this->RegisterPropertyInteger("LowerSoCLevel", 0);
           $this->RegisterPropertyInteger("UpdateInterval", 0);
 	  $this->RegisterPropertyBoolean("DebugSwitch", false );
+	
+	  // Communication Buffer (as we get sometimes packages in to ReceiveData Calls
+	  $this->RegisterPropertyString("CommunicationBuffer", "");
 		
           // Timer
           $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
@@ -61,12 +64,14 @@
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
 		
-	  static $CommunicationBuffer = "";
-	  $CommunicationBuffer = $CommunicationBuffer."1";
+	  $CommunicationBuffer = ReadPropertyString("CommunicationBuffer");
 		
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 		
 	  $this->sendDebug( "RCTPower", "Communication Buffer: ".$CommunicationBuffer, 0 );
+		
+	  $CommunicationBuffer = $CommunicationBuffer."1";
+	  WritePropertyString("CommunicationBuffer", $CommunicationBuffer );
 		
           // Receive data from serial port I/O
           $data = json_decode($JSONString);
