@@ -80,6 +80,9 @@
 	      if ( $CRC == substr( $response, -4 ) )
 		// CRC is also ok, so analyze the response
 	        $this->analyzeResponse( substr( $response, 4, 8 ), substr( $response, 12, ord( $SingleResponses[$x][1] )*2-8) );
+	      elseif ( $Debugging == true ) {
+	        $this->sendDebug( "RCTPower", "CRC Error", 0 );	
+	    }
 	    }
 	  }
           return true;
