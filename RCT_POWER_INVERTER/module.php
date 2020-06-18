@@ -145,6 +145,7 @@
 	      // allows processing!
 	      if ( $Debugging == true ) {
 	        $this->sendDebug( "RCTPower", "Address ".$address." wasn't currently requested and should not analyzed, but overruled by Tools Setting!", 0 );	
+	      }
 	    }
 	    else {
 	      // Don't process this address 
