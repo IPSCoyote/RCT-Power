@@ -2,11 +2,9 @@
     "translations": {
         "de": { 
             "Disclaimer": "Dieses Modul wurde unabhängig vom Hersteller RCT Power entwickelt. Die Benutzung des Moduls erfolgt auf eigene Gefahr unter Ausschluss jeglicher Gewährleistung für Probleme oder Schäden am RCT Power System.", 
-            "Basic Data - INPUT A": "Grunddaten - Eingang A",
-            "Basic Data - INPUT B": "Grunddaten - Eingang B",
+            "Basic Data - INPUT A": "PV Paneldaten - Eingang A",
+            "Basic Data - INPUT B": "PV Paneldaten - Eingang B",
             "Basic Data": "Grunddaten",
-            "IP Address": "IP Adresse",
-            "Fuse protection": "el. Absicherung",
             "Update Intervals": "Update Interval",
             "Update Interval": "automatische Aktualisierung alle X Sekunden (0 = deaktiviert)",
             "Check Connection": "Verbindung testen",
