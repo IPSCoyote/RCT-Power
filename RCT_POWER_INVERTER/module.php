@@ -514,8 +514,12 @@
 	}  
 	  
 	protected function calcCRC( string $command ) {
-          // Command with an odd byte length (add 0x00 to make odd!) without(!) start byte (0x2B)
           $commandLength = strlen( $command ) / 2;
+          if ($commandLength  % 2 != 0) {
+	      // Command with an odd byte length (add 0x00 to make odd!) without(!) start byte (0x2B)
+              $command = $command.'00';
+              $commandLength = strlen( $command ) / 2;
+          }
           $crc = 0xFFFF; 	
           for ( $x = 0; $x <$commandLength; $x++ ) {
             $b = hexdec( substr( $command, $x*2, 2 ) );
