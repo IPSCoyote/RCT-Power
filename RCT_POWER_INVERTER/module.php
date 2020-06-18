@@ -541,7 +541,7 @@
           return $x * pow(2, $exp - 23) * ($sign ? -1 : 1); ;
         }
 
-	protected function hex_to_string (string $hex) {
+	protected function hexToString(string $hex) {
     	  if (strlen($hex) % 2 != 0) {
       	    return "";
     	  }
