@@ -531,6 +531,7 @@
 	  // send Data to Parent (IO)...
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
 	  					    "Buffer" => utf8_encode($hexCommand) )));	
+	  usleep( 100000 );
 	}  
 	  
 	protected function calcCRC( string $command ) {
@@ -601,89 +602,89 @@
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
       
-	  $this->RequestData( "DB2D69AE",4 ); usleep( 100000 ); // Actual inverters AC-power [W]
+	  $this->RequestData( "DB2D69AE",4 ); // Actual inverters AC-power [W]
           
-	  $this->RequestData( "CF053085",4 ); usleep( 100000 ); // Phase L1 voltage [V]
-	  $this->RequestData( "54B4684E",4 ); usleep( 100000 ); // Phase L2 voltage [V]
-	  $this->RequestData( "2545E22D",4 ); usleep( 100000 ); // Phase L3 voltage [V]
+	  $this->RequestData( "CF053085",4 ); // Phase L1 voltage [V]
+	  $this->RequestData( "54B4684E",4 ); // Phase L2 voltage [V]
+	  $this->RequestData( "2545E22D",4 ); // Phase L3 voltage [V]
 
           
-          $this->RequestData( "B55BA2CE",4 ); usleep( 100000 ); // DC input A voltage [V] (by Documentation B298395D) 
-          $this->RequestData( "DB11855B",4 ); usleep( 100000 ); // DC input A power [W]
+          $this->RequestData( "B55BA2CE",4 ); // DC input A voltage [V] (by Documentation B298395D) 
+          $this->RequestData( "DB11855B",4 ); // DC input A power [W]
 
-	  $this->RequestData( "B0041187",4 ); usleep( 100000 ); // DC input B voltage [V] (by Documentation 5BB8075A)
-          $this->RequestData( "0CB5D21B",4 ); usleep( 100000 ); // DC input B power [W]
+	  $this->RequestData( "B0041187",4 ); // DC input B voltage [V] (by Documentation 5BB8075A)
+          $this->RequestData( "0CB5D21B",4 ); // DC input B power [W]
 
 	  // $this->RequestData( "B408E40A", 4 ); usleep( 100000 ); // Battery current measured by inverter, low pass filter with Tau = 1s [A]
 
-          $this->RequestData( "A7FA5C5D",4 ); usleep( 100000 ); // Battery voltage [V]
-          $this->RequestData( "959930BF",4 ); usleep( 100000 ); // Battery State of Charge (SoC) [0..1]
-          $this->RequestData( "400F015B",4 ); usleep( 100000 ); // Battery power (positive if discharge) [W]
-          $this->RequestData( "902AFAFB",4 ); usleep( 100000 ); // Battery temperature [°C]
+          $this->RequestData( "A7FA5C5D",4 ); // Battery voltage [V]
+          $this->RequestData( "959930BF",4 ); // Battery State of Charge (SoC) [0..1]
+          $this->RequestData( "400F015B",4 ); // Battery power (positive if discharge) [W]
+          $this->RequestData( "902AFAFB",4 ); // Battery temperature [°C]
 
-          $this->RequestData( "91617C58",4 ); usleep( 100000 ); // Public grid power (house connection, negative by feed-in) [W]
+          $this->RequestData( "91617C58",4 ); // Public grid power (house connection, negative by feed-in) [W]
           
-          $this->RequestData( "E96F1844",4 ); usleep( 100000 ); // External power (additional inverters/generators in house internal grid) [W]
+          $this->RequestData( "E96F1844",4 ); // External power (additional inverters/generators in house internal grid) [W]
 		
 	  //--- Request Energies -------------------------------------
           // Todays Energy
-          $this->RequestData( "BD55905F",4 ); usleep( 100000 ); // Todays energy [Wh]
-          $this->RequestData( "2AE703F2",4 ); usleep( 100000 ); // Tagesenergie Ertrag Input A in Wh
-          $this->RequestData( "FBF3CE97",4 ); usleep( 100000 ); // Tagesenergie Ertrag Input B in Wh
-          $this->RequestData( "3C87C4F5",4 ); usleep( 100000 ); // Tagesenergie Netzeinspeisung in -Wh
-          $this->RequestData( "867DEF7D",4 ); usleep( 100000 ); // Tagesenergie Netzverbrauch	in Wh
-          $this->RequestData( "2F3C1D7D",4 ); usleep( 100000 ); // Tagesenergie Haushalt in Wh	
+          $this->RequestData( "BD55905F",4 ); // Todays energy [Wh]
+          $this->RequestData( "2AE703F2",4 ); // Tagesenergie Ertrag Input A in Wh
+          $this->RequestData( "FBF3CE97",4 ); // Tagesenergie Ertrag Input B in Wh
+          $this->RequestData( "3C87C4F5",4 ); // Tagesenergie Netzeinspeisung in -Wh
+          $this->RequestData( "867DEF7D",4 ); // Tagesenergie Netzverbrauch	in Wh
+          $this->RequestData( "2F3C1D7D",4 ); // Tagesenergie Haushalt in Wh	
 	
           // Month Energy
-          $this->RequestData( "10970E9D",4 ); usleep( 100000 ); // This month energy [Wh]
-          $this->RequestData( "81AE960B",4 ); usleep( 100000 ); // Monatsenergie Ertrag Input A in Wh
-          $this->RequestData( "7AB9B045",4 ); usleep( 100000 ); // Monatsenergie Ertrag Input B in Wh
-          $this->RequestData( "65B624AB",4 ); usleep( 100000 ); // Monatsenergie Netzeinspeisung ins Netz in -Wh
-          $this->RequestData( "126ABC86",4 ); usleep( 100000 ); // Monatsenergie Netzverbrauch in Wh
-          $this->RequestData( "F0BE6429",4 ); usleep( 100000 ); // Monatsenergie Haushalt in Wh
+          $this->RequestData( "10970E9D",4 ); // This month energy [Wh]
+          $this->RequestData( "81AE960B",4 ); // Monatsenergie Ertrag Input A in Wh
+          $this->RequestData( "7AB9B045",4 ); // Monatsenergie Ertrag Input B in Wh
+          $this->RequestData( "65B624AB",4 ); // Monatsenergie Netzeinspeisung ins Netz in -Wh
+          $this->RequestData( "126ABC86",4 ); // Monatsenergie Netzverbrauch in Wh
+          $this->RequestData( "F0BE6429",4 ); // Monatsenergie Haushalt in Wh
 		
           // Year Energy
-          $this->RequestData( "C0CC81B6",4 ); usleep( 100000 ); // This year energy [Wh]
-          $this->RequestData( "AF64D0FE",4 ); usleep( 100000 ); // Jahresenergie Ertrag Input A in Wh
-          $this->RequestData( "BD55D796",4 ); usleep( 100000 ); // Jahresenergie Ertrag Input B in Wh
-          $this->RequestData( "26EFFC2F",4 ); usleep( 100000 ); // Jahresenergie Netzinspeisung ins Netz in -Wh
-          $this->RequestData( "DE17F021",4 ); usleep( 100000 ); // Jahresenergie Netzverbrauch in Wh
-          $this->RequestData( "C7D3B479",4 ); usleep( 100000 ); // Jahresenergie Haushalt in Wh	
+          $this->RequestData( "C0CC81B6",4 ); // This year energy [Wh]
+          $this->RequestData( "AF64D0FE",4 ); // Jahresenergie Ertrag Input A in Wh
+          $this->RequestData( "BD55D796",4 ); // Jahresenergie Ertrag Input B in Wh
+          $this->RequestData( "26EFFC2F",4 );  // Jahresenergie Netzinspeisung ins Netz in -Wh
+          $this->RequestData( "DE17F021",4 ); // Jahresenergie Netzverbrauch in Wh
+          $this->RequestData( "C7D3B479",4 ); // Jahresenergie Haushalt in Wh	
 		
           // Total Energy
-          $this->RequestData( "B1EF67CE",4 ); usleep( 100000 ); // Total Energy [Wh]
-          $this->RequestData( "FC724A9E",4 ); usleep( 100000 ); // Gesamtenergie Ertrag Input A in Wh
-          $this->RequestData( "68EEFD3D",4 ); usleep( 100000 ); // Gesamtenergie Ertrag Input B in Wh
-          $this->RequestData( "44D4C533",4 ); usleep( 100000 ); // Gesamtenergie Netzeinspeisung in -Wh
-          $this->RequestData( "62FBE7DC",4 ); usleep( 100000 ); // Gesamtenergie Netzverbrauch in Wh
-          $this->RequestData( "EFF4B537",4 ); usleep( 100000 ); // Gesamtenergie Haushalt in Wh 
+          $this->RequestData( "B1EF67CE",4 ); // Total Energy [Wh]
+          $this->RequestData( "FC724A9E",4 ); // Gesamtenergie Ertrag Input A in Wh
+          $this->RequestData( "68EEFD3D",4 ); // Gesamtenergie Ertrag Input B in Wh
+          $this->RequestData( "44D4C533",4 ); // Gesamtenergie Netzeinspeisung in -Wh
+          $this->RequestData( "62FBE7DC",4 ); // Gesamtenergie Netzverbrauch in Wh
+          $this->RequestData( "EFF4B537",4 );  // Gesamtenergie Haushalt in Wh 
 		
 		
-          $this->RequestData( "FE1AA500",4 ); usleep( 100000 ); // External Power Limit [0..1]
-          $this->RequestData( "BD008E29",4 ); usleep( 100000 ); // External battery power target [W] (positive = discharge)
-          $this->RequestData( "872F380B",4 ); usleep( 100000 ); // External load demand [W] (positive = feed in / 0=internal
+          $this->RequestData( "FE1AA500",4 ); // External Power Limit [0..1]
+          $this->RequestData( "BD008E29",4 ); // External battery power target [W] (positive = discharge)
+          $this->RequestData( "872F380B",4 ); // External load demand [W] (positive = feed in / 0=internal
 		
 	  // Bit-coded fault word 0-3	
-          $this->RequestData( "37F9D5CA",4 ); usleep( 100000 );
-	  $this->RequestData( "234B4736",4 ); usleep( 100000 );
-	  $this->RequestData( "3B7FCD47",4 ); usleep( 100000 );
-	  $this->RequestData( "7F813D73",4 ); usleep( 100000 );
+          $this->RequestData( "37F9D5CA",4 ); 
+	  $this->RequestData( "234B4736",4 ); 
+	  $this->RequestData( "3B7FCD47",4 ); 
+	  $this->RequestData( "7F813D73",4 );
 
 	  // Serial numbers and Descriptions
-	  $this->RequestData( "EBC62737", 4 ); usleep( 100000 ); // android description
-          $this->RequestData( "7924ABD9", 4 ); usleep( 100000 ); // Inverter serial number
-          $this->RequestData( "FBF6D834", 4 ); usleep( 100000 ); // Battery Stack 0 serial number
-          $this->RequestData( "99396810", 4 ); usleep( 100000 ); // Battery Stack 1 serial number
-          $this->RequestData( "73489528", 4 ); usleep( 100000 ); // Battery Stack 2 serial number
-          $this->RequestData( "257B7612", 4 ); usleep( 100000 ); // Battery Stack 3 serial number
-          $this->RequestData( "4E699086", 4 ); usleep( 100000 ); // Battery Stack 4 serial number
-          $this->RequestData( "162491E8", 4 ); usleep( 100000 ); // Battery Stack 5 serial number
-          $this->RequestData( "5939EC5D", 4 ); usleep( 100000 ); // Battery Stack 6 serial number
+	  $this->RequestData( "EBC62737", 4 ); // android description
+          $this->RequestData( "7924ABD9", 4 ); // Inverter serial number
+          $this->RequestData( "FBF6D834", 4 ); // Battery Stack 0 serial number
+          $this->RequestData( "99396810", 4 ); // Battery Stack 1 serial number
+          $this->RequestData( "73489528", 4 ); // Battery Stack 2 serial number
+          $this->RequestData( "257B7612", 4 ); // Battery Stack 3 serial number
+          $this->RequestData( "4E699086", 4 ); // Battery Stack 4 serial number
+          $this->RequestData( "162491E8", 4 ); // Battery Stack 5 serial number
+          $this->RequestData( "5939EC5D", 4 ); // Battery Stack 6 serial number
 	 
           //--- NOT DOCUMENTED -------------------------------------------------------------------------
-	  $this->RequestData( "8B9FF008", 4 ); usleep( 100000 ); // Upper load boundary in %
-	  $this->RequestData( "4BC0F974", 4 ); usleep( 100000 ); // Installed PV Panel kWp
-	  $this->RequestData( "1AC87AA0", 4 ); usleep( 100000 ); // Current House power consumption
+	  $this->RequestData( "8B9FF008", 4 ); // Upper load boundary in %
+	  $this->RequestData( "4BC0F974", 4 ); // Installed PV Panel kWp
+	  $this->RequestData( "1AC87AA0", 4 ); // Current House power consumption
 		
 	  // return result
           return true;
