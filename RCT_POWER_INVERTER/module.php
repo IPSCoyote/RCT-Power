@@ -498,7 +498,7 @@
 	}
 	  
 	  
-	function requestData( string $command, int $length ) {
+	protected function requestData( string $command, int $length ) {
           // build command		
 	  $hexlength = strtoupper( dechex($length) );
           if ( strlen( $hexlength ) == 1 ) $hexlength = '0'.$hexlength;
@@ -576,7 +576,7 @@
           // Init Communication -----------------------------------------------------------------------------------------
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
-          
+     /*  
 	  $this->requestData( "DB2D69AE",4 ); usleep( 100000 ); // Actual inverters AC-power [W]
           
 	  $this->requestData( "CF053085",4 ); usleep( 100000 ); // Phase L1 voltage [V]
@@ -645,7 +645,7 @@
 	  $this->requestData( "234B4736",4 ); usleep( 100000 );
 	  $this->requestData( "3B7FCD47",4 ); usleep( 100000 );
 	  $this->requestData( "7F813D73",4 ); usleep( 100000 );
-		
+*/		
 	  // Serial numbers and Descriptions
 	  $this->requestData( "EBC62737", 4 ); usleep( 100000 ); // android description
           $this->requestData( "7924ABD9", 4 ); usleep( 100000 ); // Inverter serial number
@@ -656,12 +656,12 @@
           $this->requestData( "4E699086", 4 ); usleep( 100000 ); // Battery Stack 4 serial number
           $this->requestData( "162491E8", 4 ); usleep( 100000 ); // Battery Stack 5 serial number
           $this->requestData( "5939EC5D", 4 ); usleep( 100000 ); // Battery Stack 5 serial number
-			     
+/*	 
           //--- NOT DOCUMENTED -------------------------------------------------------------------------
 	  $this->requestData( "8B9FF008", 4 ); usleep( 100000 ); // Upper load boundary in %
 	  $this->requestData( "4BC0F974", 4 ); usleep( 100000 ); // Installed PV Panel kWp
 	  $this->requestData( "1AC87AA0", 4 ); usleep( 100000 ); // Current House power consumption
-		
+*/		
 	  // return result
           return true;
         }
