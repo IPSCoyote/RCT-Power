@@ -10,14 +10,14 @@
       { "type": "Label", "caption": "RCT Wechselrichter Einstellungen" },  
       { "type": "NumberSpinner", "name": "LowerSoCLevel", "caption": "Untere Entladeschwelle", "digits": 0 , "hex": false, "suffix": "%"},  
       { "type": "Label", "caption": "Update Intervals" },
-      { "type": "Select", "name": "InstalledBatteryCapacity", "caption": "Installierte Batterie-Kapazität",
+      { "type": "Select", "name": "InstalledBatteryModules", "caption": "Installierte Batterie-Module",
             "options": [
-                { "caption": "keine", "value": 0 },
-                { "caption": "3.8 kWh", "value": 1 },
-                { "caption": "5.7 kWh", "value": 2 },
-                { "caption": "7.6 kWh", "value": 3 },
-                { "caption": "9.6 kWh", "value": 4 },
-                { "caption": "11.7 kWh", "value": 5 }
+                { "caption": "keine",        "value": 0 },
+                { "caption": "2 (3.8 kWh)",  "value": 2 },
+                { "caption": "3 (5.7 kWh)",  "value": 3 },
+                { "caption": "4 (7.6 kWh)",  "value": 4 },
+                { "caption": "5 (9.6 kWh)",  "value": 5 },
+                { "caption": "6 (11.7 kWh)", "value": 6 }
            ]
       },
       { "type": "NumberSpinner", "name": "UpdateInterval", "caption": "Update Interval", "digits": 0 , "hex": false, "suffix": "Sekunden"},
