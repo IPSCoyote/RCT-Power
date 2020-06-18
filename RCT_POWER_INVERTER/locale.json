@@ -1,6 +1,7 @@
 {
     "translations": {
         "de": { 
+            "Disclaimer": "Dieses Modul wurde unabhängig vom Hersteller RCT Power Entwickelt. Die Benutzung des Moduls erfolgt auf eigene Gefahr unter Ausschluss jeglicher Gewährleistung für Probleme oder Schäden am RCT Power System.", 
             "Basic Data - INPUT A": "Grunddaten - Eingang A",
             "Basic Data - INPUT B": "Grunddaten - Eingang B",
             "Basic Data": "Grunddaten",
