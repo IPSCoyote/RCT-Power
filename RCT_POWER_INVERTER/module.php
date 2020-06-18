@@ -62,20 +62,9 @@
         public function ReceiveData($JSONString) {
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 		
-	  // Get Communication Buffer
-	  $CommunicationBuffer = $this->GetBuffer("CommunicationBuffer");
-			
-	  $this->sendDebug( "RCTPower", "ReceiveData - Remaining Communcaiton Buffer", 0 ); 
-	  $this->sendDebug( "RCTPower", $CommunicationBuffer, 0 );
-
           // Receive data from serial port I/O
           $data = json_decode($JSONString);
 	  $FullResponse = utf8_decode( $data->Buffer );
-	
-	  // Add not processed data from last call at front	 
-	  $FullResponse = $CommunicationBuffer.$FullResponse;	
-	  $CommunicationBuffer = "";
-		
           // Seperate Single Responses		
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
 		
@@ -85,14 +74,11 @@
 		  
             if ( strlen( $SingleResponses[$x] ) < 2 ) {
 	      // too short for a real response, but don't the Byte
-	      // This should also only happen on the last Response (which might be cut into pieces)
-	      $CommunicationBuffer = $SingleResponses[$x];
 	      continue;
 	    }
 		
 	    if ( ord( $SingleResponses[$x][0] ) <> 5 ) {
 	      // seems not to be a response (0x05)
-	      // such a package we also don't remember in the Buffer
 	      continue;
 	    }
 		  
@@ -117,15 +103,8 @@
 	      }
 	      elseif ( $Debugging == true ) $this->sendDebug( "RCTPower", "CRC Issue on ".substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ).", calculated is CRC is ".$CRC. ", expected is ".substr( $response, -4 ), 0 );	
 	    }
-            else {
-	      // not a full package, remember part in Communication Buffer
-	      $CommunicationBuffer = $SingleResponses[$x];
-	    }
 		 
 	  }
-		
-          // Set Communication Buffer to not loose data		
-	  $this->SetBuffer("CommunicationBuffer", $CommunicationBuffer );
 		
           return true;
         }
