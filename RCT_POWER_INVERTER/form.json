@@ -36,7 +36,7 @@
       },
       { "type": "Label", "caption": "   " },
       { "type": "Label", "caption": "Update Intervals" },
-      { "type": "NumberSpinner", "name": "UpdateInterval", "caption": "Update Interval (0 = deaktiviert)", "digits": 0 , "hex": false, "suffix": "Sekunden"},
+      { "type": "NumberSpinner", "name": "Update Interval", "caption": "Update Interval (0 = deaktiviert)", "digits": 0 , "hex": false, "suffix": "Sekunden"},
       { "type": "Label", "caption": "   " },
       { "type": "Label", "label": "Tools" }, 
       { "type": "CheckBox", "name": "DebugSwitch", "caption": "Debuginformationen ausgeben" }  
