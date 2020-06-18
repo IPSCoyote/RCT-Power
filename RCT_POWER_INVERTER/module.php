@@ -1,8 +1,6 @@
 <?php
   class RCTPowerInverter extends IPSModule {
 	  
-	private $CommuncationBuffer = 'TestBuffer';
-
         public function Create() {
           /* Create is called ONCE on Instance creation and start of IP-Symcon. 
              Status-Variables und Modul-Properties for permanent usage should be created here  */
@@ -62,15 +60,20 @@
 	  
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
+		
+	  static $CommunicationBuffer = "";
+		
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 		
-		$this->sendDebug( "RCTPower", "Communication Buffer: ".$this->$CommunicationBuffer, 0 );
+		$this->sendDebug( "RCTPower", "Communication Buffer: ".$CommunicationBuffer, 0 );
 		
           // Receive data from serial port I/O
           $data = json_decode($JSONString);
 	  $FullResponse = utf8_decode( $data->Buffer );
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
 	  for ($x=1; $x<count($SingleResponses); $x++) {  
+		 $CommunicationBuffer = $CommunicationBuffer."1";
+		 
 	    if ( $Debugging == true ) $this->sendDebug( "RCTPower", "Single Response: ".$SingleResponses[$x], 0 );
             if ( strlen( $SingleResponses[$x] ) < 2 ) continue;  // strange short response
 	    if ( ord( $SingleResponses[$x][0] ) <> 5 ) continue; // no short response
