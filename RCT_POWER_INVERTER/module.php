@@ -65,7 +65,8 @@
           $data = json_decode($JSONString);
 	  $FullResponse = utf8_decode( $data->Buffer );
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
-	  for ($x=1; $x<count($SingleResponses); $x++) {  		  
+	  for ($x=1; $x<count($SingleResponses); $x++) {  
+	    if ( $Debugging == true ) $this->sendDebug( "RCTPower", "Single Response: ".$SingleResponses[$x], 0 );
             if ( strlen( $SingleResponses[$x] ) < 2 ) continue;  // strange short response
 	    if ( ord( $SingleResponses[$x][0] ) <> 5 ) continue; // no short response
             if ( ord( $SingleResponses[$x][1] ) + 4 == strlen( $SingleResponses[$x] ) ) { 
