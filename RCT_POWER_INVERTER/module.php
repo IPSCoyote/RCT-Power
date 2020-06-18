@@ -15,10 +15,7 @@
 	  $this->RegisterPropertyInteger("LowerSoCLevel", 0);
           $this->RegisterPropertyInteger("UpdateInterval", 0);
 	  $this->RegisterPropertyBoolean("DebugSwitch", false );
-	
-	  // Communication Buffer (as we get sometimes packages in to ReceiveData Calls
-	  $this->RegisterPropertyString("CommunicationBuffer", "");
-		
+
           // Timer
           $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
         }
@@ -64,14 +61,14 @@
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
 		
-	  $CommunicationBuffer = ReadPropertyString("CommunicationBuffer");
+	  $CommunicationBuffer = GetBuffer("CommunicationBuffer");
 		
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 		
 	  $this->sendDebug( "RCTPower", "Communication Buffer: ".$CommunicationBuffer, 0 );
 		
 	  $CommunicationBuffer = $CommunicationBuffer."1";
-	  WritePropertyString("CommunicationBuffer", $CommunicationBuffer );
+	  SetBuffer("CommunicationBuffer", $CommunicationBuffer );
 		
           // Receive data from serial port I/O
           $data = json_decode($JSONString);
