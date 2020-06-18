@@ -721,7 +721,9 @@
 	  $this->RegisterVariableFloat("BatteryRemainingNetCapacity","Batterie verf. Restkapazität","RCTPOWER_Capacity.2",202);	
 	  $this->RegisterVariableFloat("BatterySoC",           "Batterie Ladestand","~Valve.F",203);
 	  $this->RegisterVariableFloat("BatteryUpperSoC",      "Batterie Ladegrenze","~Valve.F",204);	
-	  $this->RegisterVariableFloat("BatteryTemperature",   "Batterie Temperatur","~Temperature",205);	
+	  $this->RegisterVariableFloat("BatteryTemperature",   "Batterie Temperatur","~Temperature",205);
+		
+          $this->RegisterVariableInteger("HousePowerCurrent","Haus Leistung","RCTPOWER_Power",250);
 		
 	  $this->RegisterVariableInteger("ExternalPower",  "Generator Leistung","RCTPOWER_Power",300); 
 		
@@ -779,8 +781,6 @@
 	  $this->RegisterVariableInteger("EnergyTotalGridPowerLevel",       "Gesamt - % Anteil externer Strom am Gesamtverbrauch","~Valve", 807); 
 	  $this->RegisterVariableInteger("EnergyTotalSelfConsumptionLevel", "Gesamt - % PV Selbstverbrauch","~Valve", 808); 
 	  $this->RegisterVariableInteger("EnergyTotalGridFeedInLevel",      "Gesamt - % PV Netzeinspeisung","~Valve", 809); 
-		
-          $this->RegisterVariableInteger("HousePowerCurrent","Haus Leistung","RCTPOWER_Power",900);
 	
 	  $this->RegisterVariableBoolean("Errorstatus",      "Fehlerstatus","~Alert",1000);
         } 
