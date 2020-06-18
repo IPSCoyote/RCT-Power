@@ -11,6 +11,7 @@
           $this->RegisterPropertyInteger("InputANominalPowerPerPanel", 0);
           $this->RegisterPropertyInteger("InputBPanelCount", 0); 
           $this->RegisterPropertyInteger("InputBNominalPowerPerPanel", 0);
+	  $this->RegisterPropertyInteger("InstalledBatteryModules", 0); 
 	  $this->RegisterPropertyInteger("LowerSoCLevel", 0);
           $this->RegisterPropertyInteger("UpdateInterval", 0);
 	  $this->RegisterPropertyBoolean("DebugSwitch", false );
@@ -32,6 +33,23 @@
 	    $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", $this->ReadPropertyInteger("UpdateInterval")*1000);	
           else
             $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", 0);	  
+		
+	  // Set Battery Gross Capacity based on installed Battery Modules
+	  switch ( $this->ReadPropertyInteger("InstalledBatteryModules") ) {
+	    case 0: SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 0 );
+	  	    break;
+	    case 2: SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 3.8 );
+	  	    break;	
+	    case 3: SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 5.7 );
+	  	    break;	
+	    case 4: SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 7.6 );
+	  	    break;	
+	    case 5: SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 9.6 );
+	  	    break;	
+	    case 6: SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 11.5 );
+	  	    break;	
+	  }
+		
         }
  
         public function Destroy() {
@@ -409,8 +427,8 @@
 			  
 			  break;
 			  
-		  case "4BC0F974": // gross battery capacity kwh
-			  SetValue($this->GetIDForIdent("BatteryGrossCapacity"), round( $float/1000, 2 ) );
+		  case "4BC0F974": // Installed PV Power kWp (was <V1.0 "gross battery capacity kwh" - error!)
+			  SetValue($this->GetIDForIdent("InstalledPVPower"), round( $float/1000, 2 ) );
 			  break;
 			  
 		  case "1AC87AA0": // Current House power consumption
@@ -628,7 +646,7 @@
                 IPS_CreateVariableProfile('RCTPOWER_Capacity.2', 2 );
                 IPS_SetVariableProfileDigits('RCTPOWER_Capacity.2', 2 );
                 IPS_SetVariableProfileIcon('RCTPOWER_Capacity.2', 'Battery' );
-                IPS_SetVariableProfileText('RCTPOWER_Capacity.2', "", " kwh" );
+                IPS_SetVariableProfileText('RCTPOWER_Capacity.2', "", " kWh" );
             }
             
             if ( !IPS_VariableProfileExists('RCTPOWER_SoC.1') ) {
@@ -636,6 +654,13 @@
                 IPS_SetVariableProfileDigits('RCTPOWER_SoC.1', 2 );
                 IPS_SetVariableProfileIcon('RCTPOWER_SoC.1', 'Battery' );
                 IPS_SetVariableProfileText('RCTPOWER_SoC.1', "", " %" );
+            }
+		 
+            if ( !IPS_VariableProfileExists('RCTPOWER_PVPower.2') ) {
+                IPS_CreateVariableProfile('RCTPOWER_PVPower.2', 2 );
+                IPS_SetVariableProfileDigits('RCTPOWER_PVPower.2', 2 );
+                IPS_SetVariableProfileIcon('RCTPOWER_PVPower.2', 'Electricity' );
+                IPS_SetVariableProfileText('RCTPOWER_PVPower.2', "", " kWp" );
             }
 		 
 	    //--- String (Type 3)
@@ -652,6 +677,7 @@
 	  $this->RegisterVariableFloat("DCInputBUtilization", "Eingang B Auslastung PV Module","~Valve.F",105);
 	  $this->RegisterVariableInteger("DCInputPower",      "Eingang Gesamtleistung","RCTPOWER_Power",106);
 	  $this->RegisterVariableFloat("DCInputUtilization",  "Auslastung PV Module gesamt","~Valve.F",107);
+	  $this->RegisterVariableFloat("InstalledPVPower",    "Installerierte Panelleistung","RCTPOWER_PVPower.2",108);
 		
 		
           $this->RegisterVariableInteger("BatteryVoltage",     "Batterie Spannung","RCTPOWER_Voltage",200);
