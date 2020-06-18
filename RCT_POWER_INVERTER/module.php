@@ -518,7 +518,7 @@
 	  return $crc;
         }    
 	  
-        function hexTo32Float($strHex) {
+        function hexTo32Float(string $strHex) {
           $bin = str_pad(base_convert($strHex, 16, 2), 32, "0", STR_PAD_LEFT); 
           $sign = $bin[0]; 
           $v = hexdec($strHex);
