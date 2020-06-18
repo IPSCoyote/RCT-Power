@@ -80,8 +80,6 @@
 	      if ( $CRC == substr( $response, -4 ) )
 		// CRC is also ok, so analyze the response
 	        $this->analyzeResponse( substr( $response, 4, 8 ), substr( $response, 12, ord( $SingleResponses[$x][1] )*2-8) );
-	      elseif ( $Debugging == true ) {
-	        $this->sendDebug( "RCTPower", "CRC Error", 0 );	
 	    }
 	  }
           return true;
@@ -91,7 +89,9 @@
 	protected function analyzeResponse( string $address, string $data ) {
 		
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
-		
+	    if ( $Debugging == true ) {
+	      $this->sendDebug( "RCTPower", "Address ".$address, 0 );	
+	    }
 	  // precalculation
 	  $float = 0.0;
 	  if ( strlen( $data ) == 8 ) {
