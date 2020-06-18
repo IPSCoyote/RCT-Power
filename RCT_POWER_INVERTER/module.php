@@ -64,7 +64,7 @@
         public function ReceiveData($JSONString) {
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 		
-		$this->sendDebug( "RCTPower", "Communication Buffer: ".self::$CommunicationBuffer, 0 );
+		$this->sendDebug( "RCTPower", "Communication Buffer: ".$this->$CommunicationBuffer, 0 );
 		
           // Receive data from serial port I/O
           $data = json_decode($JSONString);
