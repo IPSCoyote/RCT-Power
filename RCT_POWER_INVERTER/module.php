@@ -661,6 +661,7 @@
           if ( $ModuleID !== '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}' ) return false; // wrong parent type
 		
           // Init Communication -----------------------------------------------------------------------------------------
+	  $this->SetBuffer( "RequestedAddresses", "" );	// Clear Buffer of requested Addresses (will be filled by RequestData)
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
       
