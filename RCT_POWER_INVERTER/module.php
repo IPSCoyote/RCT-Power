@@ -65,7 +65,8 @@
 	  $FullResponse = utf8_decode( $data->Buffer );
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
 	  for ($x=1; $x<count($SingleResponses); $x++) {  
-            if ( strlen( $SingleResponses[$x] ) < 2 ) continue;
+            if ( strlen( $SingleResponses[$x] ) < 2 ) continue;  // strange short response
+	    if ( ord( $SingleResponses[$x][0] ) <> 5 ) continue; // no short response
             if ( ord( $SingleResponses[$x][1] ) + 4 == strlen( $SingleResponses[$x] ) ) {
 	      // lenght of response package is correct, so check CRC
 	      // first convert into 0xYY format
