@@ -61,14 +61,14 @@
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
 		
-	  $CommunicationBuffer = GetBuffer("CommunicationBuffer");
+	  $CommunicationBuffer = $this->GetBuffer("CommunicationBuffer");
 		
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 		
 	  $this->sendDebug( "RCTPower", "Communication Buffer: ".$CommunicationBuffer, 0 );
 		
 	  $CommunicationBuffer = $CommunicationBuffer."1";
-	  SetBuffer("CommunicationBuffer", $CommunicationBuffer );
+	  $this->SetBuffer("CommunicationBuffer", $CommunicationBuffer );
 		
           // Receive data from serial port I/O
           $data = json_decode($JSONString);
