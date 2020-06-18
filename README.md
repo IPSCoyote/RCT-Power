@@ -1,5 +1,7 @@
 ### IP-Symcon Modul für den RCT-Power Inverter / Wechselrichter
 
+<img src="./imgs/RCT%20Power%20Logo.png">
+
 PHP-Modul zur Einbindung eines [RCT-Power](http://www.rct-power.com) Inverter/Wechselrichter in IPSymcon. 
 
 Nutzung auf eigene Gefahr ohne Gewähr. Das Modul kann jederzeit überarbeitet werden, so daß Anpassungen für eine weitere Nutzung notwendig sein können. Bei der Weiterentwicklung wird möglichst auf Kompatibilität geachtet. 
