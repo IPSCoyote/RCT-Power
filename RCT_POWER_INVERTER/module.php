@@ -65,10 +65,9 @@
 	  // Get Communication Buffer
 	  $CommunicationBuffer = $this->GetBuffer("CommunicationBuffer");
 			
-	  $this->sendDebug( "RCTPower", "Communication Buffer: ".$CommunicationBuffer, 0 );
+	  $this->sendDebug( "RCTPower", "ReceiveData - Remaining Communcaiton Buffer", 0 ); 
+	  $this->sendDebug( "RCTPower", $CommunicationBuffer, 0 );
 
-
-		
           // Receive data from serial port I/O
           $data = json_decode($JSONString);
 	  $FullResponse = utf8_decode( $data->Buffer );
@@ -81,7 +80,8 @@
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
 		
 	  for ($x=1; $x<count($SingleResponses); $x++) {  		 
-	    if ( $Debugging == true ) $this->sendDebug( "RCTPower", "Single Response: ".$SingleResponses[$x], 0 );
+	    if ( $Debugging == true ) $this->sendDebug( "RCTPower", "Single Response: ", 0 );
+            if ( $Debugging == true ) $this->sendDebug( "RCTPower", $SingleResponses[$x], 0 );
 		  
             if ( strlen( $SingleResponses[$x] ) < 2 ) {
 	      // too short for a real response, but don't the Byte
