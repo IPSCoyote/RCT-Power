@@ -90,7 +90,21 @@
 		
 	  // precalculation
 	  $float = 0.0;
-	  if ( strlen( $data ) == 8 ) $float = $this->hexTo32Float( $data );
+	  if ( strlen( $data ) == 8 ) {
+ 	    $float = $this->hexTo32Float( $data );
+	    // Debug output
+	    if ( $Debugging == true ) {
+	      $this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as Float ".number_format( $float, 2 ).")", 0 );	
+	    }
+	  }
+		
+          if ( strlen( $data ) > 8 ) {
+	    $string = $this->hexToString( $data );
+	    // Debug output
+	    if ( $Debugging == true ) {
+	      $this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as String ".$string.")", 0 );	
+	    }
+	  }
 		
 	  // Debug output
 	  if ( $Debugging == true ) {
@@ -527,6 +541,17 @@
           return $x * pow(2, $exp - 23) * ($sign ? -1 : 1); ;
         }
 
+	protected function hex_to_string (string $hex) {
+    	  if (strlen($hex) % 2 != 0) {
+      	    return "";
+    	  }
+    	  $string = '';
+ 	  for ($i = 0; $i < strlen($hex) - 1; $i += 2) {
+      	    $string .= chr(hexdec($hex[$i].$hex[$i+1]));
+     	  }
+          return $string;
+  	}
+	
 		
 		
         //=== Module Prefix Functions ===================================================================================
