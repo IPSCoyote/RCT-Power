@@ -60,6 +60,7 @@
 	  
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
+	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
           // Receive data from serial port I/O
           $data = json_decode($JSONString);
 	  $FullResponse = utf8_decode( $data->Buffer );
