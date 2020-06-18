@@ -83,11 +83,11 @@
 	        $response = $response.$hex;
 	      }	     
               $CRC = $this->calcCRC( substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ));
-	      if ( $CRC == substr( $response, -4 ) ) {
+	     // if ( $CRC == substr( $response, -4 ) ) {
 		// CRC is also ok, so analyze the response
 	        $this->analyzeResponse( substr( $response, 4, 8 ), substr( $response, 12, ord( $SingleResponses[$x][1] )*2-8) );
-	      }
-	      elseif ( $Debugging == true ) $this->sendDebug( "RCTPower", "CRC Issue on ".substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ).", calculated is CRC is ".$CRC. ", expected is ".substr( $response, -4 ), 0 );	
+	     // }
+	     // elseif ( $Debugging == true ) $this->sendDebug( "RCTPower", "CRC Issue on ".substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ).", calculated is CRC is ".$CRC. ", expected is ".substr( $response, -4 ), 0 );	
 	    }
 	  }
           return true;
@@ -486,7 +486,7 @@
 		  case "162491E8": // Battery Stack 5 serial number
 			  break;
 			  
-		  case "5939EC5D": // Battery Stack 5 serial number
+		  case "5939EC5D": // Battery Stack 6 serial number
 			  break;
 			  
 		  //--- Ignore -------------------------------------------------------------------------------------
@@ -662,7 +662,7 @@
           $this->RequestData( "257B7612", 4 ); usleep( 100000 ); // Battery Stack 3 serial number
           $this->RequestData( "4E699086", 4 ); usleep( 100000 ); // Battery Stack 4 serial number
           $this->RequestData( "162491E8", 4 ); usleep( 100000 ); // Battery Stack 5 serial number
-          $this->RequestData( "5939EC5D", 4 ); usleep( 100000 ); // Battery Stack 5 serial number
+          $this->RequestData( "5939EC5D", 4 ); usleep( 100000 ); // Battery Stack 6 serial number
 	 
           //--- NOT DOCUMENTED -------------------------------------------------------------------------
 	  $this->RequestData( "8B9FF008", 4 ); usleep( 100000 ); // Upper load boundary in %
