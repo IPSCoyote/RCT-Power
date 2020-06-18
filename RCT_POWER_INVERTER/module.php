@@ -107,11 +107,6 @@
 	    }
 	  }
 		
-	  // Debug output
-	  if ( $Debugging == true ) {
-	    $this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as Float ".number_format( $float, 2 ).")", 0 );	
-	  }
-		
 	  switch ($address) {
 		  case "DB2D69AE": // Actual inverters AC-power [W], Float
 			 break;
