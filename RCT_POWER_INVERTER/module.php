@@ -69,8 +69,8 @@
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
 		
 	  for ($x=1; $x<count($SingleResponses); $x++) {  		 
-	    if ( $Debugging == true ) $this->sendDebug( "RCTPower", "Single Response: ", 0 );
-            if ( $Debugging == true ) $this->sendDebug( "RCTPower", $SingleResponses[$x], 0 );
+	    //if ( $Debugging == true ) $this->sendDebug( "RCTPower", "Single Response: ", 0 );
+            //if ( $Debugging == true ) $this->sendDebug( "RCTPower", $SingleResponses[$x], 0 );
 		  
             if ( strlen( $SingleResponses[$x] ) < 2 ) {
 	      // too short for a real response, but don't the Byte
