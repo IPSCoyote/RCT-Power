@@ -13,7 +13,7 @@
             "4 (7.6 kWh)":  "4 Stackmodule (7.6kWh)",
             "5 (9.6 kWh)":  "5 Stackmodule (9.6kWh)",
             "6 (11.5 kWh)": "6 Stackmodule (11.7kWh)",
-            "Auf fremde Abfragen reagieren": "Auf fremde Abfragen reagieren (Achtung! Nicht bei mehreren Wechselrichtern verwenden!)",
+            "Auf fremde Abfragen reagieren": "Auf fremde Abfragen reagieren (Achtung! Gefahr von Datenfehlern wenn mehrere Wechselrichter vorhanden sind!)",
             
             
             "Check Connection": "Verbindung testen",
