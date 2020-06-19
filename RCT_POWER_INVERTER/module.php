@@ -11,7 +11,6 @@
           $this->RegisterPropertyInteger("InputANominalPowerPerPanel", 0);
           $this->RegisterPropertyInteger("InputBPanelCount", 0); 
           $this->RegisterPropertyInteger("InputBNominalPowerPerPanel", 0);
-	  $this->RegisterPropertyInteger("InstalledBatteryModules", 0); 
 	  $this->RegisterPropertyInteger("LowerSoCLevel", 0);
           $this->RegisterPropertyInteger("UpdateInterval", 0);
 	  $this->RegisterPropertyBoolean("DebugSwitch", false );
@@ -34,23 +33,7 @@
 	    $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", $this->ReadPropertyInteger("UpdateInterval")*1000);	
           else
             $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", 0);	  
-		
-	  // Set Battery Gross Capacity based on installed Battery Modules
-	  switch ( $this->ReadPropertyInteger("InstalledBatteryModules") ) {
-	    case 0: SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 0 );
-	  	    break;
-	    case 2: SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 3.8 );
-	  	    break;	
-	    case 3: SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 5.7 );
-	  	    break;	
-	    case 4: SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 7.6 );
-	  	    break;	
-	    case 5: SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 9.6 );
-	  	    break;	
-	    case 6: SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 11.5 );
-	  	    break;	
-	  }
-		
+				
         }
  
         public function Destroy() {
