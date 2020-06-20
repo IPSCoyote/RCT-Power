@@ -141,7 +141,7 @@
 	  
 	  if ( strpos( $RequestedAddresses, $RequestAddress ) !== false ) {
             // Remove address from address Requested Address Buffer
-	    strreplace( $RequestAddress, '', $RequestedAddresses );
+	    str_replace( $RequestAddress, '', $RequestedAddresses );
 	    $this->SetBuffer( "RequestedAddresses", $RequestedAddresses );
 	  }	
 		
