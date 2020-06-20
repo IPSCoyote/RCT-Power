@@ -690,7 +690,7 @@
    	    return false; // wrong parent type
 	  }
 		
-	  if ( IPS_GetProperty(14286  /*[Samsung TV WZ]*/,'Open') == false ) {
+	  if ( IPS_GetProperty( $ModuleID,'Open') == false ) {
 	    $this->sendDebug( "RCTPower", "Parent Gateway not open!", 0 ); 
    	    return false; // wrong parent type
 	  }
