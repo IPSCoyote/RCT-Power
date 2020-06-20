@@ -47,6 +47,7 @@
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 		
           // Receive data from serial port I/O
+	  if ( strlen( $JSONString ) == 0 ) return;
           $data = json_decode($JSONString);
 	  $FullResponse = utf8_decode( $data->Buffer );
           // Seperate Single Responses		
@@ -673,14 +674,26 @@
         
         public function UpdateData() { 
           /* get Data from RCT Power Inverter */
+	   $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 		
 	  ///--- HANDLE Connection --------------------------------------------------------------------------------------	
           // check Socket Connection (parent)
           $SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID']; 
-          if ( $SocketConnectionInstanceID == 0 ) return false; // No parent assigned  
+          if ( $SocketConnectionInstanceID == 0 ) {
+	    $this->sendDebug( "RCTPower", "No Parent (Gateway) assigned", 0 );
+	    return false; // No parent assigned  
+	  }
             
           $ModuleID = IPS_GetInstance($SocketConnectionInstanceID)['ModuleInfo']['ModuleID'];      
-          if ( $ModuleID !== '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}' ) return false; // wrong parent type
+          if ( $ModuleID !== '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}' ) {
+	    $this->sendDebug( "RCTPower", "Wrong Parent (Gateway) type", 0 ); 
+   	    return false; // wrong parent type
+	  }
+		
+	  if ( IPS_GetProperty(14286  /*[Samsung TV WZ]*/,'Open') == false ) {
+	    $this->sendDebug( "RCTPower", "Parent Gateway not open!", 0 ); 
+   	    return false; // wrong parent type
+	  }
 		
           // Init Communication -----------------------------------------------------------------------------------------
 	  $this->SetBuffer( "RequestedAddresses", "" );	// Clear Buffer of requested Addresses (will be filled by RequestData)
