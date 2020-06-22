@@ -29,7 +29,7 @@
           $this->registerVariables();  
 		
           $this->SetReceiveDataFilter(".*018EF6B5-AB94-40C6-AA53-46943E824ACF.*");
-	  if ( $this->ReadPropertyInteger("UpdateInterval") >= 10 )
+	  if ( $this->ReadPropertyInteger("UpdateInterval") >= 15 )
 	    $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", $this->ReadPropertyInteger("UpdateInterval")*1000);	
           else
             $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", 0);	  
