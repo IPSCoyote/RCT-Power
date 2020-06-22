@@ -117,34 +117,36 @@
 	    }
 	  }
 		
-	  $RequestedAddresses = $this->GetBuffer( "RequestedAddresses" );
+	  $RequestedAddressesSequence = $this->GetBuffer( "RequestedAddressesSequence" );
 	  
 	  // Check, if address to be analyzes was requested by this module and we're waiting for it
 	  // this shall avoid that the master power inverter analyzes data of slave power inverters which is also 
 	  // send as additional replies by it!
-	  $RequestAddress = "-".$address;
-	  if ( strpos( $RequestedAddresses, $RequestAddress ) === false ) {
-	    if ( $this->ReadPropertyBoolean("ReactOnForeignPolls") == true ) {
-	      // this address should not be processed as it not requested by this module, but Tool Switch 
-	      // allows processing!
-	      if ( $Debugging == true ) {
-	        $this->sendDebug( "RCTPower", "Address ".$address." wasn't currently requested and should not analyzed, but overruled by Tools Setting!", 0 );	
-	      }
+          
+	  if ( $RequestedAddressesSequence == [] ) {
+            // We don't wait for anything
+	    if ( $Debugging == true ) {
+	      IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
+	      $this->sendDebug( "RCTPower", "Address ".$address." wasn't currently requested and should not analyzed!", 0 );
+	      return;
 	    }
-	    else {
-	      // Don't process this address 
-	      if ( $Debugging == true ) {
-	        $this->sendDebug( "RCTPower", "Address ".$address." wasn't currently requested and is not analyzed!", 0 );	
-	      }
-	      return; 
-	    }
-	  } 
-	  
-	  if ( strpos( $RequestedAddresses, $RequestAddress ) !== false ) {
-            // Remove address from address Requested Address Buffer
-	    str_replace( $RequestAddress, '', $RequestedAddresses );
-	    $this->SetBuffer( "RequestedAddresses", $RequestedAddresses );
-	  }	
+            return;
+	  } else {
+            // Check, if address is next requested one
+	    if ( $RequestedAddressesSequence[0] == $address ) {
+		// Address is expected, so analyze it but remove from stack
+		array_shift( $RequestedAddressesSequence );
+		$this->SetBuffer( "RequestedAddressesSequence", $RequestedAddressesSequence );
+	    } else {
+		// unexpected address -> do nothing
+		return;
+	    } 
+	  }
+		
+	  if ( $RequestedAddressesSequence == [] ) {
+            // Roundtrip is over, release Semaphore
+	    IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
+	  }
 		
 	  switch ($address) {
 		  case "DB2D69AE": // Actual inverters AC-power [W], Float
@@ -593,9 +595,9 @@
 	}
 	  
 	  
-	function RequestData( string $command, int $length ) {
+	protected function RequestData( string $command, int $length ) {
 		
-	  $RequestAddress = "-".$command;	
+	  $RequestAddress = $command;	
 		
           // build command		
 	  $hexlength = strtoupper( dechex($length) );
@@ -607,15 +609,15 @@
 	    $hexCommand = $hexCommand.chr(hexdec(substr( $command, $x*2, 2 )));
 		
 	  // Store Address to Requested Addresses Buffer
-	  $RequestedAddresses = $this->GetBuffer( "RequestedAddresses" );
-	  if ( strpos( $RequestedAddresses, $RequestAddress ) === false ) {
-	    $RequestedAddresses = $RequestedAddresses.$RequestAddress;	  
-	    $this->SetBuffer( "RequestedAddresses", $RequestedAddresses );
-	  }
-		 
+	  $RequestAddressesSequence = $this->GetBuffer( "RequestedAddressesSequence" );
+          array_push( $RequestedAddressesSequence, $RequestAddress );
+          // Remind Requested Address
+	  $this->SetBuffer( "RequestedAddressesSequence", $RequestAddressesSequence );
+		
 	  // send Data to Parent (IO)...
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
 	  					    "Buffer" => utf8_encode($hexCommand) )));	
+
 	  usleep( 100000 );
 	}  
 	  
@@ -676,11 +678,29 @@
           /* get Data from RCT Power Inverter */
 	   $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 		
+	  // Am I in a Request/Retrieve roundtrip and haven't released the semaphore?
+	  // So I should avoid being in a deadlock
+	  if ( $this->GetBuffer( "RequestRoundtrip") == true )
+	  {       
+            // Cancel Request Roundtrip
+	    $this->GetBuffer( "RequestRoundtrip", false );
+            // Release Semaphore
+            IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
+	    // and wait 1 second to give others a chance RCT Instances to retrieve data
+	    usleep( 1000000 );
+	  }
+		
+	  if ( IPS_SemaphoreEnter( "RCTPowerInverterRequest", 10000 ) == false ) {
+	    $this->sendDebug( "RCTPower", "UpdateData() Semaphore not available (timeout)", 0 );
+	    return false;	  
+	  }; // Wait max. 10 Sec.	
+		
 	  ///--- HANDLE Connection --------------------------------------------------------------------------------------	
           // check Socket Connection (parent)
           $SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID']; 
           if ( $SocketConnectionInstanceID == 0 ) {
 	    $this->sendDebug( "RCTPower", "No Parent (Gateway) assigned", 0 );
+		
 	    return false; // No parent assigned  
 	  }
             
@@ -695,8 +715,13 @@
    	    return false; // wrong parent type
 	  }
 		
+	  // Remind myself, that I'm now in a "Request/Receive" Process
+	  $this->SetBuffer( "RequestRoundtrip", true );
+	  // Clear Buffer for Requested Addresses (Stack!)
+	  $RequestAddressesSequence = [];
+	  $this->SetBuffer( "RequestedAddressesSequence", $RequestAddressesSequence );
+		
           // Init Communication -----------------------------------------------------------------------------------------
-	  $this->SetBuffer( "RequestedAddresses", "" );	// Clear Buffer of requested Addresses (will be filled by RequestData)
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
       
