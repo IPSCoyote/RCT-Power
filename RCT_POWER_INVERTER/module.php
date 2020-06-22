@@ -691,7 +691,7 @@
 	  if ( $this->GetBuffer( "RequestRoundtrip") == true )
 	  {       
             // Cancel Request Roundtrip
-	    $this->GetBuffer( "RequestRoundtrip", false );
+	    $this->SetBuffer( "RequestRoundtrip", false );
             // Release Semaphore
             IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
 	    // and wait 1 second to give others a chance RCT Instances to retrieve data
@@ -706,7 +706,7 @@
 	  }; // Wait max. 10 Sec.	
 		
 	  if ( $Debugging == true ) {
-	    $this->sendDebug( "RCTPower", "UpdateData() Semaphore not available (timeout)", 0 );
+	    $this->sendDebug( "RCTPower", "Semaphore Enter; Requesting Data...", 0 );
 	  }
 		
 	  ///--- HANDLE Connection --------------------------------------------------------------------------------------	
