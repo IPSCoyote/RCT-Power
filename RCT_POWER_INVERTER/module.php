@@ -745,9 +745,9 @@
       
 	  // $this->RequestData( "DB2D69AE",4 ); // Actual inverters AC-power [W]. ---> NO RESPONSE!
           
-	  $this->RequestData( "CF053085",4 ); // Phase L1 voltage [V]
-	  $this->RequestData( "54B4684E",4 ); // Phase L2 voltage [V]
-	  $this->RequestData( "2545E22D",4 ); // Phase L3 voltage [V]
+	  // $this->RequestData( "CF053085",4 ); // Phase L1 voltage [V] --> not used
+	  // $this->RequestData( "54B4684E",4 ); // Phase L2 voltage [V] --> not used
+	  // $this->RequestData( "2545E22D",4 ); // Phase L3 voltage [V] --> not used
 
           
           $this->RequestData( "B55BA2CE",4 ); // DC input A voltage [V] (by Documentation B298395D) 
