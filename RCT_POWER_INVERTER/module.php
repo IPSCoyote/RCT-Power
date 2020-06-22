@@ -143,7 +143,7 @@
 	    // But if expected address != address skip it till address = expected address of sequence is empty
 	    $ExpectedAddress = $RequestedAddressesSequence[0];
 	    array_shift( $RequestedAddressesSequence );
-	    while ( $address != $ExpectedAddress and ( count( $RequestedAddressesSequence) >= 1 ) {
+	    while ( $address != $ExpectedAddress and count( $RequestedAddressesSequence) >= 1 ) {
 	      if ( $Debugging == true ) {
 	        $this->sendDebug( "RCTPower", "Skipping Address ".$ExpectedAddress." in sequence", 0 );
 	      }
