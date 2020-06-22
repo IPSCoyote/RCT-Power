@@ -117,7 +117,7 @@
 	    }
 	  }
 		
-	  $RequestedAddressesSequence = $this->GetBuffer( "RequestedAddressesSequence" );
+	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );
 	  
 	  // Check, if address to be analyzes was requested by this module and we're waiting for it
 	  // this shall avoid that the master power inverter analyzes data of slave power inverters which is also 
@@ -127,7 +127,7 @@
             // We don't wait for anything
 	    if ( $Debugging == true ) {
 	      IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
-	      $this->sendDebug( "RCTPower", "Address ".$address." wasn't currently requested and should not be analyzed!", 0 );
+	      $this->sendDebug( "RCTPower", "No Address wasn't currently requested. So Address ".$address." will not be analyzed!", 0 );
 	    }
             return;
 	  } else {
@@ -135,7 +135,7 @@
 	    if ( $RequestedAddressesSequence[0] == $address ) {
 		// Address is expected, so analyze it but remove from stack
 		array_shift( $RequestedAddressesSequence );
-		$this->SetBuffer( "RequestedAddressesSequence", $RequestedAddressesSequence );
+		$this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
 		if ( $Debugging == true ) {
 		  $this->sendDebug( "RCTPower", "Address ".$address." expected; process and removed from Address Stack", 0 );
 		}
@@ -617,10 +617,10 @@
 	    $hexCommand = $hexCommand.chr(hexdec(substr( $command, $x*2, 2 )));
 		
 	  // Store Address to Requested Addresses Buffer
-	  $RequestedAddressesSequence = $this->GetBuffer( "RequestedAddressesSequence" );
+	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );
           array_push( $RequestedAddressesSequence, $RequestAddress );
           // Remind Requested Address
-	  $this->SetBuffer( "RequestedAddressesSequence", $RequestedAddressesSequence );
+	  $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
 		
 	  // send Data to Parent (IO)...
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
