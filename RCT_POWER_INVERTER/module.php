@@ -880,7 +880,7 @@
 	  $this->PushRequestToString( $CommandString, "4BC0F974", 4 ); // Installed PV Panel kWp
 	  $this->PushRequestToString( $CommandString, "1AC87AA0", 4 ); // Current House power consumption 	
 		
-	  FlushStringToParent( $CommandString );	
+	  $this->FlushStringToParent( $CommandString );	
 		
 	  // return result
           return true;
