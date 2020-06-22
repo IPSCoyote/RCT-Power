@@ -147,7 +147,7 @@
 		
 	  if ( $address == "1AC87AA0" ) {
             // this is the last expected response -> Leave the Semaphore if still expected analysis is running
-	    if ( $this->GetBuffer( "AnalyzeDataInActiveRequest" ) == true {
+	    if ( $this->GetBuffer( "AnalyzeDataInActiveRequest" ) ) == true {
 	      if ( $Debugging == true ) {
 		$this->sendDebug( "RCTPower", "... last requested address! Semaphore Leave!") , do nothing", 0 );
 	      }
