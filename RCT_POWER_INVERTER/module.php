@@ -123,7 +123,7 @@
 	  // this shall avoid that the master power inverter analyzes data of slave power inverters which is also 
 	  // send as additional replies by it!
           
-	  if ( count( $RequestedAddressesSequence ) == 0 ) {
+	  if ( !is_array( $RequestedAddressesSequence ) OR count( $RequestedAddressesSequence ) == 0 ) {
             // We don't wait for anything
 	    if ( $Debugging == true ) {
 	      IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
@@ -617,10 +617,10 @@
 	    $hexCommand = $hexCommand.chr(hexdec(substr( $command, $x*2, 2 )));
 		
 	  // Store Address to Requested Addresses Buffer
-	  $RequestAddressesSequence = $this->GetBuffer( "RequestedAddressesSequence" );
+	  $RequestedAddressesSequence = $this->GetBuffer( "RequestedAddressesSequence" );
           array_push( $RequestedAddressesSequence, $RequestAddress );
           // Remind Requested Address
-	  $this->SetBuffer( "RequestedAddressesSequence", $RequestAddressesSequence );
+	  $this->SetBuffer( "RequestedAddressesSequence", $RequestedAddressesSequence );
 		
 	  // send Data to Parent (IO)...
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
