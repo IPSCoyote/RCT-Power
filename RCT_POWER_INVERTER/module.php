@@ -140,8 +140,7 @@
 	    if ( $Debugging == true ) {
 	      $this->sendDebug( "RCTPower", "Unexpected Address ".$address." (expecpted Address was ".$ExpectedAddress.")", 0 );
 	    } 
-	    // sequence broken -> stop further analysis
-	    	  
+	    // sequence broken -> stop further analysis	  
 	  }
 
 		
