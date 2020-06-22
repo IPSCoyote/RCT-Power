@@ -50,6 +50,7 @@
 	  if ( strlen( $JSONString ) == 0 ) return;
           $data = json_decode($JSONString);
 	  $FullResponse = utf8_decode( $data->Buffer );
+	  $this->sendDebug( "RCTPower", "Data Returned: ".strlen( $FullResponse ), 0 );
           // Seperate Single Responses		
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
 		
