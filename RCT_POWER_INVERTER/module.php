@@ -123,7 +123,7 @@
 	  // this shall avoid that the master power inverter analyzes data of slave power inverters which is also 
 	  // send as additional replies by it!
           
-	  if ( $RequestedAddressesSequence == [] ) {
+	  if ( count( $RequestedAddressesSequence ) == 0 ) {
             // We don't wait for anything
 	    if ( $Debugging == true ) {
 	      IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
