@@ -128,7 +128,6 @@
 	    if ( $Debugging == true ) {
 	      IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
 	      $this->sendDebug( "RCTPower", "Address ".$address." wasn't currently requested and should not analyzed!", 0 );
-	      return;
 	    }
             return;
 	  } else {
@@ -137,14 +136,23 @@
 		// Address is expected, so analyze it but remove from stack
 		array_shift( $RequestedAddressesSequence );
 		$this->SetBuffer( "RequestedAddressesSequence", $RequestedAddressesSequence );
+		if ( $Debugging == true ) {
+		  $this->sendDebug( "RCTPower", "Address ".$address." removed from Address Stack", 0 );
+		}
 	    } else {
-		// unexpected address -> do nothing
-		return;
+	      // unexpected address -> do nothing
+	      if ( $Debugging == true ) {
+		$this->sendDebug( "RCTPower", "Address ".$address." not in right sequence, do nothing", 0 );
+	      }
+	      return;
 	    } 
 	  }
 		
 	  if ( $RequestedAddressesSequence == [] ) {
             // Roundtrip is over, release Semaphore
+	    if ( $Debugging == true ) {
+	      $this->sendDebug( "RCTPower", "Semaphore released", 0 );
+	    }  
 	    IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
 	  }
 		
