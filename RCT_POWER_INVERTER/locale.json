@@ -6,7 +6,7 @@
             "Basic Data - INPUT B": "PV Paneldaten - Eingang B",
             "Basic Data": "Grunddaten",
             "Update Intervals": "Update Interval",
-            "Update Interval": "automatische Aktualisierung alle X Sekunden (0 = aus)",
+            "Update Interval": "automatische Aktualisierung alle X Sekunden (0 = aus; sonstiges Minimum = 15 Sek.)",
             "Keine": "Keine",
             "2 (3.8 kWh)":  "2 Stackmodule (3.8kWh)",
             "3 (5.7 kWh)":  "3 Stackmodule (5.7kWh)",
