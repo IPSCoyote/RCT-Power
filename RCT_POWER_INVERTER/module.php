@@ -699,9 +699,15 @@
 	  }
 		
 	  if ( IPS_SemaphoreEnter( "RCTPowerInverterRequest", 10000 ) == false ) {
-	    $this->sendDebug( "RCTPower", "UpdateData() Semaphore not available (timeout)", 0 );
+	    if ( $Debugging == true ) {
+	      $this->sendDebug( "RCTPower", "UpdateData() Semaphore not available (timeout)", 0 );
+	    }
 	    return false;	  
 	  }; // Wait max. 10 Sec.	
+		
+	  if ( $Debugging == true ) {
+	    $this->sendDebug( "RCTPower", "UpdateData() Semaphore not available (timeout)", 0 );
+	  }
 		
 	  ///--- HANDLE Connection --------------------------------------------------------------------------------------	
           // check Socket Connection (parent)
@@ -726,8 +732,8 @@
 	  // Remind myself, that I'm now in a "Request/Receive" Process
 	  $this->SetBuffer( "RequestRoundtrip", true );
 	  // Clear Buffer for Requested Addresses (Stack!)
-	  $RequestAddressesSequence = [];
-	  $this->SetBuffer( "RequestedAddressesSequence", $RequestAddressesSequence );
+	  $RequestedAddressesSequence = [];
+	  $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
 		
           // Init Communication -----------------------------------------------------------------------------------------
 		
