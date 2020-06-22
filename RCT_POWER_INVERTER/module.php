@@ -118,15 +118,17 @@
 	  }
 		
 	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );
-	  
+		
 	  // Check, if address to be analyzes was requested by this module and we're waiting for it
 	  // this shall avoid that the master power inverter analyzes data of slave power inverters which is also 
 	  // send as additional replies by it!
           
-	  if ( !is_array( $RequestedAddressesSequence ) OR count( $RequestedAddressesSequence ) == 0 ) {
+	  if ( $this->GetBuffer( "AnalyzeDataInActiveRequest" ) == false or
+	       !is_array( $RequestedAddressesSequence ) OR 
+	       count( $RequestedAddressesSequence ) == 0 ) {
 	    // No addresses actively requested
 	    if ( $Debugging == true ) {
-	      $this->sendDebug( "RCTPower", "No Address ".$address." expedpected", 0 );
+	      $this->sendDebug( "RCTPower", "No Address ".$address." expected", 0 );
 	    }
 	    return;
 	  } else {
