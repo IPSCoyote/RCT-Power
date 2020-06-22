@@ -63,7 +63,7 @@
 		$package = substr( $remainingResponse, 0, $packageLength );
 		$remainingResponse = substr( $remainingResponse, $packageLength, 2048 );
 	      } else {
-	        exit; //while
+	        break; //while
 	      }
 	    }
             $this->sendDebug( "RCTPower", "# of Packages: ".$packageCount, 0 );
