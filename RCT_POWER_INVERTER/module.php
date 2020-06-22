@@ -117,6 +117,13 @@
 	    }
 	  }
 		
+	  // ignore duplicate addresses (e.g. if master sends slave data)
+	  if ( $address == $this->GetBuffer( "LastAddress" ) {
+	    // ignore
+	    return;
+	  }
+	  %this->SetBuffer( "LastAddress", $address );	
+		
 	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );
 		
 	  // Check, if address to be analyzes was requested by this module and we're waiting for it
@@ -132,9 +139,14 @@
 	    }
 	    return;
 	  } else {
-	    // we're awaiting addresses
+	    // we're awaiting an address, so take next expected address. 
+	    // But if expected address != address skip it till address = expected address of sequence is empty
 	    $ExpectedAddress = $RequestedAddressesSequence[0];
 	    array_shift( $RequestedAddressesSequence );
+	    while ( $address != $ExpectedAddress and ( count( $RequestedAddressesSequence) >= 1 ) {
+	      $ExpectedAddress = $RequestedAddressesSequence[0];
+	      array_shift( $RequestedAddressesSequence );  
+	    }
 	    $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
 	  }
 		
