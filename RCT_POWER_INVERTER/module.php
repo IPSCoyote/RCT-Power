@@ -61,7 +61,7 @@
 	        $packageCount = $packageCount + 1;
 		$packageLength = ord( $remainingResponse[2] ) + 5;
 		$package = substr( $remainingResponse, 0, $packageLength );
-		$this->sendDebug( "RCTPower", "#".$packageCount.": >".$package."<", 0 );
+		$this->sendDebug( "RCTPower", $package, 0 );
 		$remainingResponse = substr( $remainingResponse, $packageLength, 2048 );
 	      } else {
 	        break; //while
