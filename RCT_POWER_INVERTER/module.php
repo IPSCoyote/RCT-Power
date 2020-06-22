@@ -127,7 +127,7 @@
             // We don't wait for anything
 	    if ( $Debugging == true ) {
 	      IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
-	      $this->sendDebug( "RCTPower", "Address ".$address." wasn't currently requested and should not analyzed!", 0 );
+	      $this->sendDebug( "RCTPower", "Address ".$address." wasn't currently requested and should not be analyzed!", 0 );
 	    }
             return;
 	  } else {
