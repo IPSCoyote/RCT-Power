@@ -75,8 +75,7 @@
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
 	  $this->sendDebug( "RCTPower", "Packages: ".count( $SingleResponses ), 0 );
 		
-		
-	  $Test = explode( ch(43)+chr(5), $FullResponse );
+	  $Test = explode( chr(43)+chr(5), $FullResponse );
 	  $this->sendDebug( "RCTPower", "Packages Test: ".count( $Test ), 0 );	
 		
 		
