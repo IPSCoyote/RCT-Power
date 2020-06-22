@@ -137,12 +137,12 @@
 		array_shift( $RequestedAddressesSequence );
 		$this->SetBuffer( "RequestedAddressesSequence", $RequestedAddressesSequence );
 		if ( $Debugging == true ) {
-		  $this->sendDebug( "RCTPower", "Address ".$address." removed from Address Stack", 0 );
+		  $this->sendDebug( "RCTPower", "Address ".$address." expected; process and removed from Address Stack", 0 );
 		}
 	    } else {
 	      // unexpected address -> do nothing
 	      if ( $Debugging == true ) {
-		$this->sendDebug( "RCTPower", "Address ".$address." not in right sequence, do nothing", 0 );
+		$this->sendDebug( "RCTPower", "Address ".$address." not in right sequence (expected ".$RequestedAddressesSequence[0].") , do nothing", 0 );
 	      }
 	      return;
 	    } 
