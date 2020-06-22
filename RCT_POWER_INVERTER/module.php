@@ -73,11 +73,7 @@
 		
           // Seperate Single Responses		
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
-	  $this->sendDebug( "RCTPower", "Packages: ".count( $SingleResponses ), 0 );
-		
-	  $Test = explode( chr(43)+chr(5), $FullResponse );
-	  $this->sendDebug( "RCTPower", "Packages Test: ".count( $Test ), 0 );	
-		
+	  $this->sendDebug( "RCTPower", "Packages: ".count( $SingleResponses ), 0 );	
 		
 	  for ($x=1; $x<count($SingleResponses); $x++) {  		 
 	    //if ( $Debugging == true ) $this->sendDebug( "RCTPower", "Single Response: ", 0 );
