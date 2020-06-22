@@ -126,7 +126,10 @@
 	  if ( !is_array( $RequestedAddressesSequence ) OR count( $RequestedAddressesSequence ) == 0 ) {
             // We don't wait for anything
 	    if ( $Debugging == true ) {
-	      IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
+	      if ( $this->GetBuffer( "RequestRoundtrip" ) == true ) {
+	        $this->SetBuffer( "RequestRoundtrip", false );
+	        IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
+	      }
 	      $this->sendDebug( "RCTPower", "No Address wasn't currently requested. So Address ".$address." will not be analyzed!", 0 );
 	    }
             return;
@@ -148,11 +151,12 @@
 	    } 
 	  }
 		
-	  if ( $RequestedAddressesSequence == [] ) {
+	  if ( !is_array( $RequestedAddressesSequence ) OR count( $RequestedAddressesSequence ) == 0 ) {
             // Roundtrip is over, release Semaphore
 	    if ( $Debugging == true ) {
 	      $this->sendDebug( "RCTPower", "Semaphore released", 0 );
 	    }  
+	    $this->SetBuffer( "RequestRoundtrip", false );
 	    IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
 	  }
 		
