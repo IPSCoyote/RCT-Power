@@ -122,7 +122,7 @@
 	    // ignore
 	    return;
 	  }
-	  %this->SetBuffer( "LastAddress", $address );	
+	  $this->SetBuffer( "LastAddress", $address );	
 		
 	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );
 		
