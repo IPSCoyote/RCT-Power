@@ -124,40 +124,37 @@
 	  // send as additional replies by it!
           
 	  if ( !is_array( $RequestedAddressesSequence ) OR count( $RequestedAddressesSequence ) == 0 ) {
-            // We don't wait for anything
+	    // No addresses actively requested
 	    if ( $Debugging == true ) {
-	      if ( $this->GetBuffer( "RequestRoundtrip" ) == true ) {
-	        $this->SetBuffer( "RequestRoundtrip", false );
-	        IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
-	      }
-	      $this->sendDebug( "RCTPower", "No Address wasn't currently requested. So Address ".$address." will not be analyzed!", 0 );
+	      $this->sendDebug( "RCTPower", "No Address ".$address." expedpected", 0 );
 	    }
-            return;
+	    return;
 	  } else {
-            // Check, if address is next requested one
-	    if ( $RequestedAddressesSequence[0] == $address ) {
-		// Address is expected, so analyze it but remove from stack
-		array_shift( $RequestedAddressesSequence );
-		$this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
-		if ( $Debugging == true ) {
-		  $this->sendDebug( "RCTPower", "Address ".$address." expected; process and removed from Address Stack", 0 );
-		}
-	    } else {
-	      // unexpected address -> do nothing
-	      if ( $Debugging == true ) {
-		$this->sendDebug( "RCTPower", "Address ".$address." not in right sequence (expected ".$RequestedAddressesSequence[0].") , do nothing", 0 );
-	      }
-	      return;
-	    } 
+	    // we're awaiting addresses
+	    $ExpectedAddress = $RequestedAddressesSequence[0];
+	    array_shift( $RequestedAddressesSequence );
+	    $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
 	  }
 		
-	  if ( !is_array( $RequestedAddressesSequence ) OR count( $RequestedAddressesSequence ) == 0 ) {
-            // Roundtrip is over, release Semaphore
+	  if ( $address != $ExpectedAddress ) {
 	    if ( $Debugging == true ) {
-	      $this->sendDebug( "RCTPower", "Semaphore released", 0 );
-	    }  
-	    $this->SetBuffer( "RequestRoundtrip", false );
-	    IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
+	      $this->sendDebug( "RCTPower", "Unexpected Address ".$address." (expecpted Address was ".$ExpectedAddress.")", 0 );
+	    } 
+	    // sequence broken -> stop further analysis
+	    	  
+	  }
+
+		
+		
+	  if ( $address == "1AC87AA0" ) {
+            // this is the last expected response -> Leave the Semaphore if still expected analysis is running
+	    if ( $this->GetBuffer( "AnalyzeDataInActiveRequest" ) == true {
+	      if ( $Debugging == true ) {
+		$this->sendDebug( "RCTPower", "... last requested address! Semaphore Leave!") , do nothing", 0 );
+	      }
+	      IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
+	    }
+	    $this->SetBuffer( "AnalyzeDataInActiveRequest", false );
 	  }
 		
 	  switch ($address) {
@@ -692,22 +689,26 @@
 		
 	  // Am I in a Request/Retrieve roundtrip and haven't released the semaphore?
 	  // So I should avoid being in a deadlock
-	  if ( $this->GetBuffer( "RequestRoundtrip") == true )
+	  if ( $this->GetBuffer( "AnalyzeDataInActiveRequest") == true )
 	  {       
             // Cancel Request Roundtrip
-	    $this->SetBuffer( "RequestRoundtrip", false );
+	    $this->SetBuffer( "AnalyzeDataInActiveRequest", false );
+	    $RequestedAddressesSequence = [];
+	    $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
             // Release Semaphore
             IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
-	    // and wait 1 second to give others a chance RCT Instances to retrieve data
-	    usleep( 1000000 );
+	    // and wait 2 second to give others a chance RCT Instances to retrieve data
+	    usleep( 2000000 );
 	  }
 		
+	  // Wait for Semaphore ( wait for max. 10 sec. to get semaphore )
 	  if ( IPS_SemaphoreEnter( "RCTPowerInverterRequest", 10000 ) == false ) {
+	    // Semaphore wasn't available -> stop processing
 	    if ( $Debugging == true ) {
 	      $this->sendDebug( "RCTPower", "UpdateData() Semaphore not available (timeout)", 0 );
 	    }
 	    return false;	  
-	  }; // Wait max. 10 Sec.	
+	  }
 		
 	  if ( $Debugging == true ) {
 	    $this->sendDebug( "RCTPower", "Semaphore Enter; Requesting Data...", 0 );
@@ -734,7 +735,7 @@
 	  }
 		
 	  // Remind myself, that I'm now in a "Request/Receive" Process
-	  $this->SetBuffer( "RequestRoundtrip", true );
+	  $this->SetBuffer( "AnalyzeDataInActiveRequest", true ); // So AnalyzeResponse knows it should handle responses
 	  // Clear Buffer for Requested Addresses (Stack!)
 	  $RequestedAddressesSequence = [];
 	  $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
@@ -742,7 +743,9 @@
           // Init Communication -----------------------------------------------------------------------------------------
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
-      
+          // Responses are expected IN THIS SEQUENCE!
+	  // Last requested Address "!AC87AA0" --> will release Semaphore in AnalyzeResponse!
+		
 	  // $this->RequestData( "DB2D69AE",4 ); // Actual inverters AC-power [W]. ---> NO RESPONSE!
           
 	  // $this->RequestData( "CF053085",4 ); // Phase L1 voltage [V] --> not used
@@ -825,7 +828,7 @@
           //--- NOT DOCUMENTED -------------------------------------------------------------------------
 	  $this->RequestData( "8B9FF008", 4 ); // Upper load boundary in %
 	  $this->RequestData( "4BC0F974", 4 ); // Installed PV Panel kWp
-	  $this->RequestData( "1AC87AA0", 4 ); // Current House power consumption
+	  $this->RequestData( "1AC87AA0", 4 ); // Current House power consumption 	
 		
 	  // return result
           return true;
