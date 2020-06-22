@@ -118,7 +118,7 @@
 	  }
 		
 	  // ignore duplicate addresses (e.g. if master sends slave data)
-	  if ( $address == $this->GetBuffer( "LastAddress" ) {
+	  if ( $address == $this->GetBuffer( "LastAddress" ) ) {
 	    // ignore
 	    return;
 	  }
