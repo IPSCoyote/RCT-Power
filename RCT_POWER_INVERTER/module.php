@@ -51,6 +51,25 @@
           $data = json_decode($JSONString);
 	  $FullResponse = utf8_decode( $data->Buffer );
 	  $this->sendDebug( "RCTPower", "Data Returned: ".strlen( $FullResponse ), 0 );
+		
+	  if ( strlen( $FullResponse ) > 500 ) {
+	    $this->sendDebug( "RCTPower", "Calculate Pakckages", 0 );
+	    $remainingResponse = $FullResponse;
+	    $packageCount = 0;
+	    while ( strlen( $remainingResponse ) > 3 ) {
+	      if ( $remainingResponse[0] == chr(43) ) {
+	        $packageCount = $packageCount + 1;
+		$packageLength = ord( $remainingResponse[2] ) + 5;
+		$package = substr( $remainingResponse, 0, $packageLength );
+		$remainingResponse = substr( $remainingResponse, $packageLength, 2048 );
+	      } else {
+	        exit; //while
+	      }
+	    }
+            $this->sendDebug( "RCTPower", "# of Packages: ".$packageCount, 0 );
+		  
+	  }
+		
           // Seperate Single Responses		
 	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
 	  $this->sendDebug( "RCTPower", "Packages: ".count( $SingleResponses ), 0 );
