@@ -47,7 +47,7 @@
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");
 		
 	  if ( $this->GetBuffer( "DataRequested" ) == false ) {
-	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Unexpected Data Received", 0 );	
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Unexpected Data Received", 0 ); }
             return true;
 	  }
 		
@@ -69,13 +69,13 @@
 	    $this->SetBuffer( "ReceivedDataBuffer", "" );
 	  } else {
 	    // still waiting for the end of the package, so collect received data in buffer
-	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Expected Data Received, collecting...", 0 );	
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Expected Data Received, collecting...", 0 ); }	
 	    $this->SetBuffer( "ReceivedDataBuffer", $CollectedReceivedData );
 	    return true;
 	  }
 		
 	  //--- End Address was received, so process data
-	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "All Expected Data Received, start analyzing", 0 );	
+	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "All Expected Data Received, start analyzing", 0 );	}
 	  $this->SetBuffer( "DataRequested", false ); // no more data expected
 		  
 	  // first: Byte STream Interpreting Rules (see communication protocol documentation)
