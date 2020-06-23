@@ -82,8 +82,7 @@
 	  
 	  $this->SetBuffer( "DataRequested", "FALSE" ); // no more data expected
 		  
-	  // first: Byte STream Interpreting Rules (see communication protocol documentation)
-		 
+	  // first: Byte Stream Interpreting Rules (see communication protocol documentation)
 	  $CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
 	  $CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );
 		
