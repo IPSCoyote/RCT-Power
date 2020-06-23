@@ -46,6 +46,33 @@
         public function ReceiveData($JSONString) {
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 		
+          // get expected addresses in their sequence		
+	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );  
+	  
+	  // in general we expect address "1AC87AA0" to be requested at last -> End of all expected Responses	
+	  // till then we collect all given data in a long string
+	  if ( strlen( $JSONString ) == 0 ) return;	
+          $ReceivedData = utf8_decode( json_decode($JSONString)->Buffer );
+          
+	  $ReceivedDataBuffer = $this->GetBuffer( "ReceivedDataBuffer" );
+	  $ReceivedData = $ReceivedDataBuffer.$ReceivedData;
+	  
+ 	  if ( strpos( $ReceivedData, "1AC87AA0" ) > 0 ) {
+            // End Address was received -> start analysing data	and clear received data buffer
+	    $this->SetBuffer( "ReceivedDataBuffer", "" );
+	  } else {
+	    // still waiting for the end of the package, so collect received data in buffer
+	    $this->SetBuffer( "ReceivedDataBuffer", $ReceivedDataBuffer );
+	    return true;
+	  }
+		
+	  $this->sendDebug( "RCTPower", "Data Returned: ".strlen( $ReceivedDataBuffer )." bytes", 0 );	
+	  $this->sendDebug( "RCTPower", "Data Returned: ".$ReceivedDataBuffer, 0 );	
+		
+	  // Request Processing finally done	
+		
+	  return true;;
+		
           // Receive data from serial port I/O
 	  if ( strlen( $JSONString ) == 0 ) return;
           $data = json_decode($JSONString);
@@ -729,8 +756,7 @@
           $SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID']; 
           if ( $SocketConnectionInstanceID == 0 ) {
 	    $this->sendDebug( "RCTPower", "No Parent (Gateway) assigned", 0 );
-		
-	    return false; // No parent assigned  
+            return false; // No parent assigned  
 	  }
             
           $ModuleID = IPS_GetInstance($SocketConnectionInstanceID)['ModuleInfo']['ModuleID'];      
@@ -757,7 +783,6 @@
 	  // $this->RequestData( "CF053085" ); // Phase L1 voltage [V] --> not used
 	  // $this->RequestData( "54B4684E" ); // Phase L2 voltage [V] --> not used
 	  // $this->RequestData( "2545E22D" ); // Phase L3 voltage [V] --> not used
-
           
           $this->RequestData( "B55BA2CE" ); // DC input A voltage [V] (by Documentation B298395D) 
           $this->RequestData( "DB11855B" ); // DC input A power [W]
