@@ -57,23 +57,25 @@
           $ReceivedData = utf8_decode( json_decode($JSONString)->Buffer );
           
 	  $ReceivedDataBuffer = $this->GetBuffer( "ReceivedDataBuffer" );
-	  $ReceivedData = $ReceivedDataBuffer.$ReceivedData;
+	  $CollectedReceivedData = $ReceivedDataBuffer.$ReceivedData;
 	  
  	  if ( strpos( $ReceivedData, $EndAddress ) > 0 ) {
             // End Address was received -> start analysing data	and clear received data buffer
 	    $this->SetBuffer( "ReceivedDataBuffer", "" );
 	  } else {
 	    // still waiting for the end of the package, so collect received data in buffer
-	    $this->SetBuffer( "ReceivedDataBuffer", $ReceivedDataBuffer );
+	    $this->SetBuffer( "ReceivedDataBuffer", $CollectedReceivedData );
 	    return true;
 	  }
 		
-	  $this->sendDebug( "RCTPower", "Data Returned: ".strlen( $ReceivedDataBuffer )." bytes", 0 );	
-	  $this->sendDebug( "RCTPower", "Data Returned: ".$ReceivedDataBuffer, 0 );	
+	  $this->sendDebug( "RCTPower", "Data Returned: ".strlen( $CollectedReceivedData )." bytes", 0 );	
+	  $this->sendDebug( "RCTPower", "Data Returned: ".$CollectedReceivedData, 0 );	
 		
 	  // Request Processing finally done	
 		
-	  return true;;
+	  return true;
+		
+	  //===========================================================================================	
 		
           // Receive data from serial port I/O
 	  if ( strlen( $JSONString ) == 0 ) return;
