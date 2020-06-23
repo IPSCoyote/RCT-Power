@@ -18,6 +18,9 @@
 
           // Timer
           $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
+		
+	  // No data requested yet
+	  $this->SetBuffer( "DataRequested", false );
         }
  
         public function ApplyChanges() { 
@@ -46,7 +49,7 @@
         public function ReceiveData($JSONString) {
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");
 		
-	  if ( $this->GetBuffer( "DataRequested" ) == false ) {
+	  if ( $this->GetBuffer( "DataRequested" ) != "TRUE" ) {
 	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Unexpected Data Received", 0 ); }
             return true;
 	  }
@@ -76,7 +79,8 @@
 		
 	  //--- End Address was received, so process data
 	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "All Expected Data Received, start analyzing", 0 );	}
-	  $this->SetBuffer( "DataRequested", false ); // no more data expected
+	  
+	  $this->SetBuffer( "DataRequested", "FALSE" ); // no more data expected
 		  
 	  // first: Byte STream Interpreting Rules (see communication protocol documentation)
 		 
@@ -797,7 +801,7 @@
           // Init Communication -----------------------------------------------------------------------------------------
 	  $RequestedAddressesSequence = [];
 	  $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
-	  $this->SetBuffer( "DataRequested", true ); // we're now requesting data -> receive and analyze it
+	  $this->SetBuffer( "DataRequested", "TRUE" ); // we're now requesting data -> receive and analyze it
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
 		
