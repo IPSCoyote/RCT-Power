@@ -51,13 +51,15 @@
 	  
 	  // in general we expect address "1AC87AA0" to be requested at last -> End of all expected Responses	
 	  // till then we collect all given data in a long string
+	  $EndAddress = chr(26).chr(200).chr(122).chr(160);
+		
 	  if ( strlen( $JSONString ) == 0 ) return;	
           $ReceivedData = utf8_decode( json_decode($JSONString)->Buffer );
           
 	  $ReceivedDataBuffer = $this->GetBuffer( "ReceivedDataBuffer" );
 	  $ReceivedData = $ReceivedDataBuffer.$ReceivedData;
 	  
- 	  if ( strpos( $ReceivedData, "1AC87AA0" ) > 0 ) {
+ 	  if ( strpos( $ReceivedData, $EndAddress ) > 0 ) {
             // End Address was received -> start analysing data	and clear received data buffer
 	    $this->SetBuffer( "ReceivedDataBuffer", "" );
 	  } else {
