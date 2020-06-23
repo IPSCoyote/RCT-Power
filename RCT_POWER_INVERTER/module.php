@@ -84,8 +84,8 @@
 		  
 	  // first: Byte STream Interpreting Rules (see communication protocol documentation)
 		 
-	  str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
-	  str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );
+	  $CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
+	  $CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );
 		
 		
 	  $this->sendDebug( "RCTPower", "Data Returned: ".strlen( $CollectedReceivedData )." bytes", 0 );	
