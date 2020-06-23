@@ -44,7 +44,12 @@
 	  
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
-	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
+	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");
+		
+	  if ( $this->GetBuffer( "DataRequested" ) == false ) {
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Unexpected Data Received", 0 );	
+            return true;
+	  }
 		
           // get expected addresses in their sequence		
 	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );  
@@ -64,12 +69,17 @@
 	    $this->SetBuffer( "ReceivedDataBuffer", "" );
 	  } else {
 	    // still waiting for the end of the package, so collect received data in buffer
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Expected Data Received, collecting...", 0 );	
 	    $this->SetBuffer( "ReceivedDataBuffer", $CollectedReceivedData );
 	    return true;
 	  }
 		
 	  //--- End Address was received, so process data
+	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "All Expected Data Received, start analyzing", 0 );	
+	  $this->SetBuffer( "DataRequested", false ); // no more data expected
+		  
 	  // first: Byte STream Interpreting Rules (see communication protocol documentation)
+		 
 	  str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
 	  str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );
 		
@@ -785,10 +795,13 @@
 	  $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
 		
           // Init Communication -----------------------------------------------------------------------------------------
+	  $RequestedAddressesSequence = [];
+	  $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
+	  $this->SetBuffer( "DataRequested", true ); // we're now requesting data -> receive and analyze it
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
 		
-	  // $this->PushRequestToString( $CommandString, "DB2D69AE",4 ); // Actual inverters AC-power [W]. ---> NO RESPONSE!
+	  // $this->RequestData( "DB2D69AE" ); // Actual inverters AC-power [W]. ---> NO RESPONSE!
           
 	  // $this->RequestData( "CF053085" ); // Phase L1 voltage [V] --> not used
 	  // $this->RequestData( "54B4684E" ); // Phase L2 voltage [V] --> not used
@@ -800,7 +813,7 @@
 	  $this->RequestData( "B0041187" ); // DC input B voltage [V] (by Documentation 5BB8075A)
           $this->RequestData( "0CB5D21B" ); // DC input B power [W]
 
-	  // $this->PushRequestToString( $CommandString, "B408E40A", 4 ); usleep( 100000 ); // Battery current measured by inverter, low pass filter with Tau = 1s [A]
+	  // $this->RequestData( "B408E40A" ); usleep( 100000 ); // Battery current measured by inverter, low pass filter with Tau = 1s [A]
 
           $this->RequestData( "A7FA5C5D" ); // Battery voltage [V]
           $this->RequestData( "959930BF" ); // Battery State of Charge (SoC) [0..1]
