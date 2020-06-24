@@ -103,7 +103,7 @@
 	      $packageAddress    = substr( $CollectedReceivedData, 3, 4 );
 	      $packageData       = substr( $CollectedReceivedData, 7, $packageLength - 4 );
 	      $packageCRC        = substr( $CollectedReceivedData, 3+$packageLength, 2 );	    
-	      $packageFullLength = $packageLength+9;   
+	      $packageFullLength = $packageLength+5; // StartByte+Command+Length+CRC  
 	   	    
 	      $package           = substr( $CollectedReceivedData, 0, $packageFullLength );
 	      $CollectedReceivedData = substr( $CollectedReceivedData, $packageFullLength );
