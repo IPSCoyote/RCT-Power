@@ -102,9 +102,13 @@
 	      $response['CRC']        = $this->decToHexString(substr( $CollectedReceivedData, 3+$response['Length'], 2 ) );	    
 	      $response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
 	      $response['Complete']   = $this->decToHexString(substr( $CollectedReceivedData, 0, $response['FullLength'] ) );
+	    
+              $calculatedCRC = $this->calcCRC( $response['Command'].$this->decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
+	
+	      // shift data string for while statement	    
+	      $CollectedReceivedData = substr( $CollectedReceivedData, $packageFullLength );
 		    
-              $CRC = $this->calcCRC( $response['Command'].$this->decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
-		   
+	      // check response	    
 	      if ( $response['Command'] <> '05' ) {
 	        // we only look for command 05 = short response
 		if ( $Debugging == true ) {
@@ -113,18 +117,16 @@
 	        continue;
 	      }
 		    
-	      if ( $CRC != $package['CRC'] ) {
+	      if ( $calculatedCRC != $response['CRC'] ) {
 	        // CRC Check failed
 		if ( $Debugging == true ) {
-		  $this->sendDebug( "RCTPower", "CRC Error on Command: ".$response['Command'].", PackageLength: ".$response['Length'].", Address: ".$response['Address'].", Data: ".$response['Data'].", CRC: ".$response['CRC'].", FullLength: ".$response['FullLength']." - Calculated CRC: ".$CRC, 0 );    
+		  $this->sendDebug( "RCTPower", "CRC Error on Command: ".$response['Command'].", PackageLength: ".$response['Length'].", Address: ".$response['Address'].", Data: ".$response['Data'].", CRC: ".$response['CRC'].", FullLength: ".$response['FullLength']." - Calculated CRC: ".$calculatedCRC, 0 );    
 		}
 		continue;
 	      }
 		    
 	      // add found response to resonpse stack
 	      array_push( $singleResponses, $response );
-		    
-	      $CollectedReceivedData = substr( $CollectedReceivedData, $packageFullLength );
 		    
 	    } else {
 	      // shift Data left by 1
