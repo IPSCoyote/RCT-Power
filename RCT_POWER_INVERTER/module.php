@@ -137,84 +137,11 @@
           // get expected addresses in their sequence		
 	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );  
 		
-	  // Analyze Responses
+	  // Analyze Single Responses
 	  for ( $x = 0; $x < count( $singleResponses ); $x++ ) {
-	    $this->analyzeResponse( $response['Address'], $response['Data'] );  
+	    $this->analyzeResponse( $singleResponses[$x]['Address'], $singleResponses[$x]['Data'] );  
 	  }
 		
-		
-	  return true;
-		
-	  //===========================================================================================	
-		
-          // Receive data from serial port I/O
-	  if ( strlen( $JSONString ) == 0 ) return;
-          $data = json_decode($JSONString);
-	  $FullResponse = utf8_decode( $data->Buffer );
-	  $this->sendDebug( "RCTPower", "Data Returned: ".strlen( $FullResponse ), 0 );
-		
-	  if ( strlen( $FullResponse ) > 500 ) {
-	    $this->sendDebug( "RCTPower", "Calculate Packages", 0 );
-	    $remainingResponse = $FullResponse;
-	    $packageCount = 0;
-	    while ( strlen( $remainingResponse ) > 3 ) {
-	      if ( $remainingResponse[0] == chr(43) ) {
-	        $packageCount = $packageCount + 1;
-		$packageLength = ord( $remainingResponse[2] ) + 5;
-		$package = substr( $remainingResponse, 0, $packageLength );
-		$this->sendDebug( "RCTPower", $package, 0 );
-		$remainingResponse = substr( $remainingResponse, $packageLength, 2048 );
-	      } else {
-	        break; //while
-	      }
-	    }
-            $this->sendDebug( "RCTPower", "# of Packages: ".$packageCount, 0 );
-		  
-	  }
-		
-          // Seperate Single Responses		
-	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
-	  $this->sendDebug( "RCTPower", "Packages: ".count( $SingleResponses ), 0 );	
-		
-	  for ($x=1; $x<count($SingleResponses); $x++) {  		 
-	    //if ( $Debugging == true ) $this->sendDebug( "RCTPower", "Single Response: ", 0 );
-            //if ( $Debugging == true ) $this->sendDebug( "RCTPower", $SingleResponses[$x], 0 );
-		  
-            if ( strlen( $SingleResponses[$x] ) < 2 ) {
-	      // too short for a real response, but don't the Byte
-	      continue;
-	    }
-		
-	    if ( ord( $SingleResponses[$x][0] ) <> 5 ) {
-	      // seems not to be a response (0x05)
-	      continue;
-	    }
-		  
-            if ( ord( $SingleResponses[$x][1] ) + 4 == strlen( $SingleResponses[$x] ) ) { 
-	      // lenght of response package is correct, so check CRC
-		    
-	      // Special case if 2D is the last Byte as this is a STOP Byte -> Exchange to 2B(!)
-	      if ( substr( $SingleResponses[$x], -1 ) == chr(45) )
-		$SingleResponses[$x][strlen( $SingleResponses[$x] ) - 1] = chr(43);     
-		    
-	      // first convert into 0xYY format
-              $response = "";
-	      for ( $y=0; $y<strlen($SingleResponses[$x]); $y++ ) {
-	        $hex = strtoupper( dechex( ord($SingleResponses[$x][$y]) ) );
-                if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
-	        $response = $response.$hex;
-	      }	     
-              $CRC = $this->calcCRC( substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ));
-	      if ( $CRC == substr( $response, -4 ) ) {
-		// CRC is also ok, so analyze the response
-	        $this->analyzeResponse( substr( $response, 4, 8 ), substr( $response, 12, ord( $SingleResponses[$x][1] )*2-8) );
-	      }
-	      elseif ( $Debugging == true ) $this->sendDebug( "RCTPower", "CRC Issue on ".substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ).", calculated is CRC is ".$CRC. ", expected is ".substr( $response, -4 ), 0 );	
-	    }
-		 
-	  }
-		
-          return true;
         }
        
         //=== Tool Functions ============================================================================================
@@ -239,63 +166,7 @@
 	      $this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as String ".$string.")", 0 );	
 	    }
 	  }
-		
-	  // ignore duplicate addresses (e.g. if master sends slave data)
-	  if ( $address == $this->GetBuffer( "LastAddress" ) ) {
-	    // ignore
-	    return;
-	  }
-	  $this->SetBuffer( "LastAddress", $address );	
-		
-	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );
-		
-	  // Check, if address to be analyzes was requested by this module and we're waiting for it
-	  // this shall avoid that the master power inverter analyzes data of slave power inverters which is also 
-	  // send as additional replies by it!
-          
-	  if ( $this->GetBuffer( "AnalyzeDataInActiveRequest" ) == false or
-	       !is_array( $RequestedAddressesSequence ) OR 
-	       count( $RequestedAddressesSequence ) == 0 ) {
-	    // No addresses actively requested
-	    if ( $Debugging == true ) {
-	      $this->sendDebug( "RCTPower", "No Address ".$address." expected", 0 );
-	    }
-	    return;
-	  } else {
-	    // we're awaiting an address, so take next expected address. 
-	    // But if expected address != address skip it till address = expected address of sequence is empty
-	    $ExpectedAddress = $RequestedAddressesSequence[0];
-	    array_shift( $RequestedAddressesSequence );
-	    while ( $address != $ExpectedAddress and count( $RequestedAddressesSequence) >= 1 ) {
-	      if ( $Debugging == true ) {
-	        $this->sendDebug( "RCTPower", "Skipping Address ".$ExpectedAddress." in sequence", 0 );
-	      }
-	      $ExpectedAddress = $RequestedAddressesSequence[0];
-	      array_shift( $RequestedAddressesSequence );  
-	    }
-	    $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
-	  }
-		
-	  if ( $address != $ExpectedAddress ) {
-	    if ( $Debugging == true ) {
-	      $this->sendDebug( "RCTPower", "Unexpected Address ".$address." (expecpted Address was ".$ExpectedAddress.")", 0 );
-	    } 
-	    // sequence broken -> stop further analysis	  
-	  }
-
-		
-		
-	  if ( $address == "1AC87AA0" ) {
-            // this is the last expected response -> Leave the Semaphore if still expected analysis is running
-	    if ( $this->GetBuffer( "AnalyzeDataInActiveRequest" ) == true ) {
-	      if ( $Debugging == true ) {
-		$this->sendDebug( "RCTPower", "... last requested address! Semaphore Leave!", 0 );
-	      }
-	      IPS_SemaphoreLeave( "RCTPowerInverterRequest" );
-	    }
-	    $this->SetBuffer( "AnalyzeDataInActiveRequest", false );
-	  }
-		
+				
 	  switch ($address) {
 		  case "DB2D69AE": // Actual inverters AC-power [W], Float
 			 break;
