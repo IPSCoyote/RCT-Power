@@ -100,7 +100,7 @@
 	      $response['Address']    = $this->decToHexString(substr( $CollectedReceivedData, 3, 4 ) );
 	      $response['Data']       = $this->decToHexString(substr( $CollectedReceivedData, 7, $packageLength - 4 ) );
 	      $response['CRC']        = $this->decToHexString(substr( $CollectedReceivedData, 3+$packageLength, 2 ) );	    
-	      $response['FullLength'] = $packageLength+5; // StartByte+Command+Length+CRC  
+	      $response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
 	      $response['Complete']   = $this->decToHexString(substr( $CollectedReceivedData, 0, $packageFullLength ) );
 		    
               $CRC = $this->calcCRC( $response['Command'].decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
