@@ -90,22 +90,45 @@
 	  // Now cut the collected received data into single data packages
 	  // length 9 is a minimal usefull backage like a read package "2B 01 04 AA BB CC DD CS CS" 
 	  $this->sendDebug( "RCTPower", "Received Packages: ", 0 );
-	  $SingleResponses = [];
+	  $singleResponses = [];
 	  while ( strlen( $CollectedReceivedData ) >= 9 ) {
             if ( $CollectedReceivedData[0] = chr( 43 ) ) {
               // we've a start byte "2B" in front -> package?
-	      $packageCommand    = $CollectedReceivedData[1];
-	      $packageLength     = ord( $CollectedReceivedData[2] );
-	      if ( strlen( $CollectedReceivedData ) < $packageLength + 5 ) {
+	      $response = [];    
+	      $response['Command']    = $this->decToHexString( $CollectedReceivedData[1] );
+	      $response['Length']     = ord( $CollectedReceivedData[2] );
+	      if ( strlen( $CollectedReceivedData ) < $response['Length'] + 5 ) {
 		// the remaining CollectedReceivedData is not long enough for the package
 		break; // while
 	      }
-	      $packageAddress    = substr( $CollectedReceivedData, 3, 4 );
-	      $packageData       = substr( $CollectedReceivedData, 7, $packageLength - 4 );
-	      $packageCRC        = substr( $CollectedReceivedData, 3+$packageLength, 2 );	    
-	      $packageFullLength = $packageLength+5; // StartByte+Command+Length+CRC  
-	   	    
-	      $package           = substr( $CollectedReceivedData, 0, $packageFullLength );
+	      $response['Address']    = $this->decToHexString(substr( $CollectedReceivedData, 3, 4 ) );
+	      $response['Data']       = $this->decToHexString(substr( $CollectedReceivedData, 7, $packageLength - 4 ) );
+	      $response['CRC']        = $this->decToHexString(substr( $CollectedReceivedData, 3+$packageLength, 2 ) );	    
+	      $response['FullLength'] = $packageLength+5; // StartByte+Command+Length+CRC  
+	      $response['Complete']   = $this->decToHexString(substr( $CollectedReceivedData, 0, $packageFullLength ) );
+		    
+              $CRC = $this->calcCRC( $response['Command'].decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
+		   
+	      if ( $response['Command'] <> '05' ) {
+	        // we only look for command 05 = short response
+		if ( $Debugging == true ) {
+		  $this->sendDebug( "RCTPower", "Unexpected Command: ".$response['Command'].", PackageLength: ".$response['Length'].", Address: ".$response['Address'].", Data: ".$response['Data'].", CRC: ".$response['CRC'].", FullLength: ".$response['FullLength'], 0 );    
+		}
+	        continue;
+	      }
+		    
+	      if ( $CRC != $package['CRC'] ) {
+	        // CRC Check failed
+		if ( $Debugging == true ) {
+		  $this->sendDebug( "RCTPower", "CRC Error on Command: ".$response['Command'].", PackageLength: ".$response['Length'].", Address: ".$response['Address'].", Data: ".$response['Data'].", CRC: ".$response['CRC'].", FullLength: ".$response['FullLength']." - Calculated CRC: ".$CRC, 0 );    
+		}
+		continue;
+	      }
+		    
+	      // add found response to resonpse stack
+	      array_push( $singleResponses, $response );
+		    
+		    
 	      $CollectedReceivedData = substr( $CollectedReceivedData, $packageFullLength );
 		    
 	      $this->sendDebug( "RCTPower", "Command: ".$this->decToHexString($packageCommand).", PackageLength: ".$packageLength.", Address: ".$this->decToHexString($packageAddress).", Data: ".$this->decToHexString($packageData).", CRC: ".$this->decToHexString($packageCRC).", FullLength: ".$packageFullLength, 0 );    
@@ -115,11 +138,6 @@
 	      $CollectedReceivedData = substr( $CollectedReceivedData, 1 );  
 	    } 
 	  }
-		
-		
-		
-	  // Request Processing finally done	
-		
 		
           // get expected addresses in their sequence		
 	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );  
