@@ -137,9 +137,31 @@
           // get expected addresses in their sequence		
 	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );  
 		
-	  // Analyze Single Responses
+	  // check addres sequence is ok (ignoring duplicat addresses)
+	  $lastAddress = "";
+	  $y = 0;
+	  $sequenceOK = true;
 	  for ( $x = 0; $x < count( $singleResponses ); $x++ ) {
-	    $this->analyzeResponse( $singleResponses[$x]['Address'], $singleResponses[$x]['Data'] );  
+	    if ( $singleResponses[$x]['Address'] != $lastAddress ) {
+	      if ( $singleResponses[$x]['Address'] != $RequestedAddressesSequence[$y] ) {
+	        $sequenceOK = false;
+	      }
+	      $y++;
+	    } 
+	  }
+		
+	  if ( $Debugging == true ) {
+	    $this->sendDebug( "RCTPower", "Sequence of requested addresses is not ok", 0 );    
+	  }
+		
+	  // Analyze Single Responses
+	  $lastAddress = "";
+	  for ( $x = 0; $x < count( $singleResponses ); $x++ ) {	  
+	    if ( $singleResponses[$x]['Address'] != $lastAddress ) {
+	      // if an address comes multiple times, only take the first values, as other values don't belong to this power inverter
+	      $this->analyzeResponse( $singleResponses[$x]['Address'], $singleResponses[$x]['Data'] );  
+	    }
+     	    $lastAddress = $singleResponses[$x]['Address'];
 	  }
 		
         }
