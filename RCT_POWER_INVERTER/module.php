@@ -108,7 +108,7 @@
 	      $package           = substr( $CollectedReceivedData, 0, $packageFullLength );
 	      $CollectedReceivedData = substr( $CollectedReceivedData, $packageFullLength );
 		    
-	      $this->sendDebug( "RCTPower", "Command: ".$packageCommand.", PackageLength: ".$this->hexToString( $packageLength ).", Address: ".$this->hexToString( $packageAddress ).", Data: ".$this->hexToString( $packageData ).", CRC: ".$this->hexToString( $packageCRC ).", FullLength: ".$packageFullLength, 0 );    
+	      $this->sendDebug( "RCTPower", "Command: ".$packageCommand.", PackageLength: ".$packageLength.", Address: ".$this->hexToString( $packageAddress ).", Data: ".$this->hexToString( $packageData ).", CRC: ".$this->hexToString( $packageCRC ).", FullLength: ".$packageFullLength, 0 );    
 		    
 	    } else {
 	      // shift Data left by 1
