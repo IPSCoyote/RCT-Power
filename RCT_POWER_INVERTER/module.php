@@ -105,6 +105,9 @@
 	      $packageCRC        = substr( $CollectedReceivedData, 3+$packageLength, 2 );	    
 	      $packageFullLength = $packageLength;   
 	   	    
+	      $package           = substr( $CollectedReceivedData, 0, $packageFullLength );
+	      $CollectedReceivedData = substr( $CollectedReceivedData, $packageFullLength, 2048 );
+		    
 	      $this->sendDebug( "RCTPower", "Command ".$this->hexToString( $packageCommand ).", PackageLength: ".$this->hexToString( $packageLength ).", Address: ".$this->hexToString( $packageAddress ).", Data: ".$this->hexToString( $packageData ).", CRC: ".$this->hexToString( $packageCRC ).", FullLength: ".$packageFullLength, 0 );    
 		    
 	    } else {
