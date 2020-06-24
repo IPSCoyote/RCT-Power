@@ -124,7 +124,7 @@
 		}
 		continue;
 	      }
-		    
+		    $this->sendDebug( "RCTPower", "Push", 0 );
 	      // add found response to resonpse stack
 	      array_push( $singleResponses, $response );
 		    
@@ -139,7 +139,7 @@
 		
 	  // Analyze Responses
 	  for ( $x = 0; $x < count( $singleResponses ); $x++ ) {
-            $this->sendDebug( "RCTPower", "Resonponse on Addressd: ".$singleResponses[$x]['Address'], 0 );    
+            $this->sendDebug( "RCTPower", "Resonponse on Address: ".$singleResponses[$x]['Address'], 0 );    
 	  }
 		
 		
