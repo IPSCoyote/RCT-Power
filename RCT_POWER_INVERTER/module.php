@@ -105,7 +105,7 @@
 	      $packageCRC        = substr( $CollectedReceivedData, 3+$packageLength, 2 );	    
 	      $packageFullLength = $packageLength;   
 	   	    
-	      $this->sendDebug( "RCTPower", "Command ".hexToString( $packageCommand ).", PackageLength: ".hexToString( $packageLength ).", Address: ".hexToString( $packageAddress ).", Data: ".hexToString( $packageData ).", CRC: ".hexToString( $packageCRC ).", FullLength: ".$packageFullLength, 0 );    
+	      $this->sendDebug( "RCTPower", "Command ".$this->hexToString( $packageCommand ).", PackageLength: ".$this->hexToString( $packageLength ).", Address: ".$this->hexToString( $packageAddress ).", Data: ".$this->hexToString( $packageData ).", CRC: ".$this->hexToString( $packageCRC ).", FullLength: ".$packageFullLength, 0 );    
 		    
 	    } else {
 	      // shift Data left by 1
