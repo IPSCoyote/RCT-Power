@@ -127,7 +127,6 @@
 	
 	      // add found response to resonpse stack
 	      array_push( $singleResponses, $response );
-	      $this->sendDebug( "RCTPower", "Array Push ".count( $singleResponses ), 0);
 		    
 	    } else {
 	      // shift Data left by 1
@@ -140,7 +139,7 @@
 		
 	  // Analyze Responses
 	  for ( $x = 0; $x < count( $singleResponses ); $x++ ) {
-            $this->sendDebug( "RCTPower", "Resonponse on Address: ".$singleResponses[$x]['Address'], 0 );    
+	    $this->analyzeResponse( $response['Address'], $response['Data'] );  
 	  }
 		
 		
