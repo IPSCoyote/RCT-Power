@@ -53,10 +53,7 @@
 	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Unexpected Data Received", 0 ); }
             return true;
 	  }
-		
-          // get expected addresses in their sequence		
-	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );  
-	  
+			  
 	  // in general we expect address "1AC87AA0" to be requested at last -> End of all expected Responses	
 	  // till then we collect all given data in a long string
 	  $EndAddress = chr(26).chr(200).chr(122).chr(160);
@@ -86,11 +83,43 @@
 	  $CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
 	  $CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );
 		
-		
 	  $this->sendDebug( "RCTPower", "Data Returned: ".strlen( $CollectedReceivedData )." bytes", 0 );	
 	  $this->sendDebug( "RCTPower", "Data Returned: ".$CollectedReceivedData, 0 );	
 		
+		
+	  // Now cut the collected received data into single data packages
+	  // length 9 is a minimal usefull backage like a read package "2B 01 04 AA BB CC DD CS CS" 
+	  $this->sendDebug( "RCTPower", "Received Packages: ", 0 );
+	  $SingleResponses = [];
+	  while ( strlen( $CollectedReceivedData ) >= 9 ) {
+            if ( $CollectedReceivedData[0] = chr( 43 ) ) {
+              // we've a start byte "2B" in front -> package?
+	      $packageCommand    = $CollectedReceivedData[1];
+	      $packageLength     = ord( $CollectedReceivedData[2] );
+	      if ( strlen( $CollectedReceivedData ) < $packageLength + 5 ) {
+		// the remaining CollectedReceivedData is not long enough for the package
+		break; // while
+	      }
+	      $packageAddress    = substr( $CollectedReceivedData, 3, 4 );
+	      $packageData       = substr( $CollectedReceivedData, 7, $packageLength - 4 );
+	      $packageCRC        = substr( $CollectedReceivedData, 3+$packageLength, 2 );	    
+	      $packageFullLength = $packageLength;   
+	   	    
+	      $this->sendDebug( "RCTPower", "Command ".hexToString( $packageCommand ).", PackageLength: ".hexToString( $packageLength ).", Address: ".hexToString( $packageAddress ).", Data: ".hexToString( $packageData ).", CRC: ".hexToString( $packageCRC ).", FullLength: ".$packageFullLength, 0 );    
+		    
+	    } else {
+	      // shift Data left by 1
+	      $CollectedReceivedData = substr( $CollectedReceivedData, 0, 2048 );  
+	    } 
+	  }
+		
+		
+		
 	  // Request Processing finally done	
+		
+		
+          // get expected addresses in their sequence		
+	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );  
 		
 	  return true;
 		
