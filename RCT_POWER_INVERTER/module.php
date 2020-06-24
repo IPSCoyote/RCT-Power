@@ -75,17 +75,13 @@
 	  }
 		
 	  //--- End Address was received, so process data
-	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "All Expected Data Received, start analyzing", 0 );	}
+	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "All Expected Data Received (".strlen( $CollectedReceivedData )." bytes), start analyzing", 0 );	}
 	  
 	  $this->SetBuffer( "DataRequested", "FALSE" ); // no more data expected
 		  
 	  // first: Byte Stream Interpreting Rules (see communication protocol documentation)
 	  $CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
-	  $CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );
-		
-	  $this->sendDebug( "RCTPower", "Data Returned: ".strlen( $CollectedReceivedData )." bytes", 0 );	
-	  $this->sendDebug( "RCTPower", "Data Returned: ".$CollectedReceivedData, 0 );	
-		
+	  $CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );	
 		
 	  // Now cut the collected received data into single data packages
 	  // length 9 is a minimal usefull backage like a read package "2B 01 04 AA BB CC DD CS CS" 
