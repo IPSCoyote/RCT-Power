@@ -124,9 +124,10 @@
 		}
 		continue;
 	      }
-		    $this->sendDebug( "RCTPower", "Push", 0 );
+	
 	      // add found response to resonpse stack
 	      array_push( $singleResponses, $response );
+	      $this->sendDebug( "RCTPower", "Array Push ".count( $singleResponses ), 0);
 		    
 	    } else {
 	      // shift Data left by 1
