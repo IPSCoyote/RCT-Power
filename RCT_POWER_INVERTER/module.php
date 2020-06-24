@@ -128,10 +128,7 @@
 	      // add found response to resonpse stack
 	      array_push( $singleResponses, $response );
 		    
-		    
 	      $CollectedReceivedData = substr( $CollectedReceivedData, $packageFullLength );
-		    
-	      $this->sendDebug( "RCTPower", "Command: ".$this->decToHexString($packageCommand).", PackageLength: ".$packageLength.", Address: ".$this->decToHexString($packageAddress).", Data: ".$this->decToHexString($packageData).", CRC: ".$this->decToHexString($packageCRC).", FullLength: ".$packageFullLength, 0 );    
 		    
 	    } else {
 	      // shift Data left by 1
@@ -141,6 +138,12 @@
 		
           // get expected addresses in their sequence		
 	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );  
+		
+	  // Analyze Responses
+	  for ( $x = 0; $x < count( $singleResponses ); $x++ ) {
+            $this->sendDebug( "RCTPower", "Resonponse on Addressd: ".$singleResponses[$x]['Address'], 0 );    
+	  }
+		
 		
 	  return true;
 		
