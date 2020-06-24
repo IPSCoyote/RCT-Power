@@ -796,6 +796,9 @@
 	protected function decToHexString( string $data ) {
   	  $result = "";
   	  for ( $x = 0; $x < strlen( $data ); $x++ ) {
+	    if ( strlen( dechex( ord( $data[$x] ) ) ) < 2 ) {
+              $result = $result."0";
+	    }
     	    $result = $result.strtoupper( dechex( ord( $data[$x] ) ) );
 	  }
   	  return $result;
