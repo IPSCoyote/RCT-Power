@@ -763,7 +763,7 @@
           // Init Communication -----------------------------------------------------------------------------------------
 	  $RequestedAddressesSequence = [];
 	  $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
-	  $this->SetBuffer( "DataRequested", "TRUE" ); // we're now requesting data -> receive and analyze it
+	  $this->SetBuffer( "CommunicationStatus", "WAITING FOR RESPONSES" ); // we're now requesting data -> receive and analyze it
 		
           // GET SEMAPHORE TO AVOID PARALLEL ACCESS BY OTHER RCT POWER INVERTER INSTANCES!!!		
 		
