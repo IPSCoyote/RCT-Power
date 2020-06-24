@@ -76,16 +76,18 @@
 		
 	  //--- End Address was received, so process data
 	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "All Expected Data Received (".strlen( $CollectedReceivedData )." bytes), start analyzing", 0 );	}
-	  
+	  		
 	  $this->SetBuffer( "DataRequested", "FALSE" ); // no more data expected
-		  
+	
+	  // RELEASE SEMAPHORE TO ALLOW  OTHER RCT POWER INVERTER INSTANCES IT'S COMMUNICATION!!!		
+	
+		
 	  // first: Byte Stream Interpreting Rules (see communication protocol documentation)
 	  $CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
 	  $CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );	
 		
 	  // Now cut the collected received data into single data packages
 	  // length 9 is a minimal usefull backage like a read package "2B 01 04 AA BB CC DD CS CS" 
-	  $this->sendDebug( "RCTPower", "Received Packages: ", 0 );
 	  $singleResponses = [];
 	  while ( strlen( $CollectedReceivedData ) >= 9 ) {
             if ( $CollectedReceivedData[0] = chr( 43 ) ) {
@@ -153,7 +155,7 @@
 	    } 
 	  }
 		
-	  if ( $Debugging == true ) {
+	  if ( $sequenceOK == false AND $Debugging == true ) {
 	    $this->sendDebug( "RCTPower", "Sequence of requested addresses is not ok", 0 );    
 	  }
 		
@@ -758,6 +760,8 @@
 	  $RequestedAddressesSequence = [];
 	  $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
 	  $this->SetBuffer( "DataRequested", "TRUE" ); // we're now requesting data -> receive and analyze it
+		
+          // GET SEMAPHORE TO AVOID PARALLEL ACCESS BY OTHER RCT POWER INVERTER INSTANCES!!!		
 		
 	  // Request Data -----------------------------------------------------------------------------------------------	
 		
