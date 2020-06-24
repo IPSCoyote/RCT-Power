@@ -636,7 +636,7 @@
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
 	  					    "Buffer" => utf8_encode($hexCommand) )));	
 
-	  usleep( 10000 );
+	  usleep( 50000 );
 	}  
 	  	  
 	protected function calcCRC( string $command ) {
