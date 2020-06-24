@@ -144,6 +144,9 @@
 	  for ( $x = 0; $x < count( $singleResponses ); $x++ ) {
 	    if ( $singleResponses[$x]['Address'] != $lastAddress ) {
 	      if ( $singleResponses[$x]['Address'] != $RequestedAddressesSequence[$y] ) {
+	        if ( $Debugging == true ) {
+	          $this->sendDebug( "RCTPower", "Sequence issue. Found Address ".$singleResponses[$x]['Address']." but expected Address ".$RequestedAddressesSequence[$y], 0 );    
+	        }   
 	        $sequenceOK = false;
 	      }
 	      $y++;
