@@ -108,7 +108,7 @@
 	      $package           = substr( $CollectedReceivedData, 0, $packageFullLength );
 	      $CollectedReceivedData = substr( $CollectedReceivedData, $packageFullLength );
 		    
-	      $this->sendDebug( "RCTPower", "Command: ".$packageCommand.", PackageLength: ".$packageLength.", Address: ".$this->hexToString( $packageAddress ).", Data: ".$this->hexToString( $packageData ).", CRC: ".$this->hexToString( $packageCRC ).", FullLength: ".$packageFullLength, 0 );    
+	      $this->sendDebug( "RCTPower", "Command: ".$this->decToHexString($packageCommand).", PackageLength: ".$packageLength.", Address: ".$this->decToHexString($packageAddress).", Data: ".$this->decToHexString($packageData).", CRC: ".$this->decToHexString($packageCRC).", FullLength: ".$packageFullLength, 0 );    
 		    
 	    } else {
 	      // shift Data left by 1
@@ -793,6 +793,13 @@
           return $string;
   	}
 	
+	protected function decToHexString( string $data ) {
+  	  $result = "";
+  	  for ( $x = 0; $x < strlen( $data ); $x++ ) {
+    	    $result = $result.strtoupper( dechex( ord( $data[$x] ) ) );
+	  }
+  	  return $result;
+ 	}
 		
 		
         //=== Module Prefix Functions ===================================================================================
