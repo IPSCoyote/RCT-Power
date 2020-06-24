@@ -103,7 +103,7 @@
 	      $response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
 	      $response['Complete']   = $this->decToHexString(substr( $CollectedReceivedData, 0, $response['FullLength'] ) );
 		    
-              $CRC = $this->calcCRC( $response['Command'].decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
+              $CRC = $this->calcCRC( $response['Command'].$this->decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
 		   
 	      if ( $response['Command'] <> '05' ) {
 	        // we only look for command 05 = short response
