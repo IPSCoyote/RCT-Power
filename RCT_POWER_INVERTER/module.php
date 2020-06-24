@@ -20,7 +20,7 @@
           $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
 		
 	  // No data requested yet
-	  $this->SetBuffer( "DataRequested", false );
+	  $this->SetBuffer( "CommunicationStatus", "Idle" );
         }
  
         public function ApplyChanges() { 
@@ -49,7 +49,7 @@
         public function ReceiveData($JSONString) {
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");
 		
-	  if ( $this->GetBuffer( "DataRequested" ) != "TRUE" ) {
+	  if ( $this->GetBuffer( "CommunicationStatus" ) != "WAITING FOR RESPONSES" ) {
 	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Unexpected Data Received", 0 ); }
             return true;
 	  }
@@ -77,7 +77,7 @@
 	  //--- End Address was received, so process data
 	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "All Expected Data Received (".strlen( $CollectedReceivedData )." bytes), start analyzing", 0 );	}
 	  		
-	  $this->SetBuffer( "DataRequested", "FALSE" ); // no more data expected
+	  $this->SetBuffer( "CommunicationStatus", "ANALYSING" ); // no more data expected, start analysis
 	
 	  // RELEASE SEMAPHORE TO ALLOW  OTHER RCT POWER INVERTER INSTANCES IT'S COMMUNICATION!!!		
 	
@@ -169,7 +169,11 @@
      	    $lastAddress = $singleResponses[$x]['Address'];
 	  }
 		
+	  $this->SetBuffer( "CommunicationStatus", "Idle" ); // no more data expected
+		
         }
+	  
+	  
        
         //=== Tool Functions ============================================================================================
 	protected function analyzeResponse( string $address, string $data ) {
