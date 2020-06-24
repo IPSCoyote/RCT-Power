@@ -103,16 +103,16 @@
 	      $packageAddress    = substr( $CollectedReceivedData, 3, 4 );
 	      $packageData       = substr( $CollectedReceivedData, 7, $packageLength - 4 );
 	      $packageCRC        = substr( $CollectedReceivedData, 3+$packageLength, 2 );	    
-	      $packageFullLength = $packageLength;   
+	      $packageFullLength = $packageLength+9;   
 	   	    
 	      $package           = substr( $CollectedReceivedData, 0, $packageFullLength );
-	      $CollectedReceivedData = substr( $CollectedReceivedData, $packageFullLength, 2048 );
+	      $CollectedReceivedData = substr( $CollectedReceivedData, $packageFullLength );
 		    
-	      $this->sendDebug( "RCTPower", "Command ".$this->hexToString( $packageCommand ).", PackageLength: ".$this->hexToString( $packageLength ).", Address: ".$this->hexToString( $packageAddress ).", Data: ".$this->hexToString( $packageData ).", CRC: ".$this->hexToString( $packageCRC ).", FullLength: ".$packageFullLength, 0 );    
+	      $this->sendDebug( "RCTPower", "Command: ".$packageCommand.", PackageLength: ".$this->hexToString( $packageLength ).", Address: ".$this->hexToString( $packageAddress ).", Data: ".$this->hexToString( $packageData ).", CRC: ".$this->hexToString( $packageCRC ).", FullLength: ".$packageFullLength, 0 );    
 		    
 	    } else {
 	      // shift Data left by 1
-	      $CollectedReceivedData = substr( $CollectedReceivedData, 0, 2048 );  
+	      $CollectedReceivedData = substr( $CollectedReceivedData, 1 );  
 	    } 
 	  }
 		
