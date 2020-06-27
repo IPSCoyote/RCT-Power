@@ -96,7 +96,7 @@
 	  try {
             IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" );
 	  } catch (Exception $e) { 
-	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "(Semaphore wasn't entered)", 0 ); }
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Semaphore wasn't entered (Maybe react on foreign requests switch?)", 0 ); }
 	  }
 		
 	  // first: Byte Stream Interpreting Rules (see communication protocol documentation)
