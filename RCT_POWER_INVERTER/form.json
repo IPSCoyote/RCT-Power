@@ -33,15 +33,9 @@
       { "type": "NumberSpinner", "name": "UpdateInterval", "caption": "Update Interval", "digits": 0 , "hex": false, "suffix": "Sekunden"},
       { "type": "Label", "caption": "   " },
       { "type": "Label", "label": "Tools" }, 
-      { "type": "RowLayout", 
-        "items": [
-            { "type": "CheckBox", "name": "ReactOnForeignPolls", "caption": "Auf fremde Abfragen reagieren" }, 
-            { "type": "Label", "caption": "   " },
-            { "type": "CheckBox", "name": "IgnoreResponseSequence", "caption": "Fehlerhafte Antwort-Sequenz ignorieren" }, 
-            { "type": "Label", "caption": "   " },
-            { "type": "CheckBox", "name": "DebugSwitch",         "caption": "Debuginformationen ausgeben" }   
-        ]
-      }
+      { "type": "CheckBox", "name": "ReactOnForeignPolls", "caption": "Auf fremde Abfragen reagieren" }, 
+      { "type": "CheckBox", "name": "IgnoreResponseSequence", "caption": "Fehlerhafte Antwort-Sequenz ignorieren" }, 
+      { "type": "CheckBox", "name": "DebugSwitch",         "caption": "Debuginformationen ausgeben" }   
     ],
     "status":   
     [
