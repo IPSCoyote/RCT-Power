@@ -55,7 +55,7 @@
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");
 		
 	  // remind last ReceiveData
-	  $this->SetBuffer( "LastReceiveData", strvar( time() );
+	  $this->SetBuffer( "LastReceiveData", strvar( time() ) );
 		
 	  if ( $this->GetBuffer( "CommunicationStatus" ) != "WAITING FOR RESPONSES" ) {
 	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Unexpected Data Received", 0 ); }
