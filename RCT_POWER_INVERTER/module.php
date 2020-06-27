@@ -742,6 +742,7 @@
         public function UpdateData() { 
           /* get Data from RCT Power Inverter */
 	   $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
+	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "UpdateData() called", 0 ); }
 		
 	  ///--- HANDLE Connection --------------------------------------------------------------------------------------	
           // check Socket Connection (parent)
