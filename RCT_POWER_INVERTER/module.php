@@ -92,8 +92,12 @@
 	  		
 	  $this->SetBuffer( "CommunicationStatus", "ANALYSING" ); // no more data expected, start analysis
 	
-	  // RELEASE SEMAPHORE TO ALLOW  OTHER RCT POWER INVERTER INSTANCES IT'S COMMUNICATION!!!		
-          IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" );
+	  // RELEASE SEMAPHORE TO ALLOW  OTHER RCT POWER INVERTER INSTANCES IT'S COMMUNICATION!!!
+	  try {
+            IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" );
+	  } catch (Exception $e) { 
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "(Semaphore wasn't entered)", 0 ); }
+	  }
 		
 	  // first: Byte Stream Interpreting Rules (see communication protocol documentation)
 	  $CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
