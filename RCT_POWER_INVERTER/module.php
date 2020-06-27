@@ -121,17 +121,13 @@
 	      // check response	    
 	      if ( $response['Command'] <> '05' ) {
 	        // we only look for command 05 = short response
-		if ( $Debugging == true ) {
-		  $this->sendDebug( "RCTPower", "Unexpected Command: ".$response['Command'].", PackageLength: ".$response['Length'].", Address: ".$response['Address'].", Data: ".$response['Data'].", CRC: ".$response['CRC'].", FullLength: ".$response['FullLength'], 0 );    
-		}
+		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Unexpected Command: ".$response['Command'].", PackageLength: ".$response['Length'].", Address: ".$response['Address'].", Data: ".$response['Data'].", CRC: ".$response['CRC'].", FullLength: ".$response['FullLength'], 0 ); }
 	        continue;
 	      }
 		    
 	      if ( $calculatedCRC != $response['CRC'] ) {
 	        // CRC Check failed
-		if ( $Debugging == true ) {
-		  $this->sendDebug( "RCTPower", "CRC Error on Command: ".$response['Command'].", PackageLength: ".$response['Length'].", Address: ".$response['Address'].", Data: ".$response['Data'].", CRC: ".$response['CRC'].", FullLength: ".$response['FullLength']." - Calculated CRC: ".$calculatedCRC, 0 );    
-		}
+		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "CRC Error on Command: ".$response['Command'].", PackageLength: ".$response['Length'].", Address: ".$response['Address'].", Data: ".$response['Data'].", CRC: ".$response['CRC'].", FullLength: ".$response['FullLength']." - Calculated CRC: ".$calculatedCRC, 0 ); }
 		continue;
 	      }
 	
@@ -154,17 +150,17 @@
 	  for ( $x = 0; $x < count( $singleResponses ); $x++ ) {
 	    if ( $singleResponses[$x]['Address'] != $lastAddress ) {
 	      if ( $singleResponses[$x]['Address'] != $RequestedAddressesSequence[$y] ) {
-	        if ( $Debugging == true ) {
-	          $this->sendDebug( "RCTPower", "Sequence issue. Found Address ".$singleResponses[$x]['Address']." but expected Address ".$RequestedAddressesSequence[$y], 0 );    
-	        }   
+	        if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Sequence issue. Found Address ".$singleResponses[$x]['Address']." but expected Address ".$RequestedAddressesSequence[$y], 0 ); }   
 	        $sequenceOK = false;
 	      }
 	      $y++;
 	    } 
 	  }
 		
-	  if ( $sequenceOK == false AND $Debugging == true ) {
-	    $this->sendDebug( "RCTPower", "Sequence of requested addresses is not ok", 0 );    
+	  if ( $sequenceOK == false ) {
+	    // if sequence is broken, we cannot rely on the results -> no analysis
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Sequence of requested addresses is not ok", 0 ); } 
+            return;
 	  }
 		
 	  // Analyze Single Responses
@@ -762,6 +758,22 @@
 	  if ( IPS_GetProperty( $SocketConnectionInstanceID,'Open') == false ) {
 	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Parent Gateway not open!", 0 ); }
    	    return false; // wrong parent type
+	  }
+		
+	  // check Communication Status
+	  if ( $this->GetBuffer( "CommunicationStatus" ) != "Idle" ) {
+            // own communication still running!!
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Old UpdateData still pending! Clearing old Update Process", 0 ); }
+	    // stop it and clear buffers
+	    $RequestedAddressesSequence = [];
+	    $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );  
+	    $this->SetBuffer( "CommunicationStatus", "Idle" );
+	    // reset semaphore
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to release Semaphore of old UpdateData (if still entered)", 0 ); }
+	    IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" ); 
+	    // wait a bit and start new communication
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Wait to retry", 0 ); }
+	    usleep( 1000000 ); // wait a second
 	  }
 		
 	  // GET SEMAPHORE TO AVOID PARALLEL ACCESS BY OTHER RCT POWER INVERTER INSTANCES!!!		
