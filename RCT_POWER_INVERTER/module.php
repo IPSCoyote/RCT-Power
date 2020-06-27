@@ -153,6 +153,7 @@
 	        if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Sequence issue. Found Address ".$singleResponses[$x]['Address']." but expected Address ".$RequestedAddressesSequence[$y], 0 ); }   
 	        $sequenceOK = false;
 	      }
+	      $lastAddress = $singleResponses[$x]['Address'];
 	      $y++;
 	    } 
 	  }
