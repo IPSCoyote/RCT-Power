@@ -37,6 +37,8 @@
         "items": [
             { "type": "CheckBox", "name": "ReactOnForeignPolls", "caption": "Auf fremde Abfragen reagieren" }, 
             { "type": "Label", "caption": "   " },
+            { "type": "CheckBox", "name": "IgnoreResponseSequence", "caption": "Fehlerhafte Antwort-Sequenz ignorieren" }, 
+            { "type": "Label", "caption": "   " },
             { "type": "CheckBox", "name": "DebugSwitch",         "caption": "Debuginformationen ausgeben" }   
         ]
       }
