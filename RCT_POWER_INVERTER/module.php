@@ -771,7 +771,11 @@
 	    $this->SetBuffer( "CommunicationStatus", "Idle" );
 	    // reset semaphore
 	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to release Semaphore of old UpdateData (if still entered)", 0 ); }
-	    IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" ); 
+	    try {
+	      IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" ); 
+	    } catch (Exception $e) { 
+	      if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "(Semaphore wasn't entered)", 0 ); }
+	    }
 	    // wait a bit and start new communication
 	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Wait to retry", 0 ); }
 	    usleep( 1000000 ); // wait a second
