@@ -15,7 +15,8 @@
           $this->RegisterPropertyInteger("UpdateInterval", 0);
 	  $this->RegisterPropertyBoolean("DebugSwitch", false );
           $this->RegisterPropertyBoolean("ReactOnForeignPolls", false );
-
+          $this->RegisterPropertyBoolean("IgnoreResponseSequence", false );
+		
           // Timer
           $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
 		
@@ -52,14 +53,18 @@
 	  // UpdateData) is received. Then we evaluate all received data if it fits to the request of the UpdateData call
 	  // but ignore all non-response packages or duplicate addresses (as master sends also slave data)
 		
-	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");
+	  $Debugging = $this->ReadPropertyBoolean("DebugSwitch");
 		
 	  // remind last ReceiveData
 	  $this->SetBuffer( "LastReceiveData", strval( time() ) );
 		
 	  if ( $this->GetBuffer( "CommunicationStatus" ) != "WAITING FOR RESPONSES" ) {
 	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Unexpected Data Received", 0 ); }
-            return true;
+	    if ( $this->ReadPropertyBoolean( "ReactOnForeignPolls" ) == false ) {
+              return true;
+	    } else {
+	      if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Data collected anyhow till end package (React on Foreign Polls Switch)", 0 ); }
+	    }
 	  }
 			  
 	  // in general we expect address "1AC87AA0" to be requested at last -> End of all expected Responses	
@@ -160,9 +165,16 @@
 		
 	  if ( $sequenceOK == false ) {
 	    // if sequence is broken, we cannot rely on the results -> no analysis
-	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Sequence of requested addresses is not ok. No analysis taking place! Data ignored!", 0 ); } 
-            $this->SetBuffer( "CommunicationStatus", "Idle" );
-	    return;
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Sequence of requested addresses is not ok.", 0 ); }
+		  
+	    if ( $this->ReadPropertyBoolean("IgnoreResponseSequence") == false ) {
+	      if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Analysis stopped as it's not sure if responses are for our requestes!", 0 ); } 
+              $this->SetBuffer( "CommunicationStatus", "Idle" );	    
+	      return;
+	    }
+            if ( $Debugging == true ) { 
+              $this->sendDebug( "RCTPower", "Analysis still done (Response Sequence ignored!)", 0);
+	      $this->sendDebug( "RCTPower", "NOTE! RECEIVED DATA MIGHT NOT BE MEANT FOR OUR REQUEST. DATA INCONSISTENCY MIGHT BE THE RESULT!", 0 ); }
 	  }
 		
 	  // Analyze Single Responses
@@ -174,7 +186,9 @@
 	    }
      	    $lastAddress = $singleResponses[$x]['Address'];
 	  }
-		
+	  
+	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Analysis completed", 0 ); } 
+            
 	  $this->SetBuffer( "CommunicationStatus", "Idle" ); // no more data expected
 		
         }
