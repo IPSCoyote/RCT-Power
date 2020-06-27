@@ -159,7 +159,7 @@
 		
 	  if ( $sequenceOK == false ) {
 	    // if sequence is broken, we cannot rely on the results -> no analysis
-	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Sequence of requested addresses is not ok", 0 ); } 
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Sequence of requested addresses is not ok. No analysis taking place! Data ignored!", 0 ); } 
             return;
 	  }
 		
