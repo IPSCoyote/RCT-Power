@@ -47,6 +47,11 @@
 	  
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
+		
+  	  // We first collect all data coming till the "end address" (we wait for "1AC87AA0" as last address requested by
+	  // UpdateData) is received. Then we evaluate all received data if it fits to the request of the UpdateData call
+	  // but ignore all non-response packages or duplicate addresses (as master sends also slave data)
+		
 	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");
 		
 	  if ( $this->GetBuffer( "CommunicationStatus" ) != "WAITING FOR RESPONSES" ) {
@@ -80,7 +85,7 @@
 	  $this->SetBuffer( "CommunicationStatus", "ANALYSING" ); // no more data expected, start analysis
 	
 	  // RELEASE SEMAPHORE TO ALLOW  OTHER RCT POWER INVERTER INSTANCES IT'S COMMUNICATION!!!		
-	
+          IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" );
 		
 	  // first: Byte Stream Interpreting Rules (see communication protocol documentation)
 	  $CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
@@ -741,18 +746,25 @@
           // check Socket Connection (parent)
           $SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID']; 
           if ( $SocketConnectionInstanceID == 0 ) {
-	    $this->sendDebug( "RCTPower", "No Parent (Gateway) assigned", 0 );
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "No Parent (Gateway) assigned", 0 ); }
             return false; // No parent assigned  
 	  }
             
           $ModuleID = IPS_GetInstance($SocketConnectionInstanceID)['ModuleInfo']['ModuleID'];      
           if ( $ModuleID !== '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}' ) {
-	    $this->sendDebug( "RCTPower", "Wrong Parent (Gateway) type", 0 ); 
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Wrong Parent (Gateway) type", 0 ); }
    	    return false; // wrong parent type
 	  }
 		
 	  if ( IPS_GetProperty( $SocketConnectionInstanceID,'Open') == false ) {
-	    $this->sendDebug( "RCTPower", "Parent Gateway not open!", 0 ); 
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Parent Gateway not open!", 0 ); }
+   	    return false; // wrong parent type
+	  }
+		
+	  // GET SEMAPHORE TO AVOID PARALLEL ACCESS BY OTHER RCT POWER INVERTER INSTANCES!!!		
+	  if ( IPS_SemaphoreEnter( "RCTPowerInverterUpdateData", 8000 ) == false ) {
+		  // wait max. 8 sec. for semaphore	
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Semaphore could not be entered", 0 ); }
    	    return false; // wrong parent type
 	  }
 		
@@ -764,9 +776,7 @@
 	  $RequestedAddressesSequence = [];
 	  $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
 	  $this->SetBuffer( "CommunicationStatus", "WAITING FOR RESPONSES" ); // we're now requesting data -> receive and analyze it
-		
-          // GET SEMAPHORE TO AVOID PARALLEL ACCESS BY OTHER RCT POWER INVERTER INSTANCES!!!		
-		
+				
 	  // Request Data -----------------------------------------------------------------------------------------------	
 		
 	  // $this->RequestData( "DB2D69AE" ); // Actual inverters AC-power [W]. ---> NO RESPONSE!
