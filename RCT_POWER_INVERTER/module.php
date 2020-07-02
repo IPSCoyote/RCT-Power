@@ -106,8 +106,8 @@
 	  // Now cut the collected received data into single data packages
 	  // length 9 is a minimal usefull backage like a read package "2B 01 04 AA BB CC DD CS CS" 
 	  $singleResponses = [];
-	  while ( strlen( $CollectedReceivedData ) >= 9 ) {
-            if ( $CollectedReceivedData[0] = chr( 43 ) ) {
+	  while ( strlen( $CollectedReceivedData ) >= 9 ) { 
+            if ( $CollectedReceivedData[0] == chr( 43 ) ) {
               // we've a start byte "2B" in front -> package?
 	      $response = [];    
 	      $response['Command']    = $this->decToHexString( $CollectedReceivedData[1] );
