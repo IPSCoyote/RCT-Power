@@ -112,6 +112,7 @@ Das Layout ist jetzt an der Web-Konsole orientiert. In der "veralteten" Windows-
 
 **Notwendige Manuelle Anpassungen**
 
+Der neu eingeführte Schalter "automatische Updates aktiv" ist standardmäßig auf "An" gestellt um sicherzustellen, das nach einem Update des Moduls weiterhin Daten aktualisiert werden. Sollten die Updates durch ein vorheriges Update-Intervall von "0" deaktiviert worden sein, werden auch weiterhin keine Daten aktualisiert! Der Schalter ist also "An", aber trotzdem erfolgt keine Aktualiserung.
 Ggf. muss das Update-Intervall angepasst werden. In Version 0.1 waren 10 Sekunden als Minimum erlaubt. Dieser Wert wurde mit Version 1.0 auf 15 Sekunden angehoben, um bei mehreren Wechselrichtern mehr Zeit für die Kommunikation zu haben. Nach dem Update kann hier also ein Fehler angezeigt werden.
 
 ### Version 0.1
