@@ -6,7 +6,7 @@ PHP-Modul zur Einbindung eines [RCT-Power](http://www.rct-power.com) Inverter/We
 
 Nutzung auf eigene Gefahr ohne Gewähr. Das Modul kann jederzeit überarbeitet werden, so daß Anpassungen für eine weitere Nutzung notwendig sein können. Bei der Weiterentwicklung wird möglichst auf Kompatibilität geachtet. 
 
-**Bei der Installation einer neuen Version sollte man in die Versionshistorie schauen, ob man evtl. manuell tätig werden muss!**
+**Bei der Installation einer neuen Version sollte man in die [Versionshistorie](#5-versionshistorie) schauen, ob man evtl. manuell tätig werden muss!**
 
 ## Dokumentation
 
