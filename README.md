@@ -91,7 +91,8 @@ Das Modul reagiert auf Nachrichten vom Wechselrichter über die geöffnete TCP S
 
 ### Version 1.0
 Überarbeitete Version mit folgenden Anpassungen:
-* Komplett überarbeitet Kommunikation mit dem RCT Wechselrichter. Es zeigten sich Probleme bei Installationen mit mehreren Wechselrichtern. Die WR kommunizieren untereinander, so dass es zu Fehl-Zuordnungen der Daten kam. Man konnte nicht Unterscheiden, welche Daten zu welchem Wechselrichter gehörten.
+* Komplett überarbeitet Kommunikation mit dem RCT Wechselrichter. 
+Es zeigten sich Probleme bei Installationen mit mehreren Wechselrichtern. Die WR kommunizieren untereinander, so dass es zu Fehl-Zuordnungen der Daten kam. Man konnte nicht Unterscheiden, welche Daten zu welchem Wechselrichter gehörten.
 Die Kommunikation wurde mittels Semaphoren sequenziert. Zudem wird nicht jede Antwort auf der Schnittstelle sofort ausgewertet, sondern die Antworten werden gesammelt um dann mit den angeforderten Daten verglichen und ausgewertet zu werden.
 * optimiertes Layout und Anpassungen der Konfigurationsparameter in der Instanzkonfiguration
 
