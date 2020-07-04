@@ -83,3 +83,10 @@ Das Modul "RCT_POWER_INVERTER" dient als Schnittstelle zu einem lokal installier
 Das Modul reagiert auf Nachrichten vom Wechselrichter über die geöffnete TCP Schnittstelle. Das Update Interval dient faktisch nur der regelmäßigen Anforderung der Daten. Wenn die TCP-Schnittstelle geöffnet ist reagiert das Modul auch auf Nachrichten, die ggf. parallel über die RCT Android/iOS App vom Wechselrichter angefordert wurden oder zwischen mehreren installierten Wechselrichtern hin- und hergeschickt werden. 
 
 **Während die Quer-Kommunikation der Wechselrichter untereinander möglichst ignoriert wird, kann ein paralleles Pollen über die Android oder IOS App ggf. die Kommunikation und den Datenempfang dieses Moduls stören. Aus diesem Grund sollte man möglichst auf einen parallele Nutzung der RCT Android/iOS App verzichten!**
+
+## 5. Änderungs-Log
+
+### Version 1.0
+
+### Version 0.1
+Erste Version des Moduls. Funktioniert stabil mit *einem* Wechselrichter und liesst die Daten über die TCP/IP Schnittstelle aus
