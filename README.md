@@ -42,21 +42,27 @@ Dem RCT Power Inverter Modul muss diese als übergeordnete Instanz zugewiesen we
 </p>
 
 Weitere Einstellungen:
+
+
 **PV Paneldaten - Eingang A**
 
 Hier kann die Anzahl der Panel sowie deren jeweilige (je Panel) Nennleistung für den Eingang A eingestellt werden. Diese Werte dienen der Berechnung der %-Ausnutzung der Panel am Eingang A.
+
 **PV Paneldaten - Eingang B**
 
 Hier kann die Anzahl der Panel sowie deren jeweilige (je Panel) Nennleistung für den Eingang B eingestellt werden. Diese Werte dienen der Berechnung der %-Ausnutzung der Panel am Eingang A.
+
 **RCT Wechselrichter Einstellungen**
 
 Hier kann die untere Entladeschwelle einer angeschlossenen Batterie (RCT Power Storage) eingestellt werden. Die verfügbare Restkapazität der Batterie bezieht sich auf die verfügbare Batterie-Kapazität zwischen der im Wechselrichter eingestellten unteren sowie der oberen Ladeschwelle (die obere Schwelle sowie die Brutto-Kapazität wird automatisch ermittelt).
+
 **Automatische Updates**
 
 Für das regelmäßige aktualisieren der Daten müssen die automatischen Updates aktiv und ein Update-Inverval eingestellt sein. Die Untergrenze des Update-Intervalls liegt bei 15 Sekunden (früher 10).
 Anmerkung: Der Werte wurde mit Version 1.0 erhöht, da bei mehreren Wechselrichtern mehr Zeit notwendig ist, damit alle ihre Daten nacheinander abholen können. 
 
 Sollen die Updates nicht automatisch erfolgen, können die Daten mittels des Befehls RCTPowerInverter_UpdateData() über ein Skript angefordert werden. Auch hier sollte man darauf achten, das man nicht zu schnell hintereinander Daten anfordert!
+
 **Tools**
 
 Die Verwendung der Tools sollte eigentlich nur im Problemfall notwendig und deshalb alle Tools im Normalfall deaktiviert sein.
