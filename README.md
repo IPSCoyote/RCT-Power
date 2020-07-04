@@ -82,7 +82,7 @@ Derzeit bietet das GIT nur das Modul "RCT_POWER_INVERTER" für die direkte Anbin
 
 Das Modul "RCT_POWER_INVERTER" dient als Schnittstelle zu einem lokal installierten RCT-Power Inverter/Wechselrichter. Es liefert die Daten des Inverter/Wechselrichter als Statusvariablen. Der RCT-Power Inverter/Wechselrichter muss dabei lokal über eine IP-Adresse erreichbar (siehe Installation) und das Update Interval entsprechend eingestellt sein.
 
-** IP-Symcon Befehle **
+### IP-Symcon Befehle ###
 
 **RCTPowerInverter_UpdateData()**
 Mit dem Befehl wird die Aktualisierung der Sub-Variablen der Instanz angefordert. Dieser Befehl muss eigentlich nur verwendet werden, wenn man keine automatische Aktualisierung verwendet.
