@@ -57,6 +57,17 @@ Für das regelmäßige aktualisieren der Daten müssen die automatischen Updates
 Anmerkung: Der Werte wurde mit Version 1.0 erhöht, da bei mehreren Wechselrichtern mehr Zeit notwendig ist, damit alle ihre Daten nacheinander abholen können. 
 
 Sollen die Updates nicht automatisch erfolgen, können die Daten mittels des Befehls RCTPowerInverter_UpdateData() über ein Skript angefordert werden. Auch hier sollte man darauf achten, das man nicht zu schnell hintereinander Daten anfordert!
+- **Tools**
+
+Die Verwendung der Tools sollte eigentlich nur im Problemfall notwendig und deshalb alle Tools im Normalfall deaktiviert sein.
+
+* Debuginformationen ausgeben
+Über diesen Schalter können Debug-Meldungen im Modul aktiviert werden. So kann man grob mitverfolgen, was das Modul aktuell gerade macht.
+* Fehlerhafte Antwort-Sequence ignorieren
+Das Modul arbeitet nach dem Prinzip "Frage X Adressen an und werde die Antworten aus". Dabei erwartet es die Anworten in genau der Sequenz, in der sie angefragt wurden. Sollte es hier zu Probleme kommen (siehe Debug-Meldungen im Modul), kann man versuchen, diese Sequenz-Überprüfung zu deaktivieren.
+* Auf fremde Abfragen reagieren
+Im Normalfall ignoriert das Modul Antworten auf der Schnittstelle, die von anderen Anbindungen wie z.B. der RCT Android/iOS App angefordert wurden. Durch diesen Schalter kann man versuchen, auch diese Antworten auswerten zu lassen (experimentell).
+
 
 ## 4. Module
 Derzeit bietet das GIT nur das Modul "RCT_POWER_INVERTER" für die direkte Anbindung eines einzelnen RCT-Power Inverter/Wechselrichter. 
