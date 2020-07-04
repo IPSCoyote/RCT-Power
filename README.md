@@ -91,12 +91,21 @@ Das Modul reagiert auf Nachrichten vom Wechselrichter über die geöffnete TCP S
 
 ### Version 1.0
 Überarbeitete Version mit folgenden Anpassungen:
-* Komplett überarbeitet Kommunikation mit dem RCT Wechselrichter. 
+* Komplett überarbeitete Kommunikation mit dem RCT Wechselrichter. 
 
 Es zeigten sich Probleme bei Installationen mit mehreren Wechselrichtern. Die WR kommunizieren untereinander, so dass es zu Fehl-Zuordnungen der Daten kam. Man konnte nicht Unterscheiden, welche Daten zu welchem Wechselrichter gehörten.
 Die Kommunikation wurde mittels Semaphoren sequenziert. Zudem wird nicht jede Antwort auf der Schnittstelle sofort ausgewertet, sondern die Antworten werden gesammelt um dann mit den angeforderten Daten verglichen und ausgewertet zu werden.
 
+* Batteriekapazität muss nicht mehr konfiguriert werden
+
+In Version 0.1 gab es eine Verwechslung der Panel-Kapazität mit der Batterie-Kapazität des RCT-Systems. Sowas passiert halt, wenn die Batteriegröße zufällig der Größe der Installierten kWp entspricht ;)
+In Version 1.0 liest das Modul die Seriennummern der am RCT installierten Batteriepacks aus und ermittelt hieraus automatisch die Größe der installierten Batterie. 
+
 * optimiertes Layout und Anpassungen der Konfigurationsparameter in der Instanzkonfiguration
+
+* **Notwendige Manuelle Anpassungen**
+
+Ggf. muss das Update-Intervall angepasst werden. In Version 0.1 waren 10 Sekunden als Minimum erlaubt. Dieser Wert wurde mit Version 1.0 auf 15 Sekunden angehoben, um bei mehreren Wechselrichtern mehr Zeit für die Kommunikation zu haben. Nach dem Update kann hier also ein Fehler angezeigt werden.
 
 ### Version 0.1
 Erste Version des Moduls. Funktioniert stabil mit *einem* Wechselrichter und liesst die Daten über die TCP/IP Schnittstelle aus
