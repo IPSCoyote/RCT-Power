@@ -42,15 +42,21 @@ Dem RCT Power Inverter Modul muss diese als übergeordnete Instanz zugewiesen we
 </p>
 
 Weitere Einstellungen:
-- **Grunddaten - Input A und B**
+- **PV Paneldaten - Eingang A**
 
-Hier kann die Anzahl der Panel sowie deren jeweilige (je Panel) Nennleistung eingestellt werden. Diese Werte dienen der Berechnung der %-Ausnutzung der Panel/Eingänge.
+Hier kann die Anzahl der Panel sowie deren jeweilige (je Panel) Nennleistung für den Eingang A eingestellt werden. Diese Werte dienen der Berechnung der %-Ausnutzung der Panel am Eingang A.
+- **PV Paneldaten - Eingang B**
+
+Hier kann die Anzahl der Panel sowie deren jeweilige (je Panel) Nennleistung für den Eingang B eingestellt werden. Diese Werte dienen der Berechnung der %-Ausnutzung der Panel am Eingang A.
 - **RCT Wechselrichter Einstellungen**
 
 Hier kann die untere Entladeschwelle einer angeschlossenen Batterie (RCT Power Storage) eingestellt werden. Die verfügbare Restkapazität der Batterie bezieht sich auf die verfügbare Batterie-Kapazität zwischen der im Wechselrichter eingestellten unteren sowie der oberen Ladeschwelle (die obere Schwelle sowie die Brutto-Kapazität wird automatisch ermittelt).
 - **Update Interval**
 
-Für das regelmäßige aktualisieren der Daten muss ein Update-Inverval eingestellt werden. Dabei steht 0 für keine Updates! Weniger als 10 Sekunden sollte man aus Performance-Gründen nicht wählen, da das Abrufen der Daten ein paar Sekunden dauert.
+Für das regelmäßige aktualisieren der Daten muss ein Update-Inverval eingestellt werden. Dabei steht 0 für die Deaktivierung der automatischen Updates! Weniger als 15 Sekunden sollte man aus Performance-Gründen nicht wählen, da das Abrufen der Daten ein paar Sekunden dauert. 
+Anmerkung: Der Werte wurde mit Version 1.0 erhöht, da bei mehreren Wechselrichtern mehr Zeit notwendig ist, damit alle ihre Daten abholen können. 
+
+Sollen die Updates nicht automatisch erfolgen, können die Daten mittels des Befehls RCTPowerInverter_UpdateData() über ein Skript angefordert werden. Auch hier sollte man darauf achten, das man nicht zu schnell hintereinander Daten anfordert!
 
 ## 4. Module
 Derzeit bietet das GIT nur das Modul "RCT_POWER_INVERTER" für die direkte Anbindung eines einzelnen RCT-Power Inverter/Wechselrichter. 
