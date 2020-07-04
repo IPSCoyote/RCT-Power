@@ -1,13 +1,22 @@
 {
     "translations": {
         "de": { 
-            "Basic Data - INPUT A": "Grunddaten - Eingang A",
-            "Basic Data - INPUT B": "Grunddaten - Eingang B",
+            "Disclaimer": "Dieses Modul wurde unabhängig vom Hersteller RCT Power entwickelt. Die Benutzung des Moduls erfolgt auf eigene Gefahr unter Ausschluss jeglicher Gewährleistung für Probleme oder Schäden am RCT Power System.", 
+            "Basic Data - INPUT A": "PV Paneldaten - Eingang A",
+            "Basic Data - INPUT B": "PV Paneldaten - Eingang B",
             "Basic Data": "Grunddaten",
-            "IP Address": "IP Adresse",
-            "Fuse protection": "el. Absicherung",
-            "Update Intervals": "Update Intervalle in Sekunden (0 = deaktiviert)",
-            "Update Interval": "Update Interval",
+            "Automatische Updates": "Automatische Updates",
+            "Automatische Updates aktiv": "automatische Updates aktiv",
+            "Update Interval": "(Minimum = 15 Sek.)",
+            "Keine": "Keine",
+            "2 (3.8 kWh)":  "2 Stackmodule (3.8kWh)",
+            "3 (5.7 kWh)":  "3 Stackmodule (5.7kWh)",
+            "4 (7.6 kWh)":  "4 Stackmodule (7.6kWh)",
+            "5 (9.6 kWh)":  "5 Stackmodule (9.6kWh)",
+            "6 (11.5 kWh)": "6 Stackmodule (11.7kWh)",
+            "Auf fremde Abfragen reagieren": "Auf fremde Abfragen reagieren (Achtung! Gefahr von Datenfehlern wenn mehrere Wechselrichter vorhanden sind!)",
+            "Fehlerhafte Antwort-Sequenz ignorieren": "Fehlerhafte Antwort-Sequence ignorieren", 
+            
             "Check Connection": "Verbindung testen",
             "GO-eCharger identified": "RCT Power Wechselrichter gefunden",
             "Configuration missing": "Konfiguration fehlt",

@@ -1,22 +1,28 @@
 <?php
   class RCTPowerInverter extends IPSModule {
-
+	  
         public function Create() {
           /* Create is called ONCE on Instance creation and start of IP-Symcon. 
              Status-Variables und Modul-Properties for permanent usage should be created here  */
           parent::Create(); 
 		
-          // Properties Charger
+          // Properties RCT Power Inverter
           $this->RegisterPropertyInteger("InputAPanelCount", 0); 
           $this->RegisterPropertyInteger("InputANominalPowerPerPanel", 0);
           $this->RegisterPropertyInteger("InputBPanelCount", 0); 
           $this->RegisterPropertyInteger("InputBNominalPowerPerPanel", 0);
 	  $this->RegisterPropertyInteger("LowerSoCLevel", 0);
+	  $this->RegisterPropertyBoolean("AutomaticUpdatesActive", true );
           $this->RegisterPropertyInteger("UpdateInterval", 0);
 	  $this->RegisterPropertyBoolean("DebugSwitch", false );
+          $this->RegisterPropertyBoolean("ReactOnForeignPolls", false );
+          $this->RegisterPropertyBoolean("IgnoreResponseSequence", false );
 		
           // Timer
           $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
+		
+	  // No data requested yet
+	  $this->SetBuffer( "CommunicationStatus", "Idle" );
         }
  
         public function ApplyChanges() { 
@@ -28,10 +34,11 @@
           $this->registerVariables();  
 		
           $this->SetReceiveDataFilter(".*018EF6B5-AB94-40C6-AA53-46943E824ACF.*");
-	  if ( $this->ReadPropertyInteger("UpdateInterval") >= 10 )
+	  if ( $this->ReadPropertyBoolean("AutomaticUpdatesActive") and $this->ReadPropertyInteger("UpdateInterval") >= 10 )
 	    $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", $this->ReadPropertyInteger("UpdateInterval")*1000);	
           else
             $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", 0);	  
+				
         }
  
         public function Destroy() {
@@ -42,43 +49,180 @@
 	  
         //=== Module Functions =========================================================================================
         public function ReceiveData($JSONString) {
-          // Receive data from serial port I/O
-          $data = json_decode($JSONString);
-	  $FullResponse = utf8_decode( $data->Buffer );
-	  $SingleResponses = explode( chr(43), $FullResponse ); // split on 0x2B 
-	  for ($x=1; $x<count($SingleResponses); $x++) {  
-            if ( ord( $SingleResponses[$x][1] ) + 4 == strlen( $SingleResponses[$x] ) ) {
-	      // lenght of response package is correct, so check CRC
-	      // first convert into 0xYY format
-              $response = "";
-	      for ( $y=0; $y<strlen($SingleResponses[$x]); $y++ ) {
-	        $hex = strtoupper( dechex( ord($SingleResponses[$x][$y]) ) );
-                if ( strlen( $hex ) == 1 ) $hex = '0'.$hex;
-	        $response = $response.$hex;
-	      }	     
-	      $CRC = $this->calcCRC( substr( $response,0,ord( $SingleResponses[$x][1] )*2+4 ));
-	      if ( $CRC == substr( $response, -4 ) )
-		// CRC is also ok, so analyze the response
-	        $this->analyzeResponse( substr( $response, 4, 8 ), substr( $response, 12, ord( $SingleResponses[$x][1] )*2-8) );
+		
+  	  // We first collect all data coming till the "end address" (we wait for "1AC87AA0" as last address requested by
+	  // UpdateData) is received. Then we evaluate all received data if it fits to the request of the UpdateData call
+	  // but ignore all non-response packages or duplicate addresses (as master sends also slave data)
+		
+	  $Debugging = $this->ReadPropertyBoolean("DebugSwitch");
+		
+	  // remind last ReceiveData
+	  $this->SetBuffer( "LastReceiveData", strval( time() ) );
+		
+	  if ( $this->GetBuffer( "CommunicationStatus" ) != "WAITING FOR RESPONSES" ) {
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Unexpected Data Received", 0 ); }
+	    if ( $this->ReadPropertyBoolean( "ReactOnForeignPolls" ) == false ) {
+              return true;
+	    } else {
+	      if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Data collected anyhow till end package (React on Foreign Polls Switch)", 0 ); }
 	    }
 	  }
-          return true;
-        }
-       
-        //=== Tool Functions ============================================================================================
-	function analyzeResponse( string $address, string $data ) {
+			  
+	  // in general we expect address "1AC87AA0" to be requested at last -> End of all expected Responses	
+	  // till then we collect all given data in a long string
+	  $EndAddress = chr(26).chr(200).chr(122).chr(160);
 		
-	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
-		
-	  // precalculation
-	  $float = 0.0;
-	  if ( strlen( $data ) == 8 ) $float = $this->hexTo32Float( $data );
-		
-	  // Debug output
-	  if ( $Debugging == true ) {
-	    $this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as Float ".number_format( $float, 2 ).")", 0 );	
+	  if ( strlen( $JSONString ) == 0 ) return;	
+          $ReceivedData = utf8_decode( json_decode($JSONString)->Buffer );
+          
+	  $ReceivedDataBuffer = $this->GetBuffer( "ReceivedDataBuffer" );
+	  $CollectedReceivedData = $ReceivedDataBuffer.$ReceivedData;
+	  
+ 	  if ( strpos( $ReceivedData, $EndAddress ) > 0 ) {
+            // End Address was received -> start analysing data	and clear received data buffer
+	    $this->SetBuffer( "ReceivedDataBuffer", "" );
+	  } else {
+	    // still waiting for the end of the package, so collect received data in buffer
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Expected Data Received, collecting...", 0 ); }	
+	    $this->SetBuffer( "ReceivedDataBuffer", $CollectedReceivedData );
+	    return true;
 	  }
 		
+	  //--- End Address was received, so process data
+	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "All Expected Data Received (".strlen( $CollectedReceivedData )." bytes), start analyzing", 0 );	}
+	  		
+	  $this->SetBuffer( "CommunicationStatus", "ANALYSING" ); // no more data expected, start analysis
+	
+	  // RELEASE SEMAPHORE TO ALLOW  OTHER RCT POWER INVERTER INSTANCES IT'S COMMUNICATION!!!
+	  try {
+            IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" );
+	  } catch (Exception $e) { 
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Semaphore wasn't entered (Maybe react on foreign requests switch?)", 0 ); }
+	  }
+		
+	  // first: Byte Stream Interpreting Rules (see communication protocol documentation)
+	  $CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
+	  $CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );	
+		
+	  // Now cut the collected received data into single data packages
+	  // length 9 is a minimal usefull backage like a read package "2B 01 04 AA BB CC DD CS CS" 
+	  $singleResponses = [];
+	  while ( strlen( $CollectedReceivedData ) >= 9 ) { 
+            if ( $CollectedReceivedData[0] == chr( 43 ) ) {
+              // we've a start byte "2B" in front -> package?
+	      $response = [];    
+	      $response['Command']    = $this->decToHexString( $CollectedReceivedData[1] );
+	      $response['Length']     = ord( $CollectedReceivedData[2] );
+	      if ( strlen( $CollectedReceivedData ) < $response['Length'] + 5 ) {
+		// the remaining CollectedReceivedData is not long enough for the package
+		break; // while
+	      }
+	      $response['Address']    = $this->decToHexString(substr( $CollectedReceivedData, 3, 4 ) );
+	      $response['Data']       = $this->decToHexString(substr( $CollectedReceivedData, 7, $response['Length'] - 4 ) );
+	      $response['CRC']        = $this->decToHexString(substr( $CollectedReceivedData, 3+$response['Length'], 2 ) );	    
+	      $response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
+	      $response['Complete']   = $this->decToHexString(substr( $CollectedReceivedData, 0, $response['FullLength'] ) );
+	    
+              $calculatedCRC = $this->calcCRC( $response['Command'].$this->decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
+	
+	      // shift data string for while statement	    
+	      $CollectedReceivedData = substr( $CollectedReceivedData, $response['FullLength'] );
+		    
+	      // check response	    
+	      if ( $response['Command'] <> '05' ) {
+	        // we only look for command 05 = short response
+		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Unexpected Command: ".$response['Command'].", PackageLength: ".$response['Length'].", Address: ".$response['Address'].", Data: ".$response['Data'].", CRC: ".$response['CRC'].", FullLength: ".$response['FullLength'], 0 ); }
+	        continue;
+	      }
+		    
+	      if ( $calculatedCRC != $response['CRC'] ) {
+	        // CRC Check failed
+		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "CRC Error on Command: ".$response['Command'].", PackageLength: ".$response['Length'].", Address: ".$response['Address'].", Data: ".$response['Data'].", CRC: ".$response['CRC'].", FullLength: ".$response['FullLength']." - Calculated CRC: ".$calculatedCRC, 0 ); }
+		continue;
+	      }
+	
+	      // add found response to resonpse stack
+	      array_push( $singleResponses, $response );
+		    
+	    } else {
+	      // shift Data left by 1
+	      $CollectedReceivedData = substr( $CollectedReceivedData, 1 );  
+	    } 
+	  }
+		
+          // get expected addresses in their sequence		
+	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );  
+		
+	  // check addres sequence is ok (ignoring duplicat addresses)
+	  $lastAddress = "";
+	  $y = 0;
+	  $sequenceOK = true;
+	  for ( $x = 0; $x < count( $singleResponses ); $x++ ) {
+	    if ( $singleResponses[$x]['Address'] != $lastAddress ) {
+	      if ( $singleResponses[$x]['Address'] != $RequestedAddressesSequence[$y] ) {
+	        if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Sequence issue. Found Address ".$singleResponses[$x]['Address']." but expected Address ".$RequestedAddressesSequence[$y], 0 ); }   
+	        $sequenceOK = false;
+	      }
+	      $lastAddress = $singleResponses[$x]['Address'];
+	      $y++;
+	    } 
+	  }
+		
+	  if ( $sequenceOK == false ) {
+	    // if sequence is broken, we cannot rely on the results -> no analysis
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Sequence of requested addresses is not ok.", 0 ); }
+		  
+	    if ( $this->ReadPropertyBoolean("IgnoreResponseSequence") == false ) {
+	      if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Analysis stopped as it's not sure if responses are for our requestes!", 0 ); } 
+              $this->SetBuffer( "CommunicationStatus", "Idle" );	    
+	      return;
+	    }
+            if ( $Debugging == true ) { 
+              $this->sendDebug( "RCTPower", "Analysis still done (Response Sequence ignored!)", 0);
+	      $this->sendDebug( "RCTPower", "NOTE! RECEIVED DATA MIGHT NOT BE MEANT FOR OUR REQUEST. DATA INCONSISTENCY MIGHT BE THE RESULT!", 0 ); }
+	  }
+		
+	  // Analyze Single Responses
+	  $lastAddress = "";
+	  for ( $x = 0; $x < count( $singleResponses ); $x++ ) {	  
+	    if ( $singleResponses[$x]['Address'] != $lastAddress ) {
+	      // if an address comes multiple times, only take the first values, as other values don't belong to this power inverter
+	      $this->analyzeResponse( $singleResponses[$x]['Address'], $singleResponses[$x]['Data'] );  
+	    }
+     	    $lastAddress = $singleResponses[$x]['Address'];
+	  }
+	  
+	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Analysis completed", 0 ); } 
+            
+	  $this->SetBuffer( "CommunicationStatus", "Idle" ); // no more data expected
+		
+        }
+	  
+	  
+       
+        //=== Tool Functions ============================================================================================
+	protected function analyzeResponse( string $address, string $data ) {
+		
+	  $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
+
+	  // precalculation
+	  $float = 0.0;
+	  if ( strlen( $data ) == 8 ) {
+ 	    $float = $this->hexTo32Float( $data );
+	    // Debug output
+	    if ( $Debugging == true ) {
+	      $this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as Float ".number_format( $float, 2 ).")", 0 );	
+	    }
+	  }
+		
+          if ( strlen( $data ) > 8 ) {
+	    $string = $this->hexToString( $data );
+	    // Debug output
+	    if ( $Debugging == true ) {
+	      $this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as String ".$string.")", 0 );	
+	    }
+	  }
+				
 	  switch ($address) {
 		  case "DB2D69AE": // Actual inverters AC-power [W], Float
 			 break;
@@ -189,7 +333,6 @@
                           SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
 	      		  break;  
 		  case "2AE703F2": // Tagesenergie Ertrag Input A in Wh
-			  $this->sendDebug( "RCTPower", "Tages Ertrag Input A: ".number_format( $float, 0 )."W", 0 );
 			  SetValue($this->GetIDForIdent("EnergyDayPVEarningInputA"), round( $float, 0 ) ); 
 			  $AB = GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputA")) + GetValueInteger($this->GetIDForIdent("EnergyDayPVEarningInputB"));	
 	      		  SetValue($this->GetIDForIdent("EnergyDayPVEarningInputAB"), round( $AB, 0 ) );   
@@ -409,8 +552,8 @@
 			  
 			  break;
 			  
-		  case "4BC0F974": // gross battery capacity kwh
-			  SetValue($this->GetIDForIdent("BatteryGrossCapacity"), round( $float/1000, 2 ) );
+		  case "4BC0F974": // Installed PV Power kWp (was <V1.0 "gross battery capacity kwh" - error!)
+			  SetValue($this->GetIDForIdent("InstalledPVPower"), round( $float/1000, 2 ) );
 			  break;
 			  
 		  case "1AC87AA0": // Current House power consumption
@@ -426,6 +569,94 @@
 		  case "7F813D73": // Bit-coded fault word 3
 			  break;
 			  
+		  case "EBC62737": // android description
+			  break;
+			  
+		  case "7924ABD9": // Inverter serial number
+			  break;
+			  
+  		  case "FBF6D834": // Battery Stack 0 serial number
+			  if ( substr( $string, 1, 3 ) != "181" ) {
+			    // we don't have a battery stack -> Battery Capacity is 0 kWh
+			    SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 0 ); 
+			  }
+			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 1.9 ) {
+		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 1.9 );	
+			  }
+			  break;
+			  
+		  case "99396810": // Battery Stack 1 serial number
+			  if ( substr( $string, 1, 3 ) <> "181" ) {
+			    // we don't have a 2nd stack panel -> Battery Capacity is max. 1.9kWh
+		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 1.9 )
+			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 1.9 );
+			  }
+			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 3.8 ) {
+		            // we have at least 2 stack panels -> Battery Capacity is min. 3.8
+		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 3.8 );
+			  }
+			  break;
+			  
+		  case "73489528": // Battery Stack 2 serial number
+			  if ( substr( $string, 1, 3 ) <> "181" ) {
+			    // we don't have a 3nd stack panel -> Battery Capacity is max. 3.8kWh
+		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 3.8 )
+			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 3.8 );
+			  }
+			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 5.7 ) {
+		            // we have at least 3 stack panels -> Battery Capacity is min. 5.7
+		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 5.7 );	
+			  }
+			  break;
+			  
+		  case "257B7612": // Battery Stack 3 serial number
+			  if ( substr( $string, 1, 3 ) <> "181" ) {
+			    // we don't have a 4th stack panel -> Battery Capacity is max. 5.7kWh
+		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 5.7 )
+			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 5.7 );
+			  }
+			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 7.6 ) {
+		            // we have at least 4 stack panels -> Battery Capacity is min. 7.6
+		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 7.6 );	
+			  }
+			  break;
+			  
+		  case "4E699086": // Battery Stack 4 serial number
+			  if ( substr( $string, 1, 3 ) <> "181" ) {
+			    // we don't have a 5th stack panel -> Battery Capacity is max. 7.6kWh
+		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 7.6 )
+			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 7.6 );
+			  }
+			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 9.6 ) {
+		            // we have at least 5 stack panels -> Battery Capacity is min. 9.6
+		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 9.6 );	
+	      		  }
+			  break;
+			  
+		  case "162491E8": // Battery Stack 5 serial number
+			  if ( substr( $string, 1, 3 ) <> "181" ) {
+			    // we don't have a 5th stack panel -> Battery Capacity is max. 9.6kWh
+		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 9.6 )
+			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 9.6 );
+			  }
+			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 11.5 ) {
+		            // we have at least 6 stack panels -> Battery Capacity is min. 11.5
+		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 11.5 );	
+			  }
+			  break;
+			  
+		  case "5939EC5D": // Battery Stack 6 serial number
+			  if ( substr( $string, 1, 3 ) <> "181" ) {
+			    // we don't have a 6th stack panel -> Battery Capacity is max. 11.5kWh
+		            if ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) > 11.5 )
+			      SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 11.5 );
+			  }
+			  elseif ( GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity") ) < 13.4 ) {
+		            // we have at least 7 stack panels -> Battery Capacity is min. 13.4
+		            SetValue($this->GetIDForIdent("BatteryGrossCapacity"), 13.4 );	
+			  }
+			  break;
+			  
 		  //--- Ignore -------------------------------------------------------------------------------------
 		  case "EBC62737": // Inverter Description 
 			  break;	  
@@ -438,9 +669,10 @@
 		
 	}
 	  
-	  
-	function requestData( string $command, int $length ) {
-	  // does not work for string requests!!!
+	protected function RequestData( string $command, int $length = 4 ) {
+		
+	  $RequestAddress = $command;	
+		
           // build command		
 	  $hexlength = strtoupper( dechex($length) );
           if ( strlen( $hexlength ) == 1 ) $hexlength = '0'.$hexlength;
@@ -449,17 +681,27 @@
 	  $hexCommand = "";
 	  for( $x=0; $x<strlen($command)/2;$x++)
 	    $hexCommand = $hexCommand.chr(hexdec(substr( $command, $x*2, 2 )));
-				 
-	  $expectedLength = 9 + $length; // 
 		
-	  // clear expected Response and send Data to Parent...
+	  // Store Address to Requested Addresses Buffer
+	  $RequestedAddressesSequence = json_decode( $this->GetBuffer( "RequestedAddressesSequence" ) );
+          array_push( $RequestedAddressesSequence, $RequestAddress );
+          // Remind Requested Address
+	  $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
+		
+	  // send Data to Parent (IO)...
 	  $this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", 
 	  					    "Buffer" => utf8_encode($hexCommand) )));	
+
+	  usleep( 50000 );
 	}  
-	  
-	function calcCRC( string $command ) {
-          // Command with an odd byte length (add 0x00 to make odd!) without(!) start byte (0x2B)
+	  	  
+	protected function calcCRC( string $command ) {
           $commandLength = strlen( $command ) / 2;
+          if ($commandLength  % 2 != 0) {
+	      // Command with an odd byte length (add 0x00 to make odd!) without(!) start byte (0x2B)
+              $command = $command.'00';
+              $commandLength = strlen( $command ) / 2;
+          }
           $crc = 0xFFFF; 	
           for ( $x = 0; $x <$commandLength; $x++ ) {
             $b = hexdec( substr( $command, $x*2, 2 ) );
@@ -476,7 +718,7 @@
 	  return $crc;
         }    
 	  
-        function hexTo32Float($strHex) {
+        protected function hexTo32Float(string $strHex) {
           $bin = str_pad(base_convert($strHex, 16, 2), 32, "0", STR_PAD_LEFT); 
           $sign = $bin[0]; 
           $v = hexdec($strHex);
@@ -485,6 +727,28 @@
           return $x * pow(2, $exp - 23) * ($sign ? -1 : 1); ;
         }
 
+	protected function hexToString(string $hex) {
+    	  if (strlen($hex) % 2 != 0) {
+      	    return "";
+    	  }
+    	  $string = '';
+ 	  for ($i = 0; $i < strlen($hex) - 1; $i += 2) {
+ 	    if ( hexdec($hex[$i].$hex[$i+1]) >= 32 )
+      	      $string .= chr(hexdec($hex[$i].$hex[$i+1]));
+     	  }
+          return $string;
+  	}
+	
+	protected function decToHexString( string $data ) {
+  	  $result = "";
+  	  for ( $x = 0; $x < strlen( $data ); $x++ ) {
+	    if ( strlen( dechex( ord( $data[$x] ) ) ) < 2 ) {
+              $result = $result."0";
+	    }
+    	    $result = $result.strtoupper( dechex( ord( $data[$x] ) ) );
+	  }
+  	  return $result;
+ 	}
 		
 		
         //=== Module Prefix Functions ===================================================================================
@@ -496,92 +760,147 @@
         
         public function UpdateData() { 
           /* get Data from RCT Power Inverter */
+	   $Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
+	  if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "UpdateData() called", 0 ); }
 		
 	  ///--- HANDLE Connection --------------------------------------------------------------------------------------	
           // check Socket Connection (parent)
           $SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID']; 
-          if ( $SocketConnectionInstanceID == 0 ) return false; // No parent assigned  
+          if ( $SocketConnectionInstanceID == 0 ) {
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "No Parent (Gateway) assigned", 0 ); }
+            return false; // No parent assigned  
+	  }
             
           $ModuleID = IPS_GetInstance($SocketConnectionInstanceID)['ModuleInfo']['ModuleID'];      
-          if ( $ModuleID !== '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}' ) return false; // wrong parent type
+          if ( $ModuleID !== '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}' ) {
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Wrong Parent (Gateway) type", 0 ); }
+   	    return false; // wrong parent type
+	  }
+		
+	  if ( IPS_GetProperty( $SocketConnectionInstanceID,'Open') == false ) {
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Parent Gateway not open!", 0 ); }
+   	    return false; // wrong parent type
+	  }
+		
+	  // check Communication Status
+	  if ( $this->GetBuffer( "CommunicationStatus" ) != "Idle" ) {
+            // own communication still running!!
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Old UpdateData still pending! Clearing old Update Process", 0 ); }
+	    // stop it and clear buffers
+	    $RequestedAddressesSequence = [];
+	    $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );  
+	    $this->SetBuffer( "CommunicationStatus", "Idle" );
+	    // reset semaphore
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to release Semaphore of old UpdateData (if still entered)", 0 ); }
+	    try {
+	      IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" ); 
+	    } catch (Exception $e) { 
+	      if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "(Semaphore wasn't entered)", 0 ); }
+	    }
+	    // wait a bit and start new communication
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Wait to retry", 0 ); }
+	    usleep( 1000000 ); // wait a second
+	  }
+		
+	  // GET SEMAPHORE TO AVOID PARALLEL ACCESS BY OTHER RCT POWER INVERTER INSTANCES!!!		
+	  if ( IPS_SemaphoreEnter( "RCTPowerInverterUpdateData", 8000 ) == false ) {
+		  // wait max. 8 sec. for semaphore	
+	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Semaphore could not be entered", 0 ); }
+   	    return false; // wrong parent type
+	  }
+		
+	  // Clear Buffer for Requested Addresses (Stack!)
+	  $RequestedAddressesSequence = [];
+	  $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
 		
           // Init Communication -----------------------------------------------------------------------------------------
-		
+	  $RequestedAddressesSequence = [];
+	  $this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );
+	  $this->SetBuffer( "CommunicationStatus", "WAITING FOR RESPONSES" ); // we're now requesting data -> receive and analyze it
+				
 	  // Request Data -----------------------------------------------------------------------------------------------	
+		
+	  // $this->RequestData( "DB2D69AE" ); // Actual inverters AC-power [W]. ---> NO RESPONSE!
           
-	  $this->requestData( "DB2D69AE",4 ); usleep( 100000 ); // Actual inverters AC-power [W]
+	  // $this->RequestData( "CF053085" ); // Phase L1 voltage [V] --> not used
+	  // $this->RequestData( "54B4684E" ); // Phase L2 voltage [V] --> not used
+	  // $this->RequestData( "2545E22D" ); // Phase L3 voltage [V] --> not used
           
-	  $this->requestData( "CF053085",4 ); usleep( 100000 ); // Phase L1 voltage [V]
-	  $this->requestData( "54B4684E",4 ); usleep( 100000 ); // Phase L2 voltage [V]
-	  $this->requestData( "2545E22D",4 ); usleep( 100000 ); // Phase L3 voltage [V]
+          $this->RequestData( "B55BA2CE" ); // DC input A voltage [V] (by Documentation B298395D) 
+          $this->RequestData( "DB11855B" ); // DC input A power [W]
 
+	  $this->RequestData( "B0041187" ); // DC input B voltage [V] (by Documentation 5BB8075A)
+          $this->RequestData( "0CB5D21B" ); // DC input B power [W]
+
+	  // $this->RequestData( "B408E40A" ); usleep( 100000 ); // Battery current measured by inverter, low pass filter with Tau = 1s [A]
+
+          $this->RequestData( "A7FA5C5D" ); // Battery voltage [V]
+          $this->RequestData( "959930BF" ); // Battery State of Charge (SoC) [0..1]
+          $this->RequestData( "400F015B" ); // Battery power (positive if discharge) [W]
+          $this->RequestData( "902AFAFB" ); // Battery temperature [°C]
+
+          $this->RequestData( "91617C58" ); // Public grid power (house connection, negative by feed-in) [W]
           
-          $this->requestData( "B55BA2CE",4 ); usleep( 100000 ); // DC input A voltage [V] (by Documentation B298395D) 
-          $this->requestData( "DB11855B",4 ); usleep( 100000 ); // DC input A power [W]
-
-	  $this->requestData( "B0041187",4 ); usleep( 100000 ); // DC input B voltage [V] (by Documentation 5BB8075A)
-          $this->requestData( "0CB5D21B",4 ); usleep( 100000 ); // DC input B power [W]
-
-	  // $this->requestData( "B408E40A", 4 ); usleep( 100000 ); // Battery current measured by inverter, low pass filter with Tau = 1s [A]
-
-          $this->requestData( "A7FA5C5D",4 ); usleep( 100000 ); // Battery voltage [V]
-          $this->requestData( "959930BF",4 ); usleep( 100000 ); // Battery State of Charge (SoC) [0..1]
-          $this->requestData( "400F015B",4 ); usleep( 100000 ); // Battery power (positive if discharge) [W]
-          $this->requestData( "902AFAFB",4 ); usleep( 100000 ); // Battery temperature [°C]
-
-          
-          $this->requestData( "91617C58",4 ); usleep( 100000 ); // Public grid power (house connection, negative by feed-in) [W]
-          
-          $this->requestData( "E96F1844",4 ); usleep( 100000 ); // External power (additional inverters/generators in house internal grid) [W]
+          $this->RequestData( "E96F1844" ); // External power (additional inverters/generators in house internal grid) [W]
 		
 	  //--- Request Energies -------------------------------------
           // Todays Energy
-          $this->requestData( "BD55905F",4 ); usleep( 100000 ); // Todays energy [Wh]
-          $this->requestData( "2AE703F2",4 ); usleep( 100000 ); // Tagesenergie Ertrag Input A in Wh
-          $this->requestData( "FBF3CE97",4 ); usleep( 100000 ); // Tagesenergie Ertrag Input B in Wh
-          $this->requestData( "3C87C4F5",4 ); usleep( 100000 ); // Tagesenergie Netzeinspeisung in -Wh
-          $this->requestData( "867DEF7D",4 ); usleep( 100000 ); // Tagesenergie Netzverbrauch	in Wh
-          $this->requestData( "2F3C1D7D",4 ); usleep( 100000 ); // Tagesenergie Haushalt in Wh	
+          $this->RequestData( "BD55905F" ); // Todays energy [Wh]
+          $this->RequestData( "2AE703F2" ); // Tagesenergie Ertrag Input A in Wh
+          $this->RequestData( "FBF3CE97" ); // Tagesenergie Ertrag Input B in Wh
+          $this->RequestData( "3C87C4F5" ); // Tagesenergie Netzeinspeisung in -Wh
+          $this->RequestData( "867DEF7D" ); // Tagesenergie Netzverbrauch	in Wh
+          $this->RequestData( "2F3C1D7D" ); // Tagesenergie Haushalt in Wh	
 	
           // Month Energy
-          $this->requestData( "10970E9D",4 ); usleep( 100000 ); // This month energy [Wh]
-          $this->requestData( "81AE960B",4 ); usleep( 100000 ); // Monatsenergie Ertrag Input A in Wh
-          $this->requestData( "7AB9B045",4 ); usleep( 100000 ); // Monatsenergie Ertrag Input B in Wh
-          $this->requestData( "65B624AB",4 ); usleep( 100000 ); // Monatsenergie Netzeinspeisung ins Netz in -Wh
-          $this->requestData( "126ABC86",4 ); usleep( 100000 ); // Monatsenergie Netzverbrauch in Wh
-          $this->requestData( "F0BE6429",4 ); usleep( 100000 ); // Monatsenergie Haushalt in Wh
+          $this->RequestData( "10970E9D" ); // This month energy [Wh]
+          $this->RequestData( "81AE960B" ); // Monatsenergie Ertrag Input A in Wh
+          $this->RequestData( "7AB9B045" ); // Monatsenergie Ertrag Input B in Wh
+          $this->RequestData( "65B624AB" ); // Monatsenergie Netzeinspeisung ins Netz in -Wh
+          $this->RequestData( "126ABC86" ); // Monatsenergie Netzverbrauch in Wh
+          $this->RequestData( "F0BE6429" ); // Monatsenergie Haushalt in Wh
 		
           // Year Energy
-          $this->requestData( "C0CC81B6",4 ); usleep( 100000 ); // This year energy [Wh]
-          $this->requestData( "AF64D0FE",4 ); usleep( 100000 ); // Jahresenergie Ertrag Input A in Wh
-          $this->requestData( "BD55D796",4 ); usleep( 100000 ); // Jahresenergie Ertrag Input B in Wh
-          $this->requestData( "26EFFC2F",4 ); usleep( 100000 ); // Jahresenergie Netzinspeisung ins Netz in -Wh
-          $this->requestData( "DE17F021",4 ); usleep( 100000 ); // Jahresenergie Netzverbrauch in Wh
-          $this->requestData( "C7D3B479",4 ); usleep( 100000 ); // Jahresenergie Haushalt in Wh	
+          $this->RequestData( "C0CC81B6" ); // This year energy [Wh]
+          $this->RequestData( "AF64D0FE" ); // Jahresenergie Ertrag Input A in Wh
+          $this->RequestData( "BD55D796" ); // Jahresenergie Ertrag Input B in Wh
+          $this->RequestData( "26EFFC2F" );  // Jahresenergie Netzinspeisung ins Netz in -Wh
+          $this->RequestData( "DE17F021" ); // Jahresenergie Netzverbrauch in Wh
+          $this->RequestData( "C7D3B479" ); // Jahresenergie Haushalt in Wh	
 		
           // Total Energy
-          $this->requestData( "B1EF67CE",4 ); usleep( 100000 ); // Total Energy [Wh]
-          $this->requestData( "FC724A9E",4 ); usleep( 100000 ); // Gesamtenergie Ertrag Input A in Wh
-          $this->requestData( "68EEFD3D",4 ); usleep( 100000 ); // Gesamtenergie Ertrag Input B in Wh
-          $this->requestData( "44D4C533",4 ); usleep( 100000 ); // Gesamtenergie Netzeinspeisung in -Wh
-          $this->requestData( "62FBE7DC",4 ); usleep( 100000 ); // Gesamtenergie Netzverbrauch in Wh
-          $this->requestData( "EFF4B537",4 ); usleep( 100000 ); // Gesamtenergie Haushalt in Wh 
+          $this->RequestData( "B1EF67CE" ); // Total Energy [Wh]
+          $this->RequestData( "FC724A9E" ); // Gesamtenergie Ertrag Input A in Wh
+          $this->RequestData( "68EEFD3D" ); // Gesamtenergie Ertrag Input B in Wh
+          $this->RequestData( "44D4C533" ); // Gesamtenergie Netzeinspeisung in -Wh
+          $this->RequestData( "62FBE7DC" ); // Gesamtenergie Netzverbrauch in Wh
+          $this->RequestData( "EFF4B537" ); // Gesamtenergie Haushalt in Wh 
 		
 		
-          $this->requestData( "FE1AA500",4 ); usleep( 100000 ); // External Power Limit [0..1]
-          $this->requestData( "BD008E29",4 ); usleep( 100000 ); // External battery power target [W] (positive = discharge)
-          $this->requestData( "872F380B",4 ); usleep( 100000 ); // External load demand [W] (positive = feed in / 0=internal
+          // $this->RequestData( "FE1AA500" ); // External Power Limit [0..1]
+          // $this->RequestData( "BD008E29" ); // External battery power target [W] (positive = discharge)
+          // $this->RequestData( "872F380B" ); // External load demand [W] (positive = feed in / 0=internal
 		
 	  // Bit-coded fault word 0-3	
-          $this->requestData( "37F9D5CA",4 ); usleep( 100000 );
-	  $this->requestData( "234B4736",4 ); usleep( 100000 );
-	  $this->requestData( "3B7FCD47",4 ); usleep( 100000 );
-	  $this->requestData( "7F813D73",4 ); usleep( 100000 );
-		
+          // $this->RequestData( "37F9D5CA" ); 
+	  // $this->RequestData( "234B4736" ); 
+	  // $this->RequestData( "3B7FCD47" ); 
+	  // $this->RequestData( "7F813D73" );
+
+	  // Serial numbers and Descriptions
+          // $this->RequestData( "7924ABD9"4 ); // Inverter serial number
+          $this->RequestData( "FBF6D834" ); // Battery Stack 0 serial number
+          $this->RequestData( "99396810" ); // Battery Stack 1 serial number
+          $this->RequestData( "73489528" ); // Battery Stack 2 serial number
+          $this->RequestData( "257B7612" ); // Battery Stack 3 serial number
+          $this->RequestData( "4E699086" ); // Battery Stack 4 serial number
+          $this->RequestData( "162491E8" ); // Battery Stack 5 serial number
+          $this->RequestData( "5939EC5D" ); // Battery Stack 6 serial number
+	 
           //--- NOT DOCUMENTED -------------------------------------------------------------------------
-	  $this->requestData( "8B9FF008", 4 ); usleep( 100000 ); // Upper load boundary in %
-	  $this->requestData( "4BC0F974", 4 ); usleep( 100000 ); // gross battery capacity kwh
-	  $this->requestData( "1AC87AA0", 4 ); usleep( 100000 ); // Current House power consumption
+	  $this->RequestData( "8B9FF008" ); // Upper load boundary in %
+	  $this->RequestData( "4BC0F974" ); // Installed PV Panel kWp
+	  $this->RequestData( "1AC87AA0" ); // Current House power consumption 	<=== THIS HAS TO BE THE LAST REQUESTED ADDRESS !!!
 		
 	  // return result
           return true;
@@ -628,7 +947,7 @@
                 IPS_CreateVariableProfile('RCTPOWER_Capacity.2', 2 );
                 IPS_SetVariableProfileDigits('RCTPOWER_Capacity.2', 2 );
                 IPS_SetVariableProfileIcon('RCTPOWER_Capacity.2', 'Battery' );
-                IPS_SetVariableProfileText('RCTPOWER_Capacity.2', "", " kwh" );
+                IPS_SetVariableProfileText('RCTPOWER_Capacity.2', "", " kWh" );
             }
             
             if ( !IPS_VariableProfileExists('RCTPOWER_SoC.1') ) {
@@ -636,6 +955,13 @@
                 IPS_SetVariableProfileDigits('RCTPOWER_SoC.1', 2 );
                 IPS_SetVariableProfileIcon('RCTPOWER_SoC.1', 'Battery' );
                 IPS_SetVariableProfileText('RCTPOWER_SoC.1', "", " %" );
+            }
+		 
+            if ( !IPS_VariableProfileExists('RCTPOWER_PVPower.2') ) {
+                IPS_CreateVariableProfile('RCTPOWER_PVPower.2', 2 );
+                IPS_SetVariableProfileDigits('RCTPOWER_PVPower.2', 2 );
+                IPS_SetVariableProfileIcon('RCTPOWER_PVPower.2', 'Electricity' );
+                IPS_SetVariableProfileText('RCTPOWER_PVPower.2', "", " kWp" );
             }
 		 
 	    //--- String (Type 3)
@@ -652,6 +978,7 @@
 	  $this->RegisterVariableFloat("DCInputBUtilization", "Eingang B Auslastung PV Module","~Valve.F",105);
 	  $this->RegisterVariableInteger("DCInputPower",      "Eingang Gesamtleistung","RCTPOWER_Power",106);
 	  $this->RegisterVariableFloat("DCInputUtilization",  "Auslastung PV Module gesamt","~Valve.F",107);
+	  $this->RegisterVariableFloat("InstalledPVPower",    "Installerierte Panelleistung","RCTPOWER_PVPower.2",108);
 		
 		
           $this->RegisterVariableInteger("BatteryVoltage",     "Batterie Spannung","RCTPOWER_Voltage",200);
@@ -660,7 +987,9 @@
 	  $this->RegisterVariableFloat("BatteryRemainingNetCapacity","Batterie verf. Restkapazität","RCTPOWER_Capacity.2",202);	
 	  $this->RegisterVariableFloat("BatterySoC",           "Batterie Ladestand","~Valve.F",203);
 	  $this->RegisterVariableFloat("BatteryUpperSoC",      "Batterie Ladegrenze","~Valve.F",204);	
-	  $this->RegisterVariableFloat("BatteryTemperature",   "Batterie Temperatur","~Temperature",205);	
+	  $this->RegisterVariableFloat("BatteryTemperature",   "Batterie Temperatur","~Temperature",205);
+		
+          $this->RegisterVariableInteger("HousePowerCurrent","Haus Leistung","RCTPOWER_Power",250);
 		
 	  $this->RegisterVariableInteger("ExternalPower",  "Generator Leistung","RCTPOWER_Power",300); 
 		
@@ -684,14 +1013,14 @@
 	  $this->RegisterVariableInteger("EnergyMonthEnergy",               "Monat - PV Energie ans Haus (via Batteriepuffer)","RCTPOWER_Energy",600);
 	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputA",      "Monat - PV Ertrag Eingang A","RCTPOWER_Energy",601);
 	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputB",      "Monat - PV Ertrag Eingang B","RCTPOWER_Energy",602);
-	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputAB",     "Monat - PV Ertrag Eingänge A+B","RCTPOWER_Energy",60);
-	  $this->RegisterVariableInteger("EnergyMonthGridFeedIn",           "Monat - Netzeinspeisung","RCTPOWER_Energy",603);
-	  $this->RegisterVariableInteger("EnergyMonthGridUsage",            "Monat - Netzverbrauch","RCTPOWER_Energy",604);
-	  $this->RegisterVariableInteger("EnergyMonthHouseholdTotal",       "Monat - Haushalt gesamt","RCTPOWER_Energy",605);
-	  $this->RegisterVariableInteger("EnergyMonthAutonomousPowerLevel", "Monat - % Anteil PV am Monatsverbrauch","~Valve", 606); 
-	  $this->RegisterVariableInteger("EnergyMonthGridPowerLevel",       "Monat - % Anteil externer Strom am Monatsverbrauch","~Valve", 607); 
-	  $this->RegisterVariableInteger("EnergyMonthSelfConsumptionLevel", "Monat - % PV Selbstverbrauch","~Valve", 608); 
-	  $this->RegisterVariableInteger("EnergyMonthGridFeedInLevel",      "Monat - % PV Netzeinspeisung","~Valve", 609); 
+	  $this->RegisterVariableInteger("EnergyMonthPVEarningInputAB",     "Monat - PV Ertrag Eingänge A+B","RCTPOWER_Energy",603);
+	  $this->RegisterVariableInteger("EnergyMonthGridFeedIn",           "Monat - Netzeinspeisung","RCTPOWER_Energy",604);
+	  $this->RegisterVariableInteger("EnergyMonthGridUsage",            "Monat - Netzverbrauch","RCTPOWER_Energy",605);
+	  $this->RegisterVariableInteger("EnergyMonthHouseholdTotal",       "Monat - Haushalt gesamt","RCTPOWER_Energy",606);
+	  $this->RegisterVariableInteger("EnergyMonthAutonomousPowerLevel", "Monat - % Anteil PV am Monatsverbrauch","~Valve", 607); 
+	  $this->RegisterVariableInteger("EnergyMonthGridPowerLevel",       "Monat - % Anteil externer Strom am Monatsverbrauch","~Valve", 608); 
+	  $this->RegisterVariableInteger("EnergyMonthSelfConsumptionLevel", "Monat - % PV Selbstverbrauch","~Valve", 609); 
+	  $this->RegisterVariableInteger("EnergyMonthGridFeedInLevel",      "Monat - % PV Netzeinspeisung","~Valve", 610); 
 		
           // Year
 	  $this->RegisterVariableInteger("EnergyYearEnergy",               "Jahr - PV Energie ans Haus (via Batteriepuffer)","RCTPOWER_Energy",700);
@@ -718,8 +1047,6 @@
 	  $this->RegisterVariableInteger("EnergyTotalGridPowerLevel",       "Gesamt - % Anteil externer Strom am Gesamtverbrauch","~Valve", 807); 
 	  $this->RegisterVariableInteger("EnergyTotalSelfConsumptionLevel", "Gesamt - % PV Selbstverbrauch","~Valve", 808); 
 	  $this->RegisterVariableInteger("EnergyTotalGridFeedInLevel",      "Gesamt - % PV Netzeinspeisung","~Valve", 809); 
-		
-          $this->RegisterVariableInteger("HousePowerCurrent","Haus Leistung","RCTPOWER_Power",900);
 	
 	  $this->RegisterVariableBoolean("Errorstatus",      "Fehlerstatus","~Alert",1000);
         } 
