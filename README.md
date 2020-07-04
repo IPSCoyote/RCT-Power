@@ -51,10 +51,10 @@ Hier kann die Anzahl der Panel sowie deren jeweilige (je Panel) Nennleistung fü
 - **RCT Wechselrichter Einstellungen**
 
 Hier kann die untere Entladeschwelle einer angeschlossenen Batterie (RCT Power Storage) eingestellt werden. Die verfügbare Restkapazität der Batterie bezieht sich auf die verfügbare Batterie-Kapazität zwischen der im Wechselrichter eingestellten unteren sowie der oberen Ladeschwelle (die obere Schwelle sowie die Brutto-Kapazität wird automatisch ermittelt).
-- **Update Interval**
+- **Automatische Updates**
 
-Für das regelmäßige aktualisieren der Daten muss ein Update-Inverval eingestellt werden. Dabei steht 0 für die Deaktivierung der automatischen Updates! Weniger als 15 Sekunden sollte man aus Performance-Gründen nicht wählen, da das Abrufen der Daten ein paar Sekunden dauert. 
-Anmerkung: Der Werte wurde mit Version 1.0 erhöht, da bei mehreren Wechselrichtern mehr Zeit notwendig ist, damit alle ihre Daten abholen können. 
+Für das regelmäßige aktualisieren der Daten müssen die automatischen Updates aktiv und ein Update-Inverval eingestellt sein. Die Untergrenze des Update-Intervalls liegt bei 15 Sekunden (früher 10).
+Anmerkung: Der Werte wurde mit Version 1.0 erhöht, da bei mehreren Wechselrichtern mehr Zeit notwendig ist, damit alle ihre Daten nacheinander abholen können. 
 
 Sollen die Updates nicht automatisch erfolgen, können die Daten mittels des Befehls RCTPowerInverter_UpdateData() über ein Skript angefordert werden. Auch hier sollte man darauf achten, das man nicht zu schnell hintereinander Daten anfordert!
 
