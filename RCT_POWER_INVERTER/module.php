@@ -12,6 +12,7 @@
           $this->RegisterPropertyInteger("InputBPanelCount", 0); 
           $this->RegisterPropertyInteger("InputBNominalPowerPerPanel", 0);
 	  $this->RegisterPropertyInteger("LowerSoCLevel", 0);
+	  $this->RegisterPropertyBoolean("AutomaticUpdatesActive");
           $this->RegisterPropertyInteger("UpdateInterval", 0);
 	  $this->RegisterPropertyBoolean("DebugSwitch", false );
           $this->RegisterPropertyBoolean("ReactOnForeignPolls", false );
@@ -33,7 +34,7 @@
           $this->registerVariables();  
 		
           $this->SetReceiveDataFilter(".*018EF6B5-AB94-40C6-AA53-46943E824ACF.*");
-	  if ( $this->ReadPropertyInteger("UpdateInterval") >= 15 )
+	  if ( $this->$ReadPropertyBoolean("AutomaticUpdatesActive") and $this->ReadPropertyInteger("UpdateInterval") >= 10 )
 	    $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", $this->ReadPropertyInteger("UpdateInterval")*1000);	
           else
             $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", 0);	  
