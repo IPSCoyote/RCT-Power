@@ -33,6 +33,7 @@
       { "type": "RowLayout", 
         "items": [
             { "type": "CheckBox", "name": "AutomaticUpdatesActive", "caption": "Automatische Updates aktiv" },
+            { "type": "Label", "caption": "   " },
             { "type": "NumberSpinner", "name": "UpdateInterval", "caption": "Update Interval", "digits": 0 , "value": 15, "hex": false, "suffix": "Sekunden", "minimum": 15 }
         ]
       }, 
