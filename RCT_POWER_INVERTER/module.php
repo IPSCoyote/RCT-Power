@@ -12,7 +12,7 @@
           $this->RegisterPropertyInteger("InputBPanelCount", 0); 
           $this->RegisterPropertyInteger("InputBNominalPowerPerPanel", 0);
 	  $this->RegisterPropertyInteger("LowerSoCLevel", 0);
-	  $this->RegisterPropertyBoolean("AutomaticUpdatesActive");
+	  $this->RegisterPropertyBoolean("AutomaticUpdatesActive", true );
           $this->RegisterPropertyInteger("UpdateInterval", 0);
 	  $this->RegisterPropertyBoolean("DebugSwitch", false );
           $this->RegisterPropertyBoolean("ReactOnForeignPolls", false );
