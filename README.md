@@ -108,6 +108,8 @@ In Version 1.0 liest das Modul die Seriennummern der am RCT installierten Batter
 
 * optimiertes Layout und Anpassungen der Konfigurationsparameter in der Instanzkonfiguration
 
+Das Layout ist jetzt an der Web-Konsole orientiert. In der "veralteten" Windows-Konsole kann es ggf. nicht perfekt aussehen ;)
+
 **Notwendige Manuelle Anpassungen**
 
 Ggf. muss das Update-Intervall angepasst werden. In Version 0.1 waren 10 Sekunden als Minimum erlaubt. Dieser Wert wurde mit Version 1.0 auf 15 Sekunden angehoben, um bei mehreren Wechselrichtern mehr Zeit für die Kommunikation zu haben. Nach dem Update kann hier also ein Fehler angezeigt werden.
