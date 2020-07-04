@@ -14,6 +14,7 @@ Nutzung auf eigene Gefahr ohne Gewähr. Das Modul kann jederzeit überarbeitet w
 2. [Systemanforderungen](#2-systemanforderungen)
 3. [Installation](#3-installation)
 4. [Module](#4-module)
+4. [Änderungs-Log](#5-versionshistorie)
 
 ## 1. Funktionsumfang
 
@@ -84,7 +85,7 @@ Das Modul reagiert auf Nachrichten vom Wechselrichter über die geöffnete TCP S
 
 **Während die Quer-Kommunikation der Wechselrichter untereinander möglichst ignoriert wird, kann ein paralleles Pollen über die Android oder IOS App ggf. die Kommunikation und den Datenempfang dieses Moduls stören. Aus diesem Grund sollte man möglichst auf einen parallele Nutzung der RCT Android/iOS App verzichten!**
 
-## 5. Änderungs-Log
+## 5. Versionshistorie
 
 ### Version 1.0
 
