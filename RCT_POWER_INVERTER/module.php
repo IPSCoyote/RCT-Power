@@ -102,8 +102,8 @@
 			$this->SetBuffer( "CommunicationStatus", "ANALYSING" ); // no more data expected, start analysis
 
 	  		// first: Byte Stream Interpreting Rules (see communication protocol documentation)
-	  		$CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
-	  		$CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );	
+	  		// $CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
+	  		// $CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );	
 		
 	  		// Now cut the collected received data into single data packages
 	  		// length 9 is a minimal usefull backage like a read package "2B 01 04 AA BB CC DD CS CS" 
@@ -120,20 +120,18 @@
 	      			}
 	      			$response['Address']    = $this->decToHexString(substr( $CollectedReceivedData, 3, 4 ) );
 	      			$response['Data']       = $this->decToHexString(substr( $CollectedReceivedData, 7, $response['Length'] - 4 ) );
-	      			$response['CRC']        = $this->decToHexString(substr( $CollectedReceivedData, 3+$response['Length'], 2 ) );	    
+	      			
+	      			// get CRC and replace "+"/"-" (2B 2D according to protocol)
+	      			$tempCRC = substr( $CollectedReceivedData, 3+$response['Length'], 3 );
+	      			if ( strlen( $tempCRC ) == 3 { $tempCRC = str_replace( chr(45).chr(45), chr(45), $tempCRC ); }
+	      			if ( strlen( $tempCRC ) == 3 { $tempCRC = str_replace( chr(45).chr(43), chr(43), $tempCRC ); }
+					$tempCRC = substr( $tempCRC, 0, 2 );
+	      			$response['CRC']        = $this->decToHexString( $tempCRC ); // $this->decToHexString(substr( $CollectedReceivedData, 3+$response['Length'], 3 ) );	  
+	      			  
 	      			$response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
 	      			$response['Complete']   = $this->decToHexString(substr( $CollectedReceivedData, 0, $response['FullLength'] ) );
 	    
               		$calculatedCRC = $this->calcCRC( $response['Command'].$this->decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
-	
-					if ( $response['Address'] != $EndAddress ) {
-						// if CRC ends with a 2D, we would have 2D 2B ... in the flow -> 2D changed to 2B to correct previous replacement in CRC
-						if ( substr( $calculatedCRC, -2 ) == "2D" ) { 
-						    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "CRC 2D -> 2B exchange (calculated was before exchange: ".$calculatedCRC.", expected is CRC: ".$response['CRC']." for address ".$response['Address'].")", 0 ); }
-						  	$calculatedCRC = substr( $calculatedCRC, 0, 2 )."2B";
-						  	if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "New calculated CRC is: ".$calculatedCRC, 0 ); }
-						}						
-					}
 	
 	      			// shift data string for while statement	    
 	      			$CollectedReceivedData = substr( $CollectedReceivedData, $response['FullLength'] );
@@ -773,6 +771,7 @@
             	$crc &= 0xffff;
           	}  
           	$crc = strtoupper( dechex( $crc ) );
+          	// if the CRC is too short, add '0' at the beginning
           	if ( strlen( $crc ) == 2 ) $crc = '00'.$crc;
 	  		if ( strlen( $crc ) == 3 ) $crc = '0'.$crc;
 	  		return $crc;
