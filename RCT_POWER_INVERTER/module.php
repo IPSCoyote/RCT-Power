@@ -126,6 +126,14 @@
 	    
               		$calculatedCRC = $this->calcCRC( $response['Command'].$this->decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
 	
+					if ( $response['Address'] != $EndAddress ) {
+						// if CRC ends with a 2D, we would have 2D 2B ... in the flow -> 2D changed to 2B to correct previous replacement in CRC
+						if ( substr( $calculatedCRC, -2 ) == "2D" ) { 
+						    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "CRC 2D -> 2B exchange (calculated was before exchange: ".$calculatedCRC.")", 0 ); }
+						  	$calculatedCRC = substr( $calculatedCRC, 0, 2 )."2B";
+						}						
+					}
+	
 	      			// shift data string for while statement	    
 	      			$CollectedReceivedData = substr( $CollectedReceivedData, $response['FullLength'] );
 		    
