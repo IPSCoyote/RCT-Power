@@ -64,6 +64,7 @@
 	    			$this->sendDebug( "RCTPower", "Unexpected Data Received", 0 ); 
 	    		}
 	    		if ( $this->ReadPropertyBoolean( "ReactOnForeignPolls" ) == false ) {
+	    			$this->SetBuffer( "ReceivedDataBuffer", "" );
               		return true;
 	    		} else {
 	      			if ( $Debugging == true ) { 
