@@ -114,7 +114,6 @@
 	      			$response = [];    
 	      			$response['Command']    = $this->decToHexString( $CollectedReceivedData[1] );
 	      			$response['Length']     = ord( $CollectedReceivedData[2] );
-	      			$response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
 		
 	      			if ( strlen( $CollectedReceivedData ) < $response['Length'] + 5 ) {
 						// the remaining CollectedReceivedData is not long enough for the package
@@ -122,9 +121,10 @@
 	      			}
 	      			$response['Address']    = $this->decToHexString(substr( $CollectedReceivedData, 3, 4 ) );
 	      			$response['Data']       = $this->decToHexString(substr( $CollectedReceivedData, 7, $response['Length'] - 4 ) );
-	      			$response['CRC']        = $this->decToHexString(substr( $CollectedReceivedData, 3+$response['Length'], 3 ) );	  
+	      			$response['CRC']        = $this->decToHexString(substr( $CollectedReceivedData, 3+$response['Length'], 2 ) );	  
 	      			$response['Complete']   = $this->decToHexString(substr( $CollectedReceivedData, 0, $response['FullLength'] ) );
-	    
+	      			$response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
+	      				    
               		$calculatedCRC = $this->calcCRC( $response['Command'].$this->decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
 	
 	      			// shift data string for while statement	    
