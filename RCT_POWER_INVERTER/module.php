@@ -773,6 +773,7 @@
             	$crc &= 0xffff;
           	}  
           	$crc = strtoupper( dechex( $crc ) );
+          	if ( strlen( $crc ) == 2 ) $crc = '00'.$crc;
 	  		if ( strlen( $crc ) == 3 ) $crc = '0'.$crc;
 	  		return $crc;
         }    
