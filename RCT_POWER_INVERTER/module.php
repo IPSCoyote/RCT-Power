@@ -19,6 +19,9 @@
           	$this->RegisterPropertyBoolean("ReactOnForeignPolls", false );
           	$this->RegisterPropertyBoolean("IgnoreResponseSequence", false );
 		
+			// Own Attributes
+			$this->RegisterAttributeBoolean("GotSemaphore", false );
+		
           	// Timer
           	$this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
 		
@@ -77,12 +80,13 @@
 	  		$EndAddress = chr(26).chr(200).chr(122).chr(160);
 		
 	  		if ( strlen( $JSONString ) == 0 ) return;	
-          		$ReceivedData = utf8_decode( json_decode($JSONString)->Buffer );
+          	
+          	$ReceivedData = utf8_decode( json_decode($JSONString)->Buffer );
           
 	  		$ReceivedDataBuffer = $this->GetBuffer( "ReceivedDataBuffer" );
 	  		$CollectedReceivedData = $ReceivedDataBuffer.$ReceivedData;
 	  
- 	 		if ( strpos( $ReceivedData, $EndAddress ) > 0 ) {
+ 	 		if ( strpos( $CollectedReceivedData, $EndAddress ) > 0 ) {
             	// End Address was received -> start analysing data	and clear received data buffer
 	    		$this->SetBuffer( "ReceivedDataBuffer", "" );
 	  		} else {
@@ -97,16 +101,19 @@
 	  			$this->sendDebug( "RCTPower", "All Expected Data Received (".strlen( $CollectedReceivedData )." bytes), start analyzing", 0 );	
 	  		}
 	  		
-	  		$this->SetBuffer( "CommunicationStatus", "ANALYSING" ); // no more data expected, start analysis
-	
+	  		
 	  		// RELEASE SEMAPHORE TO ALLOW OTHER RCT POWER INVERTER INSTANCES IT'S COMMUNICATION!!!
-	  		try {
-	  			if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to leave semaphore RCTPowerInverterUpdateData", 0 ); }
-            	IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" );
-	  		} catch (Exception $e) { 
-	    		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Semaphore wasn't entered (Maybe react on foreign requests switch?)", 0 ); }
+	  		if ( $this->ReadAttributeBoolean("GotSemaphore") ) {
+	  			try {
+	  				if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to leave semaphore RCTPowerInverterUpdateData", 0 ); }
+            		IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" );
+	  			} catch (Exception $e) { 
+	    	 		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Semaphore wasn't entered (Maybe react on foreign requests switch?)", 0 ); }
+	  			}
 	  		}
-		
+	  		
+			$this->SetBuffer( "CommunicationStatus", "ANALYSING" ); // no more data expected, start analysis
+
 	  		// first: Byte Stream Interpreting Rules (see communication protocol documentation)
 	  		$CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
 	  		$CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );	
@@ -853,13 +860,16 @@
 	    		$this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );  
 	    		$this->SetBuffer( "CommunicationStatus", "Idle" );
 	    		// reset semaphore
-	    		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to release Semaphore RCTPowerInverterUpdateData of old UpdateData (if still entered)", 0 ); }
-	    		try {
-	      			IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" ); 
-	    		} catch (Exception $e) { 
-	      			if ( $Debugging == true ) { 
-	      				$this->sendDebug( "RCTPower", "(Semaphore wasn't entered)", 0 ); 
-	      			}
+	    		if ( $this->ReadAttributeBoolean("GotSemaphore" ) {
+
+	    			if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to release Semaphore RCTPowerInverterUpdateData of old UpdateData (if still entered)", 0 ); }
+	    			try {
+	      				if ( IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" ) ) $this->WriteAttributeBoolean("GotSemaphore", false );
+	    			} catch (Exception $e) { 
+	      				if ( $Debugging == true ) { 
+	      					$this->sendDebug( "RCTPower", "(Semaphore wasn't entered)", 0 ); 
+	      				}
+	    			}
 	    		}
 	    		// wait a bit and start new communication
 	    		if ( $Debugging == true ) { 
@@ -876,6 +886,7 @@
 	    		}
    	    		return false; // wrong parent type
 	  		}
+	  		$this->WriteAttributeBoolean("GotSemaphore", true );
 	  		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Semaphore RCTPowerInverterUpdateData entered", 0 ); }
 		
 	  		// Clear Buffer for Requested Addresses (Stack!)
