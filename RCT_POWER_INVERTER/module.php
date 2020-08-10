@@ -911,7 +911,7 @@
           	$this->RequestData( "E96F1844" ); // External power (additional inverters/generators in house internal grid) [W]
 		
 	  		//--- Request Energies -------------------------------------
-          	/ Todays Energy
+          	// Todays Energy
           	$this->RequestData( "BD55905F" ); // Todays energy [Wh]
     	    $this->RequestData( "2AE703F2" ); // Tagesenergie Ertrag Input A in Wh
           	$this->RequestData( "FBF3CE97" ); // Tagesenergie Ertrag Input B in Wh
