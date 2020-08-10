@@ -126,7 +126,7 @@
 	      			if ( strlen( $tempCRC ) == 3 { $tempCRC = str_replace( chr(45).chr(45), chr(45), $tempCRC ); }
 	      			if ( strlen( $tempCRC ) == 3 { $tempCRC = str_replace( chr(45).chr(43), chr(43), $tempCRC ); }
 					$tempCRC = substr( $tempCRC, 0, 2 );
-	      			$response['CRC']        = $this->decToHexString( $tempCRC ); // $this->decToHexString(substr( $CollectedReceivedData, 3+$response['Length'], 3 ) );	  
+	      			$response['CRC']         = $this->decToHexString( $tempCRC ); // $this->decToHexString(substr( $CollectedReceivedData, 3+$response['Length'], 3 ) );	  
 	      			  
 	      			$response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
 	      			$response['Complete']   = $this->decToHexString(substr( $CollectedReceivedData, 0, $response['FullLength'] ) );
