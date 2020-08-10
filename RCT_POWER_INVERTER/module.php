@@ -807,7 +807,7 @@
    	    return false; // wrong parent type
 	  }
 		
-	  if ( !this->HasActiveParent() ) {
+	  if ( !$this->HasActiveParent() ) {
 	    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Parent Gateway not open!", 0 ); }
    	    return false; // wrong parent type
 	  }
