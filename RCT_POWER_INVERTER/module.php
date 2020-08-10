@@ -101,6 +101,7 @@
 	
 	  		// RELEASE SEMAPHORE TO ALLOW OTHER RCT POWER INVERTER INSTANCES IT'S COMMUNICATION!!!
 	  		try {
+	  			if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to leave semaphore RCTPowerInverterUpdateData", 0 ); }
             	IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" );
 	  		} catch (Exception $e) { 
 	    		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Semaphore wasn't entered (Maybe react on foreign requests switch?)", 0 ); }
@@ -852,7 +853,7 @@
 	    		$this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );  
 	    		$this->SetBuffer( "CommunicationStatus", "Idle" );
 	    		// reset semaphore
-	    		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to release Semaphore of old UpdateData (if still entered)", 0 ); }
+	    		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to release Semaphore RCTPowerInverterUpdateData of old UpdateData (if still entered)", 0 ); }
 	    		try {
 	      			IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" ); 
 	    		} catch (Exception $e) { 
@@ -875,6 +876,7 @@
 	    		}
    	    		return false; // wrong parent type
 	  		}
+	  		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Semaphore RCTPowerInverterUpdateData entered", 0 ); }
 		
 	  		// Clear Buffer for Requested Addresses (Stack!)
 	  		$RequestedAddressesSequence = [];
