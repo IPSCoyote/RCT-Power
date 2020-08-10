@@ -129,8 +129,9 @@
 					if ( $response['Address'] != $EndAddress ) {
 						// if CRC ends with a 2D, we would have 2D 2B ... in the flow -> 2D changed to 2B to correct previous replacement in CRC
 						if ( substr( $calculatedCRC, -2 ) == "2D" ) { 
-						    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "CRC 2D -> 2B exchange (calculated was before exchange: ".$calculatedCRC." for address ".$response['Address'].")", 0 ); }
+						    if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "CRC 2D -> 2B exchange (calculated was before exchange: ".$calculatedCRC.", expected is CRC: ".$response['CRC']." for address ".$response['Address'].")", 0 ); }
 						  	$calculatedCRC = substr( $calculatedCRC, 0, 2 )."2B";
+						  	if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "New calculated CRC is: ".$calculatedCRC, 0 ); }
 						}						
 					}
 	
