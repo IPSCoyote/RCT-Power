@@ -186,6 +186,8 @@
             	if ( $Debugging == true ) { 
               		$this->sendDebug( "RCTPower", "Analysis still done (Response Sequence ignored!)", 0);
 	      			$this->sendDebug( "RCTPower", "NOTE! RECEIVED DATA MIGHT NOT BE MEANT FOR OUR REQUEST. DATA INCONSISTENCY MIGHT BE THE RESULT!", 0 ); }
+	  		} else {
+	  			if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Sequence of requested addresses is ok.", 0 ); }
 	  		}
 		
 	  		// Analyze Single Responses
