@@ -860,8 +860,7 @@
 	    		$this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );  
 	    		$this->SetBuffer( "CommunicationStatus", "Idle" );
 	    		// reset semaphore
-	    		if ( $this->ReadAttributeBoolean("GotSemaphore" ) {
-
+	    		if ( $this->ReadAttributeBoolean("GotSemaphore" ) ) {
 	    			if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to release Semaphore RCTPowerInverterUpdateData of old UpdateData (if still entered)", 0 ); }
 	    			try {
 	      				if ( IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" ) ) $this->WriteAttributeBoolean("GotSemaphore", false );
