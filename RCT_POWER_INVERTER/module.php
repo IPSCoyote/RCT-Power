@@ -97,15 +97,6 @@
 	  		if ( $Debugging == true ) { 
 	  			$this->sendDebug( "RCTPower", "All Expected Data Received (".strlen( $CollectedReceivedData )." bytes), start analyzing", 0 );	
 	  		}
-	  		
-	  		
-	  		// RELEASE SEMAPHORE TO ALLOW OTHER RCT POWER INVERTER INSTANCES IT'S COMMUNICATION!!!
-	  		try {
-	  			if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to leave semaphore RCTPowerInverterUpdateData", 0 ); }
-            	IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" );
-	  		} catch (Exception $e) { 
-	    			if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Semaphore wasn't entered (Maybe react on foreign requests switch?)", 0 ); }
-	  		}
 	  			  		
 			$this->SetBuffer( "CommunicationStatus", "ANALYSING" ); // no more data expected, start analysis
 
@@ -819,6 +810,14 @@
 	   		$Debugging = $this->ReadPropertyBoolean ("DebugSwitch");	
 	  		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "UpdateData() called", 0 ); }
 		
+	  		if ( $this->GetBuffer( "CommunicationStatus" ) != "Idle" ) {
+            	// own communication still running!!
+	    		if ( $Debugging == true ) { 
+	    			$this->sendDebug( "RCTPower", "Old UpdateData still pending! Clearing old Update Process", 0 ); 
+	    		}
+	    		return false;
+	      	}
+		
 	  		///--- HANDLE Connection --------------------------------------------------------------------------------------	
           	// check Socket Connection (parent)
           	$SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID']; 
@@ -844,43 +843,17 @@
    	    		return false; // wrong parent type
 	  		}
 		
-	  		// check Communication Status
-	  		if ( $this->GetBuffer( "CommunicationStatus" ) != "Idle" ) {
-            	// own communication still running!!
-	    		if ( $Debugging == true ) { 
-	    			$this->sendDebug( "RCTPower", "Old UpdateData still pending! Clearing old Update Process", 0 ); 
-	    		}
-	    		// stop it and clear buffers
-	    		$RequestedAddressesSequence = [];
-	    		$this->SetBuffer( "RequestedAddressesSequence", json_encode( $RequestedAddressesSequence ) );  
-	    		$this->SetBuffer( "CommunicationStatus", "Idle" );
-	    		// reset semaphore
-	    		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Try to release Semaphore RCTPowerInverterUpdateData of old UpdateData (if still entered)", 0 ); }
-	    		try {
-	      			IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" );
-	    		} catch (Exception $e) { 
-	      			if ( $Debugging == true ) { 
-	      				$this->sendDebug( "RCTPower", "(Semaphore wasn't entered)", 0 ); 
-	      			}
-	    		}
-	    		
-	    		// wait a bit and start new communication
-	    		if ( $Debugging == true ) { 
-	    			$this->sendDebug( "RCTPower", "Wait to retry", 0 ); 
-	    		}
-	    		usleep( 1000000 ); // wait a second
-	  		}
-		
+
 	  		// GET SEMAPHORE TO AVOID PARALLEL ACCESS BY OTHER RCT POWER INVERTER INSTANCES!!!		
 	  		if ( IPS_SemaphoreEnter( "RCTPowerInverterUpdateData", 8000 ) == false ) {
 		  		// wait max. 8 sec. for semaphore	
 	    		if ( $Debugging == true ) { 
 	    			$this->sendDebug( "RCTPower", "Semaphore could not be entered", 0 ); 
 	    		}
-   	    		return false; // wrong parent type
-	  		}
+   	    		return false; // Semaphore not available
+   	    	}
 
-	  		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Semaphore RCTPowerInverterUpdateData entered", 0 ); }
+	  		if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "Semaphore RCTPowerInverterUpdateData entered", 0 ); }	
 		
 	  		// Clear Buffer for Requested Addresses (Stack!)
 	  		$RequestedAddressesSequence = [];
@@ -974,6 +947,21 @@
 	  		$this->RequestData( "8B9FF008" ); // Upper load boundary in %
 	  		$this->RequestData( "4BC0F974" ); // Installed PV Panel kWp
 	  		$this->RequestData( "1AC87AA0" ); // Current House power consumption 	<=== THIS HAS TO BE THE LAST REQUESTED ADDRESS !!!
+		
+		    // Wait for answers (till Receive Data setss CommunicationStatus) or we run over 15 seconds
+		    $counter = 0;
+		    while ( ( $this->GetBuffer( "CommunicationStatus" ) == "WAITING FOR RESPONSES" ) OR ( $counter > 60) ) {
+		      $counter++;
+		      usleep(250000); // wait 0.25 sec. and check again	    	
+		    }
+		   		
+		    // release semaphore
+			if ( IPS_SemaphoreLeave( "RCTPowerInverterUpdateData" ) ) {
+	    		if ( $Debugging == true ) { 
+	    			$this->sendDebug( "RCTPower", "Semaphore released", 0 ); 
+	    		}
+   	    	}
+
 		
 	  		// return result
           	return true;
