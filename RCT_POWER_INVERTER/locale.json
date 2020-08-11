@@ -16,6 +16,7 @@
             "6 (11.5 kWh)": "6 Stackmodule (11.7kWh)",
             "Auf fremde Abfragen reagieren": "Auf fremde Abfragen reagieren (Achtung! Gefahr von Datenfehlern wenn mehrere Wechselrichter vorhanden sind!)",
             "Fehlerhafte Antwort-Sequenz ignorieren": "Fehlerhafte Antwort-Sequence ignorieren", 
+            "CRC Fehler ignorieren": "CRC Fehler ignorieren",
             
             "Check Connection": "Verbindung testen",
             "GO-eCharger identified": "RCT Power Wechselrichter gefunden",

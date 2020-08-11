@@ -18,6 +18,7 @@
 	  		$this->RegisterPropertyBoolean("DebugSwitch", false );
           	$this->RegisterPropertyBoolean("ReactOnForeignPolls", false );
           	$this->RegisterPropertyBoolean("IgnoreResponseSequence", false );
+          	$this->RegisterPropertyBoolean("IgnoreCRCErrors", false );
 				
           	// Timer
           	$this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
@@ -120,17 +121,18 @@
 					if ( ( $nextPackage2B05Start != false ) and ( $nextPackage2B05Start <= $nextPackageStart ) ) $nextPackageStart = $nextPackage2B05Start;
 					
 					$singleResponse = substr( $CollectedReceivedData, 0, $nextPackageStart );
-					if ( $Debugging == true ) { 
-							$this->sendDebug( "RCTPower", "Single Response: ted Command: ".$this->decToHexString( $singleResponse ), 0 ); 
-					}
-					
+					$singleResponseBefore = $singleRepsonse;
+
 					$response = []; 	  
-					$response['FullLength'] = strlen( $singleResponse ); // $response['Length']+5; // StartByte+Command+Length+CRC (incl. non conferted Byytes Stream!) 
+					$response['FullLength'] = strlen( $singleResponse ); // $response['Length']+5; // StartByte+Command+Length+CRC (incl. non conferted Bytes Stream!) 
 					
 					// first: Byte Stream Interpreting Rules (see communication protocol documentation)
 	  		        $singleResponse = str_replace( chr(45).chr(45), chr(45), $singleResponse );
 	  		        $singleResponse = str_replace( chr(45).chr(43), chr(43), $singleResponse );	
 					
+					if ( $Debugging == true ) { 
+							$this->sendDebug( "RCTPower", "Single Response ".$this->decToHexString( $singleResponseBefore )." (before Byte Stream adoption), ".$this->decToHexString( $singleResponse )." (after adoption)", 0 ); 
+					}
    
 	      			$response['Command']    = $this->decToHexString( $CollectedReceivedData[1] );
 	      			$response['Length']     = ord( $CollectedReceivedData[2] );
@@ -141,8 +143,7 @@
 	      			$response['Address']    = $this->decToHexString(substr( $CollectedReceivedData, 3, 4 ) );
 	      			$response['Data']       = $this->decToHexString(substr( $CollectedReceivedData, 7, $response['Length'] - 4 ) );
 	      			$response['CRC']        = $this->decToHexString(substr( $singleResponse, 3+$response['Length'], 2 ) );	  
-	      			$response['Complete']   = $singleResponse; // $this->decToHexString(substr( $CollectedReceivedData, 0, $response['FullLength'] ) );
-	      			//$response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
+	      			$response['Complete']   = $singleResponse; 	 
 	      				    
               		$calculatedCRC = $this->calcCRC( $response['Command'].$this->decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
 	
@@ -161,7 +162,9 @@
 	      			if ( $calculatedCRC != $response['CRC'] ) {
 	        			// CRC Check failed
 						if ( $Debugging == true ) { $this->sendDebug( "RCTPower", "CRC Error on Command: ".$response['Command'].", PackageLength: ".$response['Length'].", Address: ".$response['Address'].", Data: ".$response['Data'].", CRC: ".$response['CRC'].", FullLength: ".$response['FullLength']." - Calculated CRC: ".$calculatedCRC, 0 ); }
-						// continue; // we ignore CRC errors
+						if ( $this->ReadPropertyBoolean("IgnoreCRCErrors") == false ) {
+							continue; // ignore responses with CRC errors
+						}
 					}
 	
 	      			// add found response to resonpse stack
