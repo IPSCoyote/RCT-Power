@@ -137,12 +137,12 @@
 						// the remaining CollectedReceivedData is not long enough for the package
 						break; // while
 	      			}
-	      			$response['Address']    = $this->decToHexString(substr( $CollectedReceivedData, 3, 4 ) );
-	      			$response['Data']       = $this->decToHexString(substr( $CollectedReceivedData, 7, $response['Length'] - 4 ) );
+	      			$response['Address']    = $this->decToHexString(substr( $singleResponse, 3, 4 ) );
+	      			$response['Data']       = $this->decToHexString(substr( $singleResponse, 7, $response['Length'] - 4 ) );
 	      			$response['CRC']        = $this->decToHexString(substr( $singleResponse, 3+$response['Length'], 2 ) );	  
 	      			$response['Complete']   = $singleResponse; 	 
 	      				    
-              		$calculatedCRC = $this->calcCRC( $response['Command'].$this->decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
+              		$calculatedCRC = $this->calcCRC( $response['Command'].$this->decToHexString( $singleResponse[2] ).$response['Address'].$response['Data'] );
 	
 	      			// shift data string for while statement	    
 	      			$CollectedReceivedData = substr( $CollectedReceivedData, $response['FullLength'] );
