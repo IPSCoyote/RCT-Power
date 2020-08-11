@@ -102,8 +102,8 @@
 			$this->SetBuffer( "CommunicationStatus", "ANALYSING" ); // no more data expected, start analysis
 
 	  		// first: Byte Stream Interpreting Rules (see communication protocol documentation)
-	  		$CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
-	  		$CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );	
+	  		//$CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
+	  		//$CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );	
 		
 	  		// Now cut the collected received data into single data packages
 	  		// length 9 is a minimal usefull backage like a read package "2B 01 04 AA BB CC DD CS CS" 
@@ -123,24 +123,25 @@
 					if ( $Debugging == true ) { 
 							$this->sendDebug( "RCTPower", "Single Response: ted Command: ".$this->decToHexString( $singleResponse ), 0 ); 
 					}
-              		
-              		
-              		
-              		
-              		
+					
 	      			$response = [];    
 	      			$response['Command']    = $this->decToHexString( $CollectedReceivedData[1] );
 	      			$response['Length']     = ord( $CollectedReceivedData[2] );
-		
 	      			if ( strlen( $CollectedReceivedData ) < $response['Length'] + 5 ) {
 						// the remaining CollectedReceivedData is not long enough for the package
 						break; // while
 	      			}
 	      			$response['Address']    = $this->decToHexString(substr( $CollectedReceivedData, 3, 4 ) );
 	      			$response['Data']       = $this->decToHexString(substr( $CollectedReceivedData, 7, $response['Length'] - 4 ) );
+	      			$response['FullLength'] = strlen( $singleResponse ); // $response['Length']+5; // StartByte+Command+Length+CRC  
+					
+					// first: Byte Stream Interpreting Rules (see communication protocol documentation)
+	  		        $singleResponse = str_replace( chr(45).chr(45), chr(45), $singleResponse );
+	  		        $singleResponse = str_replace( chr(45).chr(43), chr(43), $singleResponse );	
+              		
 	      			$response['CRC']        = $this->decToHexString(substr( $CollectedReceivedData, 3+$response['Length'], 2 ) );	  
-	      			$response['Complete']   = $this->decToHexString(substr( $CollectedReceivedData, 0, $response['FullLength'] ) );
-	      			$response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
+	      			$response['Complete']   = $singleResponse; // $this->decToHexString(substr( $CollectedReceivedData, 0, $response['FullLength'] ) );
+	      			//$response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
 	      				    
               		$calculatedCRC = $this->calcCRC( $response['Command'].$this->decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
 	
