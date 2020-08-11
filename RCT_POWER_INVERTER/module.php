@@ -124,7 +124,14 @@
 							$this->sendDebug( "RCTPower", "Single Response: ted Command: ".$this->decToHexString( $singleResponse ), 0 ); 
 					}
 					
-	      			$response = [];    
+					$response = []; 	  
+					$response['FullLength'] = strlen( $singleResponse ); // $response['Length']+5; // StartByte+Command+Length+CRC (incl. non conferted Byytes Stream!) 
+					
+					// first: Byte Stream Interpreting Rules (see communication protocol documentation)
+	  		        $singleResponse = str_replace( chr(45).chr(45), chr(45), $singleResponse );
+	  		        $singleResponse = str_replace( chr(45).chr(43), chr(43), $singleResponse );	
+					
+   
 	      			$response['Command']    = $this->decToHexString( $CollectedReceivedData[1] );
 	      			$response['Length']     = ord( $CollectedReceivedData[2] );
 	      			if ( strlen( $CollectedReceivedData ) < $response['Length'] + 5 ) {
@@ -133,12 +140,6 @@
 	      			}
 	      			$response['Address']    = $this->decToHexString(substr( $CollectedReceivedData, 3, 4 ) );
 	      			$response['Data']       = $this->decToHexString(substr( $CollectedReceivedData, 7, $response['Length'] - 4 ) );
-	      			$response['FullLength'] = strlen( $singleResponse ); // $response['Length']+5; // StartByte+Command+Length+CRC  
-					
-					// first: Byte Stream Interpreting Rules (see communication protocol documentation)
-	  		        $singleResponse = str_replace( chr(45).chr(45), chr(45), $singleResponse );
-	  		        $singleResponse = str_replace( chr(45).chr(43), chr(43), $singleResponse );	
-              		
 	      			$response['CRC']        = $this->decToHexString(substr( $singleResponse, 3+$response['Length'], 2 ) );	  
 	      			$response['Complete']   = $singleResponse; // $this->decToHexString(substr( $CollectedReceivedData, 0, $response['FullLength'] ) );
 	      			//$response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
