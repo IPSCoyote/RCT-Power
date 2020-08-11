@@ -73,7 +73,7 @@ Die Verwendung der Tools sollte eigentlich nur im Problemfall notwendig und desh
 * **Debuginformationen ausgeben**. Über diesen Schalter können Debug-Meldungen im Modul aktiviert werden. So kann man grob mitverfolgen, was das Modul aktuell gerade macht.
 * **Fehlerhafte Antwort-Sequence ignorieren**. Das Modul arbeitet nach dem Prinzip "Frage X Adressen an und werde die Antworten aus". Dabei erwartet es die Anworten in genau der Sequenz, in der sie angefragt wurden. Sollte es hier zu Probleme kommen (siehe Debug-Meldungen im Modul), kann man versuchen, diese Sequenz-Überprüfung zu deaktivieren. Die Sequenz-Überprüfung ist zudem nur wirklich relevant, wenn mehrere, miteinander kommunizierende, Wechselrichter angeschlossen sind. Bei einem einzelnen Wechselrichter kann das setzen dieses Schalters sogar die Häufigkeit der Datenauswertung verbessern!
 * **Auf fremde Abfragen reagieren**. Im Normalfall ignoriert das Modul Antworten auf der Schnittstelle, die von anderen Anbindungen wie z.B. der RCT Android/iOS App angefordert wurden. Durch diesen Schalter kann man versuchen, auch diese Antworten auswerten zu lassen (experimentell).
-
+* **CRC Fehler ignorieren**. Im Normalfall werden die empfangenen Pakete einer Checksummenprüfung (CRC) unterzogen. Fehlerhafte Pakete werden dabei ignoriert, welches wiederum die Antwort-Sequenz stören kann! Mit diesem Schalter kann die CRC Prüfung abgeschaltet werden.
 
 ## 4. Module
 Derzeit bietet das GIT nur das Modul "RCT_POWER_INVERTER" für die direkte Anbindung eines einzelnen RCT-Power Inverter/Wechselrichter. 
