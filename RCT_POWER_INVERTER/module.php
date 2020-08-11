@@ -119,7 +119,7 @@
 					if ( ( $nextPackage2B05Start != false ) and ( $nextPackage2B05Start <= $nextPackageStart ) ) $nextPackageStart = $nextPackage2B05Start;
 					
 					$singleResponse = substr( $CollectedReceivedData, 0, $nextPackageStart );
-					$singleResponseBefore = $singleRepsonse;
+					$singleResponseBefore = $singleResponse;
 
 					$response = []; 	  
 					$response['FullLength'] = strlen( $singleResponse ); // $response['Length']+5; // StartByte+Command+Length+CRC (incl. non conferted Bytes Stream!) 
@@ -128,14 +128,9 @@
 	  		        $singleResponse = str_replace( chr(45).chr(45), chr(45), $singleResponse );
 	  		        $singleResponse = str_replace( chr(45).chr(43), chr(43), $singleResponse );	
 					if ( $Debugging == true ) { 
-							$this->sendDebug( "RCTPower", "blah", 0 ); 
-					}
-					if ( $Debugging == true ) { 
-							$this->sendDebug( "RCTPower", "Single Response ".$this->decToHexString( $singleResponse )." (after Byte Stream adoption)", 0 ); 
-					}
-   					if ( $Debugging == true ) { 
-							$this->sendDebug( "RCTPower", "blup", 0 ); 
-					}	      			
+							$this->sendDebug( "RCTPower", "Single Response ".$this->decToHexString( $singleResponseBefore )." (before Byte Stream adoption), ".$this->decToHexString( $singleResponse )." (after Byte Stream adoption)", 0 ); 
+					}  
+					   			
 					$response['Command']    = $this->decToHexString( $CollectedReceivedData[1] );
 	      			$response['Length']     = ord( $CollectedReceivedData[2] );
 	      			if ( strlen( $CollectedReceivedData ) < $response['Length'] + 5 ) {
