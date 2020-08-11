@@ -120,7 +120,9 @@
 					
 					$singleResponse = substr( $CollectedReceivedData, 0, $nextPackageStart );
 					$singleResponseBefore = $singleRepsonse;
-
+					if ( $Debugging == true ) { 
+							$this->sendDebug( "RCTPower", "blah", 0 ); 
+					}
 					$response = []; 	  
 					$response['FullLength'] = strlen( $singleResponse ); // $response['Length']+5; // StartByte+Command+Length+CRC (incl. non conferted Bytes Stream!) 
 					
