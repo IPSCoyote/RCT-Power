@@ -147,6 +147,7 @@
 	      				    
               		$calculatedCRC = $this->calcCRC( $response['Command'].$this->decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
 	
+
 	      			// shift data string for while statement	    
 	      			$CollectedReceivedData = substr( $CollectedReceivedData, $response['FullLength'] );
 		    
