@@ -101,10 +101,6 @@
 	  		}
 	  			  		
 			$this->SetBuffer( "CommunicationStatus", "ANALYSING" ); // no more data expected, start analysis
-
-	  		// first: Byte Stream Interpreting Rules (see communication protocol documentation)
-	  		//$CollectedReceivedData = str_replace( chr(45).chr(45), chr(45), $CollectedReceivedData );
-	  		//$CollectedReceivedData = str_replace( chr(45).chr(43), chr(43), $CollectedReceivedData );	
 		
 	  		// Now cut the collected received data into single data packages
 	  		// length 9 is a minimal usefull backage like a read package "2B 01 04 AA BB CC DD CS CS" 
@@ -147,7 +143,6 @@
 	      				    
               		$calculatedCRC = $this->calcCRC( $response['Command'].$this->decToHexString( $CollectedReceivedData[2] ).$response['Address'].$response['Data'] );
 	
-
 	      			// shift data string for while statement	    
 	      			$CollectedReceivedData = substr( $CollectedReceivedData, $response['FullLength'] );
 		    
