@@ -111,6 +111,23 @@
 	  		while ( strlen( $CollectedReceivedData ) >= 9 ) { 
             	if ( $CollectedReceivedData[0] == chr( 43 ) ) {
               		// we've a start byte "2B" in front -> package?
+              		
+              		// first get the hole package (till beginning of next package (= 2B05, 2B02))
+              		$nextPackage2B02Start = strpos( $CollectedReceivedData, chr(43).chr(2), 3 );
+              		$nextPackage2B05Start = strpos( $CollectedReceivedData, chr(43).chr(5), 3 );
+              		$nextPackageStart = 1000;
+              		if ( ( $nextPackage2B02Start != false ) and ( $nextPackage2B02Start <= $nextPackageStart ) ) $nextPackageStart = $nextPackage2B02Start;
+					if ( ( $nextPackage2B05Start != false ) and ( $nextPackage2B05Start <= $nextPackageStart ) ) $nextPackageStart = $nextPackage2B05Start;
+					
+					$singleResponse = substr( $CollectedReceivedData, 0, $nextPackageStart );
+					if ( $Debugging == true ) { 
+							$this->sendDebug( "RCTPower", "Single Response: ted Command: ".$this->decToHexString( $singleResponse ), 0 ); 
+					}
+              		
+              		
+              		
+              		
+              		
 	      			$response = [];    
 	      			$response['Command']    = $this->decToHexString( $CollectedReceivedData[1] );
 	      			$response['Length']     = ord( $CollectedReceivedData[2] );
