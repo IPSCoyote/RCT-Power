@@ -139,7 +139,7 @@
 	  		        $singleResponse = str_replace( chr(45).chr(45), chr(45), $singleResponse );
 	  		        $singleResponse = str_replace( chr(45).chr(43), chr(43), $singleResponse );	
               		
-	      			$response['CRC']        = $this->decToHexString(substr( $CollectedReceivedData, 3+$response['Length'], 2 ) );	  
+	      			$response['CRC']        = $this->decToHexString(substr( $singleResponse, 3+$response['Length'], 2 ) );	  
 	      			$response['Complete']   = $singleResponse; // $this->decToHexString(substr( $CollectedReceivedData, 0, $response['FullLength'] ) );
 	      			//$response['FullLength'] = $response['Length']+5; // StartByte+Command+Length+CRC  
 	      				    
