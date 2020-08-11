@@ -131,7 +131,7 @@
 							$this->sendDebug( "RCTPower", "blah", 0 ); 
 					}
 					if ( $Debugging == true ) { 
-							$this->sendDebug( "RCTPower", "Single Response ".$this->decToHexString( $singleResponseBefore )." (before Byte Stream adoption), ".$this->decToHexString( $singleResponse )." (after adoption)", 0 ); 
+							$this->sendDebug( "RCTPower", "Single Response ".$this->decToHexString( $singleResponseBefore )." (before Byte Stream adoption)", 0 ); 
 					}
    					if ( $Debugging == true ) { 
 							$this->sendDebug( "RCTPower", "blup", 0 ); 
