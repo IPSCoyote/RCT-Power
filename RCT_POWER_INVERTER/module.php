@@ -28,19 +28,21 @@
         }
  
         public function ApplyChanges() { 
-          /* Called on 'apply changes' in the configuration UI and after creation of the instance */
-          parent::ApplyChanges();
+          	/* Called on 'apply changes' in the configuration UI and after creation of the instance */
+        	parent::ApplyChanges();
 		
-          // Generate Profiles & Variables
-          $this->registerProfiles();
-          $this->registerVariables();  
+          	// Generate Profiles & Variables
+          	$this->registerProfiles();
+          	$this->registerVariables();  
 		
-          $this->SetReceiveDataFilter(".*018EF6B5-AB94-40C6-AA53-46943E824ACF.*");
-	  	  if ( $this->ReadPropertyBoolean("AutomaticUpdatesActive") and $this->ReadPropertyInteger("UpdateInterval") >= 10 )
-	     	$this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", $this->ReadPropertyInteger("UpdateInterval")*1000);	
-          else
-            $this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", 0);	  
-				
+          	$this->SetReceiveDataFilter(".*018EF6B5-AB94-40C6-AA53-46943E824ACF.*");
+	  	  	if ( $this->ReadPropertyBoolean("AutomaticUpdatesActive") and $this->ReadPropertyInteger("UpdateInterval") >= 10 )
+	     		$this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", $this->ReadPropertyInteger("UpdateInterval")*1000);	
+          	else
+            	$this->SetTimerInterval("RCTPOWERINVERTER_UpdateTimer", 0);	  
+
+	  		// No data requested yet
+	  		$this->SetBuffer( "CommunicationStatus", "Idle" );
         }
  
         public function Destroy() {
