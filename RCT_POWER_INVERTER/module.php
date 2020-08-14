@@ -43,6 +43,7 @@
 
 	  		// No data requested yet
 	  		$this->SetBuffer( "CommunicationStatus", "Idle" );
+	  		$this->SetBuffer( "UpdateWhilePreviousUpdate", 0 );
         }
  
         public function Destroy() {
@@ -840,8 +841,17 @@
 	    		if ( $Debugging == true ) { 
 	    			$this->sendDebug( "RCTPower", "Old UpdateData still pending! Clearing old Update Process", 0 ); 
 	    		}
-	    		return false;
+	    		$alreadyhappended = $this->GetBuffer( "UpdateWhilePreviousUpdate" );
+	    		if ( $alreadyhappened >= 2 ) {
+	    			$this->SetBuffer( "CommunicationStatus", "Idle" );
+	    		} else {
+	    		  	$alreadyhappended = $alreadyhappended + 1;
+	    		  	$this->SetBuffer( "UpdateWhilePreviousUpdate", $alreadyhappended );
+	    		  	return false;
+	    		}
 	      	}
+		
+		    $this->SetBuffer( "UpdateWhilePreviousUpdate", 0 );
 		
 	  		///--- HANDLE Connection --------------------------------------------------------------------------------------	
           	// check Socket Connection (parent)
