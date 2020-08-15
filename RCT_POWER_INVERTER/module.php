@@ -128,7 +128,7 @@
 					// first: Byte Stream Interpreting Rules (see communication protocol documentation)
 	  		        $singleResponse = str_replace( chr(45).chr(45), chr(45), $singleResponse );
 	  		        $singleResponse = str_replace( chr(45).chr(43), chr(43), $singleResponse );	
-					if ( $Debugging == true ) { 
+					if ( ( $Debugging == true ) and ( $singleResponseBefore != $singleResponse ) ) { 
 							$this->sendDebug( "RCTPower", "Single Response ".$this->decToHexString( $singleResponseBefore )." (before Byte Stream adoption), ".$this->decToHexString( $singleResponse )." (after Byte Stream adoption)", 0 ); 
 					}  
 					   			
@@ -250,9 +250,9 @@
           	if ( strlen( $data ) > 8 ) {
 	    		$string = $this->hexToString( $data );
 	    		// Debug output
-	    		if ( $Debugging == true ) {
+	    		/*if ( $Debugging == true ) {
 	      			$this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as String ".$string.")", 0 );	
-	    		}
+	    		} */
 	  		}
 						
 		  	switch ($address) {
