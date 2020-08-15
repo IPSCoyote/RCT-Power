@@ -129,7 +129,7 @@
 	  		        $singleResponse = str_replace( chr(45).chr(45), chr(45), $singleResponse );
 	  		        $singleResponse = str_replace( chr(45).chr(43), chr(43), $singleResponse );	
 					if ( ( $Debugging == true ) and ( $singleResponseBefore != $singleResponse ) ) { 
-							$this->sendDebug( "RCTPower", "Single Response ".$this->decToHexString( $singleResponseBefore )." (before Byte Stream adoption), ".$this->decToHexString( $singleResponse )." (after Byte Stream adoption)", 0 ); 
+							$this->sendDebug( "RCTPower", "Byte Stream Adoption: ".$this->decToHexString( $singleResponseBefore )." (before), ".$this->decToHexString( $singleResponse )." (after)", 0 ); 
 					}  
 					   			
 					$response['Command']    = $this->decToHexString( $CollectedReceivedData[1] );
