@@ -242,9 +242,9 @@
 	  		if ( strlen( $data ) == 8 ) {
  	    		$float = $this->hexTo32Float( $data );
 	    		// Debug output
-	    		if ( $Debugging == true ) {
+	    		/* if ( $Debugging == true ) {
 	      			$this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as Float ".number_format( $float, 2 ).")", 0 );	
-	    		}
+	    		} */
 			}
 		
           	if ( strlen( $data ) > 8 ) {
