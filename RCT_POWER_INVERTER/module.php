@@ -841,12 +841,12 @@
 	    		if ( $Debugging == true ) { 
 	    			$this->sendDebug( "RCTPower", "Old UpdateData still pending! Clearing old Update Process", 0 ); 
 	    		}
-	    		$alreadyhappended = $this->GetBuffer( "UpdateWhilePreviousUpdate" );
+	    		$alreadyhappened = $this->GetBuffer( "UpdateWhilePreviousUpdate" );
 	    		if ( $alreadyhappened >= 2 ) {
 	    			$this->SetBuffer( "CommunicationStatus", "Idle" );
 	    		} else {
-	    		  	$alreadyhappended = $alreadyhappended + 1;
-	    		  	$this->SetBuffer( "UpdateWhilePreviousUpdate", $alreadyhappended );
+	    		  	$alreadyhappened = $alreadyhappened + 1;
+	    		  	$this->SetBuffer( "UpdateWhilePreviousUpdate", $alreadyhappened );
 	    		  	return false;
 	    		}
 	      	}
