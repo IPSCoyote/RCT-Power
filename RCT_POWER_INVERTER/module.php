@@ -763,6 +763,8 @@
 	  		// send Data to Parent (IO)...
 	  		$this->SendDataToParent(json_encode(Array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($hexCommand) )));	
 
+			// slow down Transmit frequency to avoid client server connection get wrong packages with CRC issues
+			// In 5.5 a value of 50.000 was successfull, while in 5.4 100.000 is necessary!
 	  		usleep( 100000 );
 		}  
 	  	  
