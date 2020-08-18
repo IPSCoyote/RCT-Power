@@ -95,7 +95,7 @@ Das Modul reagiert auf Nachrichten vom Wechselrichter über die geöffnete TCP S
 ## 5. Versionshistorie
 
 ### Version 1.1
-Anspassung der Paketverarbeitung sowie Checksummenprüfung, da es hier zu Problemen in Version 1.0 kam.
+Anpassung der Paketverarbeitung sowie Checksummenprüfung, da es hier zu Problemen in Version 1.0 kam. Zudem musste das interne Poll-Intervall angepasst werden, um Fehler beim Datenaustausch mit dem RCT zu minimieren.
 
 ### Version 1.0
 Überarbeitete Version mit folgenden Anpassungen:
