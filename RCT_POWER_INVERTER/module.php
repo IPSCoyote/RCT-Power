@@ -457,7 +457,7 @@
 				  	if ( GetValueInteger($this->GetIDForIdent("EnergyMonthEnergy")) > 0 )
 				    	$SelfConsumptionLevel = 100 - $FeedInLevel;
 				  	if ( $SelfConsumptionLevel >= 0 and $SelfConsumptionLevel <= 100 ) {
-   	                 SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
+   	                 SetValue($this->GetIDForIdent("EnergyMonthSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
 				 	}
 		      		break;
 		      		  
@@ -468,7 +468,7 @@
 				  	SetValue($this->GetIDForIdent("EnergyMonthGridPowerLevel"), round( $GridPowerLevel, 0 ) ); 
 				  	$AutonomousPowerLevel = 100 - $GridPowerLevel;
 				  	if ( $AutonomousPowerLevel >= 0 and $AutonomousPowerLevel <= 100 ) {
-				    	SetValue($this->GetIDForIdent("EnergyDayAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );     
+				    	SetValue($this->GetIDForIdent("EnergyMonthAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );
 				  	}
 		      		break;
 	      		  
@@ -479,7 +479,7 @@
 			  	SetValue($this->GetIDForIdent("EnergyMonthGridPowerLevel"), round( $GridPowerLevel, 0 ) ); 
 			 	$AutonomousPowerLevel = 100 - $GridPowerLevel;
 			  	if ( $AutonomousPowerLevel >= 0 and $AutonomousPowerLevel <= 100 ) {
-			    	SetValue($this->GetIDForIdent("EnergyDayAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );     
+			    	SetValue($this->GetIDForIdent("EnergyMonthAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );
 			  	}    
 	      		break;  
 				     
@@ -495,7 +495,7 @@
 				  	if ( GetValueInteger($this->GetIDForIdent("EnergyYearEnergy")) > 0 )
 				    	$SelfConsumptionLevel = 100 - $FeedInLevel;
 				  	if ( $SelfConsumptionLevel >= 0 and $SelfConsumptionLevel <= 100 ) {
-       	             SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
+       	             SetValue($this->GetIDForIdent("EnergyYearSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
 				  	}
 	   		   		break;
 	   	   		 
@@ -532,7 +532,7 @@
 				  	SetValue($this->GetIDForIdent("EnergyYearGridPowerLevel"), round( $GridPowerLevel, 0 ) ); 
 				  	$AutonomousPowerLevel = 100 - $GridPowerLevel;
 				  	if ( $AutonomousPowerLevel >= 0 and $AutonomousPowerLevel <= 100 ) {
-				    	SetValue($this->GetIDForIdent("EnergyDayAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );     
+				    	SetValue($this->GetIDForIdent("EnergyYearAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );
 				  	}  
 		      		break;
 		      		     
@@ -543,7 +543,7 @@
 				  	SetValue($this->GetIDForIdent("EnergyYearGridPowerLevel"), round( $GridPowerLevel, 0 ) ); 
 				  	$AutonomousPowerLevel = 100 - $GridPowerLevel;
 				  	if ( $AutonomousPowerLevel >= 0 and $AutonomousPowerLevel <= 100 ) {
-				    	SetValue($this->GetIDForIdent("EnergyDayAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );     
+				    	SetValue($this->GetIDForIdent("EnergyYearAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );
 				  	}       
 		      		break;    
 					     
@@ -559,7 +559,7 @@
 				  	if ( GetValueInteger($this->GetIDForIdent("EnergyTotalEnergy")) > 0 )
 				    	$SelfConsumptionLevel = 100 - $FeedInLevel;
 				  	if ( $SelfConsumptionLevel >= 0 and $SelfConsumptionLevel <= 100 ) {
-   		             	SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
+   		             	SetValue($this->GetIDForIdent("EnergyTotalSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
 				  	}	
 	   		   		break;
 	 	     		 
@@ -587,7 +587,7 @@
 				  	if ( GetValueInteger($this->GetIDForIdent("EnergyTotalEnergy")) > 0 )
 				    	$SelfConsumptionLevel = 100 - $FeedInLevel;
 				  	if ( $SelfConsumptionLevel >= 0 and $SelfConsumptionLevel <= 100 ) {
-       		         	SetValue($this->GetIDForIdent("EnergyDaySelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
+       		         	SetValue($this->GetIDForIdent("EnergyTotalSelfConsumptionLevel"), round( $SelfConsumptionLevel, 0 ) );
 				  	}
 	   	   			break;
 	      		 	     
@@ -597,7 +597,7 @@
 				  	SetValue($this->GetIDForIdent("EnergyTotalGridPowerLevel"), round( $GridPowerLevel, 0 ) ); 
 				  	$AutonomousPowerLevel = 100 - $GridPowerLevel;
 				  	if ( $AutonomousPowerLevel >= 0 and $AutonomousPowerLevel <= 100 ) {
-				    	SetValue($this->GetIDForIdent("EnergyDayAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );     
+				    	SetValue($this->GetIDForIdent("EnergyTotalAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );
 				  	}        											    
 		      		break;
 		      		 	     
@@ -608,7 +608,7 @@
 				  	SetValue($this->GetIDForIdent("EnergyTotalGridPowerLevel"), round( $GridPowerLevel, 0 ) ); 
 				  	$AutonomousPowerLevel = 100 - $GridPowerLevel;
 				  	if ( $AutonomousPowerLevel >= 0 and $AutonomousPowerLevel <= 100 ) {
-				    	SetValue($this->GetIDForIdent("EnergyDayAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );     
+				    	SetValue($this->GetIDForIdent("EnergyTotalAutonomousPowerLevel"), round( $AutonomousPowerLevel, 0 ) );
 				  	}      
 		      		break;    
 				          
