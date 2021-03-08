@@ -864,15 +864,7 @@
 	    		}
             	return false; // No parent assigned  
 	  		}
-            
-          	$ModuleID = IPS_GetInstance($SocketConnectionInstanceID)['ModuleInfo']['ModuleID'];      
-          	if ( $ModuleID !== '{3CFF0FD9-E306-41DB-9B5A-9D06D38576C3}' ) {
-	    		if ( $Debugging == true ) { 
-	    			$this->sendDebug( "RCTPower", "Wrong Parent (Gateway) type", 0 ); 
-	    		}
-   	    		return false; // wrong parent type
-	  		}
-		
+
 	  		if ( !$this->HasActiveParent() ) {
 	    		if ( $Debugging == true ) { 
 	    			$this->sendDebug( "RCTPower", "Parent Gateway not open!", 0 ); 
