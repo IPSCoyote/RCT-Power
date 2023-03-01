@@ -1,7 +1,8 @@
 {
     "translations": {
         "de": { 
-            "Disclaimer": "Dieses Modul wurde unabhängig vom Hersteller RCT Power entwickelt. Die Benutzung des Moduls erfolgt auf eigene Gefahr unter Ausschluss jeglicher Gewährleistung für Probleme oder Schäden am RCT Power System.", 
+            "Disclaimer": "Dieses Modul wurde unabhängig vom Hersteller RCT Power entwickelt. Die Benutzung des Moduls erfolgt auf eigene Gefahr unter Ausschluss jeglicher Gewährleistung für Probleme oder Schäden am RCT Power System.",
+            "Donation": "Das Modul ist ein Hobby. Wer sich mit einer kleinen Spende für dessen Entwicklung (ohne Recht auf irgendwelche Ansprüche) bedanken möchte, kann dies gerne via Paypal-Spende machen:",
             "Basic Data - INPUT A": "PV Paneldaten - Eingang A",
             "Basic Data - INPUT B": "PV Paneldaten - Eingang B",
             "Basic Data": "Grunddaten",
