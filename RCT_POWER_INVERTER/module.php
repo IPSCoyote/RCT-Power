@@ -242,17 +242,17 @@
 	  		if ( strlen( $data ) == 8 ) {
  	    		$float = $this->hexTo32Float( $data );
 	    		// Debug output
-	    		/* if ( $Debugging == true ) {
+	    		if ( $Debugging == true ) {
 	      			$this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as Float ".number_format( $float, 2 ).")", 0 );	
-	    		} */
+	    		}
 			}
 		
           	if ( strlen( $data ) > 8 ) {
 	    		$string = $this->hexToString( $data );
 	    		// Debug output
-	    		/*if ( $Debugging == true ) {
+	    		if ( $Debugging == true ) {
 	      			$this->sendDebug( "RCTPower", "Address ".$address." with data ".$data." (as String ".$string.")", 0 );	
-	    		} */
+	    		}
 	  		}
 						
 		  	switch ($address) {
@@ -394,28 +394,36 @@
    	             	$this->SetValue("EnergyDaySelfConsumptionLevel", round( $SelfConsumptionLevel, 0 ) );
 				  	}
 		      		break;
-		      		      
-			  	case "867DEF7D": // Tagesenergie Netzverbrauch in Wh
-				  	$this->SetValue("EnergyDayGridUsage", round( $float, 0 ) );
-				  	// Calculate AutonomousPowerLevel etc.
-				 	$GridPowerLevel= GetValueInteger($this->GetIDForIdent("EnergyDayGridUsage")) / GetValueInteger($this->GetIDForIdent("EnergyDayHouseholdTotal")) * 100;
-				  	$this->SetValue("EnergyDayGridPowerLevel", round( $GridPowerLevel, 0 ) );
-				  	$AutonomousPowerLevel = 100 - $GridPowerLevel;
-				  	if ( $AutonomousPowerLevel >= 0 and $AutonomousPowerLevel <= 100 ) {
-				    	$this->SetValue("EnergyDayAutonomousPowerLevel", round( $AutonomousPowerLevel, 0 ) );
-				  	}
-		      		break;
+
+			    case "867DEF7D": // Tagesenergie Netzverbrauch in Wh
+				    $this->SetValue("EnergyDayGridUsage", round($float, 0));
+				    if (GetValueInteger($this->GetIDForIdent("EnergyDayHouseholdTotal")) != 0) {
+					    // Calculate AutonomousPowerLevel etc.
+					    $GridPowerLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridUsage")) / GetValueInteger(
+							    $this->GetIDForIdent("EnergyDayHouseholdTotal")
+						    ) * 100;
+					    $this->SetValue("EnergyDayGridPowerLevel", round($GridPowerLevel, 0));
+					    $AutonomousPowerLevel = 100 - $GridPowerLevel;
+					    if ($AutonomousPowerLevel >= 0 and $AutonomousPowerLevel <= 100) {
+						    $this->SetValue("EnergyDayAutonomousPowerLevel", round($AutonomousPowerLevel, 0));
+					    }
+				    }
+				    break;
 		      		  
 			  	case "2F3C1D7D": // Tagesenergie Haushalt in Wh     
 				  	$this->SetValue("EnergyDayHouseholdTotal", round( $float, 0 ) );
-				  	// Calculate AutonomousPowerLevel etc.
-				  	$GridPowerLevel= GetValueInteger($this->GetIDForIdent("EnergyDayGridUsage")) / GetValueInteger($this->GetIDForIdent("EnergyDayHouseholdTotal")) * 100;
-				  	$this->SetValue("EnergyDayGridPowerLevel", round( $GridPowerLevel, 0 ) );
-				  	$AutonomousPowerLevel = 100 - $GridPowerLevel;
-				  	if ( $AutonomousPowerLevel >= 0 and $AutonomousPowerLevel <= 100 ) {
-				    	$this->SetValue("EnergyDayAutonomousPowerLevel", round( $AutonomousPowerLevel, 0 ) );
-				  	}   
-		      		break;  
+				    if (GetValueInteger($this->GetIDForIdent("EnergyDayHouseholdTotal")) != 0) {
+					    // Calculate AutonomousPowerLevel etc.
+					    $GridPowerLevel = GetValueInteger($this->GetIDForIdent("EnergyDayGridUsage")) / GetValueInteger(
+							    $this->GetIDForIdent("EnergyDayHouseholdTotal")
+						    ) * 100;
+					    $this->SetValue("EnergyDayGridPowerLevel", round($GridPowerLevel, 0));
+					    $AutonomousPowerLevel = 100 - $GridPowerLevel;
+					    if ($AutonomousPowerLevel >= 0 and $AutonomousPowerLevel <= 100) {
+						    $this->SetValue("EnergyDayAutonomousPowerLevel", round($AutonomousPowerLevel, 0));
+					    }
+				    }
+		      		break;
 					     
 			  	//--- Energy Month  
 			  	case "10970E9D": // This month energy [Wh], Float	
@@ -799,7 +807,7 @@
           	$v = hexdec($strHex);
           	$x = ($v & ((1 << 23) - 1)) + (1 << 23) * ($v >> 31 | 1);
           	$exp = ($v >> 23 & 0xFF) - 127;
-        	return $x * pow(2, $exp - 23) * ($sign ? -1 : 1); ;
+        	return $x * pow(2, $exp - 23) * ($sign ? -1 : 1);
         }
 
 		protected function hexToString(string $hex) {
