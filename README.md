@@ -98,6 +98,9 @@ Das Modul reagiert auf Nachrichten vom Wechselrichter über die geöffnete TCP S
 
 ## 5. Versionshistorie
 
+### Version 1.2
+Übernahme von Korrekturen zur Vermeidung von Div/0 sowie falscher Tageswertberechnungen.
+
 ### Version 1.1
 Anpassung der Paketverarbeitung sowie Checksummenprüfung, da es hier zu Problemen in Version 1.0 kam. Zudem musste das interne Poll-Intervall angepasst werden, um Fehler beim Datenaustausch mit dem RCT zu minimieren.
 
@@ -125,3 +128,4 @@ Ggf. muss das Update-Intervall angepasst werden. In Version 0.1 waren 10 Sekunde
 
 ### Version 0.1
 Erste Version des Moduls. Funktioniert stabil mit *einem* Wechselrichter und liesst die Daten über die TCP/IP Schnittstelle aus
+
