@@ -780,7 +780,10 @@ class RCTPowerInverter extends IPSModule
                     $this->sendDebug("RCTPower", "Unkown Response Address " . $address . " with data " . $data . " (as Float " . number_format($float, 2) . ")", 0);
 
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            $this->sendDebug("RCTPower", "Error processing address " . $address, 0);
+            $this->sendDebug("RCTPower", "Exception catched: " . $e->getMessage(), 0);
+        } catch (\Throwable $e) {
             $this->sendDebug("RCTPower", "Error processing address " . $address, 0);
             $this->sendDebug("RCTPower", "Exception catched: " . $e->getMessage(), 0);
         }
