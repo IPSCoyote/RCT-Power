@@ -98,6 +98,9 @@ Das Modul reagiert auf Nachrichten vom Wechselrichter über die geöffnete TCP S
 
 ## 5. Versionshistorie
 
+### Version 1.3
+Weitere Try-Catch bei der Verarbeitung
+
 ### Version 1.2
 Übernahme von Korrekturen zur Vermeidung von Div/0 sowie falscher Tageswertberechnungen.
 
