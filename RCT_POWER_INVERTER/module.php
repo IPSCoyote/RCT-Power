@@ -815,7 +815,7 @@ class RCTPowerInverter extends IPSModule
         // Store Address to Requested Addresses Buffer
         $Debugging = $this->ReadPropertyBoolean("DebugSwitch");
         if ($Debugging == true) {
-            $this->sendDebug("RCTPower", "Request Data " . utf8_encode($hexCommand), 0);
+            $this->sendDebug("RCTPower", "Request Data ".$command, 0);
         }
         $RequestedAddressesSequence = json_decode($this->GetBuffer("RequestedAddressesSequence"));
         array_push($RequestedAddressesSequence, $RequestAddress);
