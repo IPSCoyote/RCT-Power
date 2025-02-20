@@ -63,22 +63,17 @@ class RCTPowerInverter extends IPSModule
         // UpdateData) is received. Then we evaluate all received data if it fits to the request of the UpdateData call
         // but ignore all non-response packages or duplicate addresses (as master sends also slave data)
 
-        $Debugging = $this->ReadPropertyBoolean("DebugSwitch");
-
         // remind last ReceiveData
         $this->SetBuffer("LastReceiveData", strval(time()));
 
         if ($this->GetBuffer("CommunicationStatus") != "WAITING FOR RESPONSES") {
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "Unexpected Data Received", 0);
-            }
+
+            $this->debugLog("Unexpected Data Received");
             if ($this->ReadPropertyBoolean("ReactOnForeignPolls") == false) {
                 $this->SetBuffer("ReceivedDataBuffer", "");
                 return true;
             } else {
-                if ($Debugging == true) {
-                    $this->sendDebug("RCTPower", "Data collected anyhow till end package (React on Foreign Polls Switch)", 0);
-                }
+                $this->debugLog("Data collected anyhow till end package (React on Foreign Polls Switch)");
             }
         }
 
@@ -98,18 +93,14 @@ class RCTPowerInverter extends IPSModule
             $this->SetBuffer("ReceivedDataBuffer", "");
         } else {
             // still waiting for the end of the package, so collect received data in buffer
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "Expected Data Received, collecting...", 0);
-            }
+            $this->debugLog("Expected Data Received, collecting...");
             $this->SetBuffer("ReceivedDataBuffer", $CollectedReceivedData);
             return true;
         }
 
         try {
             //--- End Address was received, so process data
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "All Expected Data Received (" . strlen($CollectedReceivedData) . " bytes), start analyzing", 0);
-            }
+            $this->debugLog("All Expected Data Received (" . strlen($CollectedReceivedData) . " bytes), start analyzing");
 
             $this->SetBuffer("CommunicationStatus", "ANALYSING"); // no more data expected, start analysis
 
@@ -136,9 +127,7 @@ class RCTPowerInverter extends IPSModule
                     // first: Byte Stream Interpreting Rules (see communication protocol documentation)
                     $singleResponse = str_replace(chr(45) . chr(45), chr(45), $singleResponse);
                     $singleResponse = str_replace(chr(45) . chr(43), chr(43), $singleResponse);
-                    if (($Debugging == true) and ($singleResponseBefore != $singleResponse)) {
-                        $this->sendDebug("RCTPower", "Byte Stream Adoption: " . $this->decToHexString($singleResponseBefore) . " (before), " . $this->decToHexString($singleResponse) . " (after)", 0);
-                    }
+                    $this->debugLog("Byte Stream Adoption: " . $this->decToHexString($singleResponseBefore) . " (before), " . $this->decToHexString($singleResponse) . " (after)");
 
                     $response['Command'] = $this->decToHexString($CollectedReceivedData[1]);
                     $response['Length'] = ord($CollectedReceivedData[2]);
@@ -159,17 +148,13 @@ class RCTPowerInverter extends IPSModule
                     // check response
                     if ($response['Command'] <> '05') {
                         // we only look for command 05 = short response
-                        if ($Debugging == true) {
-                            $this->sendDebug("RCTPower", "Unexpected Command: " . $response['Command'] . ", PackageLength: " . $response['Length'] . ", Address: " . $response['Address'] . ", Data: " . $response['Data'] . ", CRC: " . $response['CRC'] . ", FullLength: " . $response['FullLength'], 0);
-                        }
+                        $this->debugLog("Unexpected Command: " . $response['Command'] . ", PackageLength: " . $response['Length'] . ", Address: " . $response['Address'] . ", Data: " . $response['Data'] . ", CRC: " . $response['CRC'] . ", FullLength: " . $response['FullLength']);
                         continue;
                     }
 
                     if ($calculatedCRC != $response['CRC']) {
                         // CRC Check failed
-                        if ($Debugging == true) {
-                            $this->sendDebug("RCTPower", "CRC Error on Command: " . $response['Command'] . ", PackageLength: " . $response['Length'] . ", Address: " . $response['Address'] . ", Data: " . $response['Data'] . ", CRC: " . $response['CRC'] . ", FullLength: " . $response['FullLength'] . " - Calculated CRC: " . $calculatedCRC, 0);
-                        }
+                        $this->debugLog("CRC Error on Command: " . $response['Command'] . ", PackageLength: " . $response['Length'] . ", Address: " . $response['Address'] . ", Data: " . $response['Data'] . ", CRC: " . $response['CRC'] . ", FullLength: " . $response['FullLength'] . " - Calculated CRC: " . $calculatedCRC);
                         if ($this->ReadPropertyBoolean("IgnoreCRCErrors") == false) {
                             continue; // ignore responses with CRC errors
                         }
@@ -194,9 +179,7 @@ class RCTPowerInverter extends IPSModule
             for ($x = 0; $x < count($singleResponses); $x++) {
                 if ($singleResponses[$x]['Address'] != $lastAddress) {
                     if ($singleResponses[$x]['Address'] != $RequestedAddressesSequence[$y]) {
-                        if ($Debugging == true) {
-                            $this->sendDebug("RCTPower", "Sequence issue. Found Address " . $singleResponses[$x]['Address'] . " but expected Address " . $RequestedAddressesSequence[$y], 0);
-                        }
+                        $this->debugLog("Sequence issue. Found Address " . $singleResponses[$x]['Address'] . " but expected Address " . $RequestedAddressesSequence[$y]);
                         $sequenceOK = false;
                     }
                     $lastAddress = $singleResponses[$x]['Address'];
@@ -206,25 +189,17 @@ class RCTPowerInverter extends IPSModule
 
             if ($sequenceOK == false) {
                 // if sequence is broken, we cannot rely on the results -> no analysis
-                if ($Debugging == true) {
-                    $this->sendDebug("RCTPower", "Sequence of requested addresses is not ok.", 0);
-                }
+                $this->debugLog("Sequence of requested addresses is not ok.");
 
                 if ($this->ReadPropertyBoolean("IgnoreResponseSequence") == false) {
-                    if ($Debugging == true) {
-                        $this->sendDebug("RCTPower", "Analysis stopped as it's not sure if responses are for our requestes!", 0);
-                    }
+                    $this->debugLog("Analysis stopped as it's not sure if responses are for our requestes!");
                     $this->SetBuffer("CommunicationStatus", "Idle");
                     return;
                 }
-                if ($Debugging == true) {
-                    $this->sendDebug("RCTPower", "Analysis still done (Response Sequence ignored!)", 0);
-                    $this->sendDebug("RCTPower", "NOTE! RECEIVED DATA MIGHT NOT BE MEANT FOR OUR REQUEST. DATA INCONSISTENCY MIGHT BE THE RESULT!", 0);
-                }
+                $this->debugLog("Analysis still done (Response Sequence ignored!)");
+                $this->debugLog("NOTE! RECEIVED DATA MIGHT NOT BE MEANT FOR OUR REQUEST. DATA INCONSISTENCY MIGHT BE THE RESULT!");
             } else {
-                if ($Debugging == true) {
-                    $this->sendDebug("RCTPower", "Sequence of requested addresses is ok.", 0);
-                }
+                $this->debugLog("Sequence of requested addresses is ok.");
             }
 
             // Analyze Single Responses
@@ -237,14 +212,12 @@ class RCTPowerInverter extends IPSModule
                 $lastAddress = $singleResponses[$x]['Address'];
             }
 
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "Analysis completed", 0);
-            }
+            $this->debugLog("Analysis completed");
 
         } catch (Exception $e) {
-             $this->sendDebug("RCTPower", "Exception catched on Receiving data", 0);
+            $this->debugLog("Exception catched on Receiving data");
         } catch (\Throwable $e) {
-            $this->sendDebug("RCTPower", "Throwable catched on Receiving data", 0);
+            $this->debugLog("Throwable catched on Receiving data");
         }
 
         // reset data collection
@@ -258,25 +231,18 @@ class RCTPowerInverter extends IPSModule
     //=== Tool Functions ============================================================================================
     protected function analyzeResponse(string $address, string $data)
     {
-
-        $Debugging = $this->ReadPropertyBoolean("DebugSwitch");
-
         // precalculation
         $float = 0.0;
         if (strlen($data) == 8) {
             $float = $this->hexTo32Float($data);
             // Debug output
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "Address " . $address . " with data " . $data . " (as Float " . number_format($float, 2) . ")", 0);
-            }
+            $this->debugLog("Address " . $address . " with data " . $data . " (as Float " . number_format($float, 2) . ")");
         }
 
         if (strlen($data) > 8) {
             $string = $this->hexToString($data);
             // Debug output
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "Address " . $address . " with data " . $data . " (as String " . $string . ")", 0);
-            }
+            $this->debugLog("Address " . $address . " with data " . $data . " (as String " . $string . ")");
         }
 
         try {
@@ -787,15 +753,15 @@ class RCTPowerInverter extends IPSModule
 
                 //--- Default Handling ---------------------------------------------------------------------------
                 default:         // Unknown response
-                    $this->sendDebug("RCTPower", "Unkown Response Address " . $address . " with data " . $data . " (as Float " . number_format($float, 2) . ")", 0);
+                    $this->debugLog("Unkown Response Address " . $address . " with data " . $data . " (as Float " . number_format($float, 2) . ")");
 
             }
         } catch (\Exception $e) {
-            $this->sendDebug("RCTPower", "Error processing address " . $address, 0);
-            $this->sendDebug("RCTPower", "Exception catched: " . $e->getMessage(), 0);
+            $this->debugLog("Error processing address " . $address);
+            $this->debugLog("Exception catched: " . $e->getMessage());
         } catch (\Throwable $e) {
-            $this->sendDebug("RCTPower", "Error processing address " . $address, 0);
-            $this->sendDebug("RCTPower", "Exception catched: " . $e->getMessage(), 0);
+            $this->debugLog("Error processing address " . $address);
+            $this->debugLog("Exception catched: " . $e->getMessage());
         }
     }
 
@@ -813,10 +779,7 @@ class RCTPowerInverter extends IPSModule
             $hexCommand = $hexCommand . chr(hexdec(substr($command, $x * 2, 2)));
 
         // Store Address to Requested Addresses Buffer
-        $Debugging = $this->ReadPropertyBoolean("DebugSwitch");
-        if ($Debugging == true) {
-            $this->sendDebug("RCTPower", "Request Data ".$command, 0);
-        }
+        $this->debugLog("Request Data ".$command);
         $RequestedAddressesSequence = json_decode($this->GetBuffer("RequestedAddressesSequence"));
         array_push($RequestedAddressesSequence, $RequestAddress);
         // Remind Requested Address
@@ -902,16 +865,11 @@ class RCTPowerInverter extends IPSModule
     public function UpdateData()
     {
         /* get Data from RCT Power Inverter */
-        $Debugging = $this->ReadPropertyBoolean("DebugSwitch");
-        if ($Debugging == true) {
-            $this->sendDebug("RCTPower", "UpdateData() called", 0);
-        }
+        $this->debugLog("UpdateData() called");
 
         if ($this->GetBuffer("CommunicationStatus") != "Idle") {
             // own communication still running!!
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "Old UpdateData still pending! Clearing old Update Process", 0);
-            }
+            $this->debugLog("Old UpdateData still pending! Clearing old Update Process");
             $alreadyhappened = $this->GetBuffer("UpdateWhilePreviousUpdate");
             if ($alreadyhappened >= 2) {
                 $this->SetBuffer("CommunicationStatus", "Idle");
@@ -928,16 +886,12 @@ class RCTPowerInverter extends IPSModule
         // check Socket Connection (parent)
         $SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID'];
         if ($SocketConnectionInstanceID == 0) {
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "No Parent (Gateway) assigned", 0);
-            }
+            $this->debugLog("No Parent (Gateway) assigned");
             return false; // No parent assigned
         }
 
         if (!$this->HasActiveParent()) {
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "Parent Gateway not open!", 0);
-            }
+            $this->debugLog("Parent Gateway not open!");
             return false; // wrong parent type
         }
 
@@ -945,17 +899,13 @@ class RCTPowerInverter extends IPSModule
         // GET SEMAPHORE TO AVOID PARALLEL ACCESS BY OTHER RCT POWER INVERTER INSTANCES!!!
         if (IPS_SemaphoreEnter("RCTPowerInverterUpdateData", 8000) == false) {
             // wait max. 8 sec. for semaphore
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "Semaphore could not be entered", 0);
-            }
+            $this->debugLog("Semaphore could not be entered");
             return false; // Semaphore not available
         }
 
         try {
 
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "Semaphore RCTPowerInverterUpdateData entered", 0);
-            }
+            $this->debugLog("Semaphore RCTPowerInverterUpdateData entered");
 
             // Init Communication -----------------------------------------------------------------------------------------
             // Clear Buffer for Requested Addresses (Stack!)
@@ -1055,9 +1005,9 @@ class RCTPowerInverter extends IPSModule
             }
 
         } catch (Exception $e) {
-            $this->sendDebug("RCTPower", "Exception catched on Update data", 0);
+            $this->debugLog("Exception catched on Update data");
         } catch (\Throwable $e) {
-            $this->sendDebug("RCTPower", "Throwable catched on Update data", 0);
+            $this->debugLog("Throwable catched on Update data");
         }
 
         // reset communication
@@ -1068,13 +1018,9 @@ class RCTPowerInverter extends IPSModule
 
         // release semaphore
         if (IPS_SemaphoreLeave("RCTPowerInverterUpdateData")) {
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "Semaphore released", 0);
-            }
+            $this->debugLog("Semaphore released");
         } else {
-            if ($Debugging == true) {
-                $this->sendDebug("RCTPower", "Semaphore wasn't released properly", 0);
-            }
+            $this->debugLog("Semaphore wasn't released properly");
         }
 
         // return result
@@ -1225,6 +1171,15 @@ class RCTPowerInverter extends IPSModule
         $this->RegisterVariableInteger("EnergyTotalGridFeedInLevel", "Gesamt - % PV Netzeinspeisung", "~Valve", 809);
 
         $this->RegisterVariableBoolean("Errorstatus", "Fehlerstatus", "~Alert", 1000);
+    }
+
+
+    protected function debugLog(string $message)
+    {
+        if ($this->ReadPropertyBoolean("DebugSwitch") == true) {
+            $this->SendDebug("RCTPower", $message, 0);
+            $this->LogMessage($message, KL_DEBUG );
+        };
     }
 
 }
