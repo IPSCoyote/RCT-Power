@@ -249,7 +249,7 @@ class RCTPowerInverter extends IPSModule
 
         // reset data collection
         $RequestedAddressesSequence = [];
-        $this->SetBuffer("RequestedAddressesSequence", $RequestedAddressesSequence);
+        $this->SetBuffer("RequestedAddressesSequence", json_encode($RequestedAddressesSequence));
         $this->SetBuffer("CommunicationStatus", "Idle"); // no more data expected
 
     }
@@ -1062,7 +1062,7 @@ class RCTPowerInverter extends IPSModule
 
         // reset communication
         $RequestedAddressesSequence = [];
-        $this->SetBuffer("RequestedAddressesSequence", $RequestedAddressesSequence);
+        $this->SetBuffer("RequestedAddressesSequence", json_encode($RequestedAddressesSequence));
         $this->SetBuffer("CommunicationStatus", "Idle"); // no more data expected
         $this->SetBuffer("UpdateWhilePreviousUpdate", 0);
 
