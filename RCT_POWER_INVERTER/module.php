@@ -108,6 +108,7 @@ class RCTPowerInverter extends IPSModule
             // length 9 is a minimal usefull backage like a read package "2B 01 04 AA BB CC DD CS CS"
             $singleResponses = [];
             while (strlen($CollectedReceivedData) >= 9) {
+
                 if ($CollectedReceivedData[0] == chr(43)) {
                     // we've a start byte "2B" in front -> package?
 
@@ -997,11 +998,14 @@ class RCTPowerInverter extends IPSModule
             $this->RequestData("4BC0F974"); // Installed PV Panel kWp
             $this->RequestData("1AC87AA0"); // Current House power consumption 	<=== THIS HAS TO BE THE LAST REQUESTED ADDRESS !!!
 
-            // Wait for answers (till Receive Data setss CommunicationStatus) or we run over 15 seconds
+            // Wait for answers (till Receive Data sets CommunicationStatus) or we run over 15 seconds
             $counter = 0;
-            while (($this->GetBuffer("CommunicationStatus") != "Idle") or ($counter > 60)) {
+            while (($this->GetBuffer("CommunicationStatus") != "Idle") and ($counter < 12)) {
                 $counter++;
-                usleep(250000); // wait 0.25 sec. and check again
+                sleep(1); // wait 1 second
+            }
+            if ($counter >= 12 ) {
+                $this->debugLog("WAITING FOR RESPONSES TOOK TOO LONG - ABORTED");
             }
 
         } catch (Exception $e) {
