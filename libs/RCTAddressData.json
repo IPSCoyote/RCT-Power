@@ -727,7 +727,7 @@
       "descriptionInDocumentation": "Household Year energy [Wh]",
       "dataType": "t_float",
       "factor": 1,
-      "precision": 0,
+      "precision": 0
     },
     {
       "ipsCalculated": true,
@@ -866,7 +866,7 @@
       "descriptionInDocumentation": "Household Total energy [Wh]",
       "dataType": "t_float",
       "factor": 1,
-      "precision": 0,
+      "precision": 0
     },
     {
       "ipsCalculated": true,
