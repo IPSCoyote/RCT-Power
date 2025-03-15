@@ -16,8 +16,8 @@
             "4 (7.6 kWh)":  "4 Stackmodule (7.6kWh)",
             "5 (9.6 kWh)":  "5 Stackmodule (9.6kWh)",
             "6 (11.5 kWh)": "6 Stackmodule (11.7kWh)",
-            "Auf fremde Abfragen reagieren": "Auf fremde Abfragen reagieren (Achtung! Gefahr von Datenfehlern wenn mehrere Wechselrichter vorhanden sind!)",
-            "Fehlerhafte Antwort-Sequenz ignorieren": "Fehlerhafte Antwort-Sequence ignorieren", 
+            "Debuginformationen ausgeben": "Debug Information ausgeben (sehr viele Details)",
+            "Very High Debuginformationen ausgeben": "Dringende Problem-Informationen ausgeben (in Debug Informationen enthalten)",
             "CRC Fehler ignorieren": "CRC Fehler ignorieren",
             
             "Check Connection": "Verbindung testen",

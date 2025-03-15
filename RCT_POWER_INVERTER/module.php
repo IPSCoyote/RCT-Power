@@ -20,6 +20,7 @@ class RCTPowerInverter extends IPSModule
         $this->RegisterPropertyBoolean("AutomaticUpdatesActive", true);
         $this->RegisterPropertyInteger("UpdateInterval", 0);
         $this->RegisterPropertyBoolean("DebugSwitch", false);
+        $this->RegisterPropertyBoolean("VeryHighDebugSwitch", false);
 
         // Timer
         $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
@@ -648,11 +649,11 @@ class RCTPowerInverter extends IPSModule
 
             }
         } catch (\Exception $e) {
-            $this->debugLog("Error processing address " . $address);
-            $this->debugLog("Exception catched: " . $e->getMessage());
+            $this->debugLog("Error processing address " . $address, true);
+            $this->debugLog("Exception catched: " . $e->getMessage(), true);
         } catch (\Throwable $e) {
-            $this->debugLog("Error processing address " . $address);
-            $this->debugLog("Exception catched: " . $e->getMessage());
+            $this->debugLog("Error processing address " . $address, true);
+            $this->debugLog("Exception catched: " . $e->getMessage(), true);
         }
     }
 
@@ -706,21 +707,19 @@ class RCTPowerInverter extends IPSModule
         // check Socket Connection (parent)
         $SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID'];
         if ($SocketConnectionInstanceID == 0) {
-            $this->debugLog("No Parent (Gateway) assigned");
+            $this->debugLog("No Parent (Gateway) assigned", true);
             return false; // No parent assigned
         }
 
         $SocketStatus = IPS_GetInstance($SocketConnectionInstanceID)["InstanceStatus"];
         if ($SocketStatus == 104)
         {
-            $this->debugLog("Parent Gateway closed, so open it...");
-            IPS_SetProperty($SocketConnectionInstanceID, "Open", false);
-            IPS_ApplyChanges($SocketConnectionInstanceID);
-            IPS_Sleep(2000);
+            $this->debugLog("Parent Gateway closed!", true);
+            return false;
         }
         elseif ($SocketStatus >= 200)
         {
-            $this->debugLog("Parent Gateway in error state!...");
+            $this->debugLog("Parent Gateway in error state!...", true);
             return false;
         }
 
@@ -886,12 +885,15 @@ class RCTPowerInverter extends IPSModule
     }
 
 
-    protected function debugLog(string $message)
+    protected function debugLog(string $message, bool $veryHigh = false)
     {
         if ($this->ReadPropertyBoolean("DebugSwitch") == true) {
             $this->SendDebug("RCTPower", $message, 0);
             $this->LogMessage($message, KL_DEBUG );
-        };
+        } else if ($this->ReadPropertyBoolean("DebugSwitch") == true && $veryHigh) {
+            $this->SendDebug("RCTPower", $message, 0);
+            $this->LogMessage($message, KL_DEBUG );
+        }
     }
 
 }

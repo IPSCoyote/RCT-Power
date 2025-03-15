@@ -44,8 +44,9 @@
         ]
       }, 
       { "type": "Label", "caption": "   " },
-      { "type": "Label", "label": "Tools" },      
-      { "type": "CheckBox", "name": "DebugSwitch",         "caption": "Debuginformationen ausgeben" }
+      { "type": "Label", "label": "Tools" },
+      { "type": "CheckBox", "name": "DebugSwitch",         "caption": "Debuginformationen ausgeben" },
+      { "type": "CheckBox", "name": "DebugSwitchVeryHigh", "caption": "Very High Debuginformationen ausgeben" }
     ],
     "status":   
     [
