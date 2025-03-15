@@ -890,7 +890,7 @@ class RCTPowerInverter extends IPSModule
         if ($this->ReadPropertyBoolean("DebugSwitch") == true) {
             $this->SendDebug("RCTPower", $message, 0);
             $this->LogMessage($message, KL_DEBUG );
-        } else if ($this->ReadPropertyBoolean("DebugSwitch") == true && $veryHigh) {
+        } else if ($this->ReadPropertyBoolean("VeryHighDebugSwitch") == true && $veryHigh) {
             $this->SendDebug("RCTPower", $message, 0);
             $this->LogMessage($message, KL_DEBUG );
         }
