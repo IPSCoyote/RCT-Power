@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__DIR__) . '/libs/HelperFunctions.php';
+
 class RCTPowerInverter extends IPSModule
 {
 
@@ -18,9 +20,6 @@ class RCTPowerInverter extends IPSModule
         $this->RegisterPropertyBoolean("AutomaticUpdatesActive", true);
         $this->RegisterPropertyInteger("UpdateInterval", 0);
         $this->RegisterPropertyBoolean("DebugSwitch", false);
-        $this->RegisterPropertyBoolean("ReactOnForeignPolls", false);
-        $this->RegisterPropertyBoolean("IgnoreResponseSequence", false);
-        $this->RegisterPropertyBoolean("IgnoreCRCErrors", false);
 
         // Timer
         $this->RegisterTimer("RCTPOWERINVERTER_UpdateTimer", 0, 'RCTPOWERINVERTER_UpdateData($_IPS[\'TARGET\']);');
@@ -59,178 +58,69 @@ class RCTPowerInverter extends IPSModule
     //=== Module Functions =========================================================================================
     public function ReceiveData($JSONString)
     {
-        // We first collect all data coming till the "end address" (we wait for "1AC87AA0" as last address requested by
-        // UpdateData) is received. Then we evaluate all received data if it fits to the request of the UpdateData call
-        // but ignore all non-response packages or duplicate addresses (as master sends also slave data)
+        $this->debugLog("ReceiveData() called");
+        $CurrentlyReceivedData = utf8_decode(json_decode($JSONString)->Buffer);
+        $ReceivedDataBuffered = $this->GetBuffer("ReceivedDataBuffer");
+        $CollectedReceivedData = $ReceivedDataBuffered . $CurrentlyReceivedData;
 
-        // remind last ReceiveData
-        $this->SetBuffer("LastReceiveData", strval(time()));
+        // emergency break
+        if (strlen($CollectedReceivedData) > 5000) $CollectedReceivedData = ""; // this will clear the buffer
 
-        if ($this->GetBuffer("CommunicationStatus") != "WAITING FOR RESPONSES") {
+        $CollectedReceivedDataAsHex = strToUpper(bin2hex($CollectedReceivedData));
 
-            $this->debugLog("Unexpected Data Received");
-            if ($this->ReadPropertyBoolean("ReactOnForeignPolls") == false) {
-                $this->SetBuffer("ReceivedDataBuffer", "");
-                return true;
+        // adopt escape sequence (2D2B -> 2B, 2D2D -> 2D)
+        $DataWithoutEscapes = str_replace("2D2D", "2D", $CollectedReceivedDataAsHex);
+        $DataWithoutEscapes = str_replace("2D2B", "2B", $DataWithoutEscapes);
+
+        if (strpos($DataWithoutEscapes, "002B") === false) {
+            $this->SetBuffer("ReceivedDataBuffer", $CollectedReceivedData);
+            return;
+        }
+
+        $DataPackagesArray = explode("002B", $DataWithoutEscapes);
+        $RemainingData = "";
+
+        foreach ($DataPackagesArray as $DataPackage) {
+            // no processing on empty packages
+            if ($DataPackage == "") continue;
+
+            // Split Package into it's potential parts
+            $lengthHex = substr($DataPackage, 2, 2);
+            $length = hexdec($lengthHex);
+            $Message = substr($DataPackage, 0, $length * 2 + 2 + 2);
+            $MessageType = substr($DataPackage, 0, 2);
+            $Address = substr($DataPackage, 4, 8);
+            $DataHexString = substr($DataPackage, 12, $length * 2 - 8);
+            $CRC = substr($DataPackage, $length * 2 + 2 + 2, 4);
+            $RemainingData = substr($DataPackage, $length * 2 + 2 + 2 + 4, 1024);
+
+            // check checksum on message
+            if (HelperFunctions::calcCRC($Message) != $CRC) {
+                $this->debugLog("CRC not valid, ignore message");
             } else {
-                $this->debugLog("Data collected anyhow till end package (React on Foreign Polls Switch)");
+                switch ($MessageType) {
+                    case "05": // Response
+                        $this->debugLog("Address: " . $Address . ", Data: " . $DataHexString);
+                        $this->analyzeResponseByAddress($Address, $DataHexString);
+                        break;
+                    default: // Other Message, ignore
+                        break;
+                }
             }
         }
 
-        // in general we expect address "1AC87AA0" to be requested at last -> End of all expected Responses
-        // till then we collect all given data in a long string
-        $EndAddress = chr(26) . chr(200) . chr(122) . chr(160);
-
-        if (strlen($JSONString) == 0) return;
-
-        $ReceivedData = utf8_decode(json_decode($JSONString)->Buffer);
-
-        $ReceivedDataBuffer = $this->GetBuffer("ReceivedDataBuffer");
-        $CollectedReceivedData = $ReceivedDataBuffer . $ReceivedData;
-
-        if (strpos($CollectedReceivedData, $EndAddress) > 0) {
-            // End Address was received -> start analysing data	and clear received data buffer
+        // Rest has to be reminded
+        if (strlen($RemainingData) % 2 != 0) {
             $this->SetBuffer("ReceivedDataBuffer", "");
         } else {
-            // still waiting for the end of the package, so collect received data in buffer
-            $this->debugLog("Expected Data Received, collecting...");
-            $this->SetBuffer("ReceivedDataBuffer", $CollectedReceivedData);
-            return true;
+            $RemainingDataBin = hex2bin($RemainingData);
+            $this->SetBuffer("ReceivedDataBuffer", $RemainingDataBin);
         }
-
-        try {
-            //--- End Address was received, so process data
-            $this->debugLog("All Expected Data Received (" . strlen($CollectedReceivedData) . " bytes), start analyzing");
-
-            $this->SetBuffer("CommunicationStatus", "ANALYSING"); // no more data expected, start analysis
-
-            // Now cut the collected received data into single data packages
-            // length 9 is a minimal usefull backage like a read package "2B 01 04 AA BB CC DD CS CS"
-            $singleResponses = [];
-            while (strlen($CollectedReceivedData) >= 9) {
-
-                if ($CollectedReceivedData[0] == chr(43)) {
-                    // we've a start byte "2B" in front -> package?
-
-                    // first get the hole package (till beginning of next package (= 2B05, 2B02))
-                    $nextPackage2B02Start = strpos($CollectedReceivedData, chr(43) . chr(2), 3);
-                    $nextPackage2B05Start = strpos($CollectedReceivedData, chr(43) . chr(5), 3);
-                    $nextPackageStart = 1000;
-                    if (($nextPackage2B02Start != false) and ($nextPackage2B02Start <= $nextPackageStart)) $nextPackageStart = $nextPackage2B02Start;
-                    if (($nextPackage2B05Start != false) and ($nextPackage2B05Start <= $nextPackageStart)) $nextPackageStart = $nextPackage2B05Start;
-
-                    $singleResponse = substr($CollectedReceivedData, 0, $nextPackageStart);
-                    $singleResponseBefore = $singleResponse;
-
-                    $response = [];
-                    $response['FullLength'] = strlen($singleResponse); // $response['Length']+5; // StartByte+Command+Length+CRC (incl. non conferted Bytes Stream!)
-
-                    // first: Byte Stream Interpreting Rules (see communication protocol documentation)
-                    $singleResponse = str_replace(chr(45) . chr(45), chr(45), $singleResponse);
-                    $singleResponse = str_replace(chr(45) . chr(43), chr(43), $singleResponse);
-                    $this->debugLog("Byte Stream Adoption: " . $this->decToHexString($singleResponseBefore) . " (before), " . $this->decToHexString($singleResponse) . " (after)");
-
-                    $response['Command'] = $this->decToHexString($CollectedReceivedData[1]);
-                    $response['Length'] = ord($CollectedReceivedData[2]);
-                    if (strlen($CollectedReceivedData) < $response['Length'] + 5) {
-                        // the remaining CollectedReceivedData is not long enough for the package
-                        break; // while
-                    }
-                    $response['Address'] = $this->decToHexString(substr($singleResponse, 3, 4));
-                    $response['Data'] = $this->decToHexString(substr($singleResponse, 7, $response['Length'] - 4));
-                    $response['CRC'] = $this->decToHexString(substr($singleResponse, 3 + $response['Length'], 2));
-                    $response['Complete'] = $singleResponse;
-
-                    $calculatedCRC = $this->calcCRC($response['Command'] . $this->decToHexString($singleResponse[2]) . $response['Address'] . $response['Data']);
-
-                    // shift data string for while statement
-                    $CollectedReceivedData = substr($CollectedReceivedData, $response['FullLength']);
-
-                    // check response
-                    if ($response['Command'] <> '05') {
-                        // we only look for command 05 = short response
-                        $this->debugLog("Unexpected Command: " . $response['Command'] . ", PackageLength: " . $response['Length'] . ", Address: " . $response['Address'] . ", Data: " . $response['Data'] . ", CRC: " . $response['CRC'] . ", FullLength: " . $response['FullLength']);
-                        continue;
-                    }
-
-                    if ($calculatedCRC != $response['CRC']) {
-                        // CRC Check failed
-                        $this->debugLog("CRC Error on Command: " . $response['Command'] . ", PackageLength: " . $response['Length'] . ", Address: " . $response['Address'] . ", Data: " . $response['Data'] . ", CRC: " . $response['CRC'] . ", FullLength: " . $response['FullLength'] . " - Calculated CRC: " . $calculatedCRC);
-                        if ($this->ReadPropertyBoolean("IgnoreCRCErrors") == false) {
-                            continue; // ignore responses with CRC errors
-                        }
-                    }
-
-                    // add found response to resonpse stack
-                    array_push($singleResponses, $response);
-
-                } else {
-                    // shift Data left by 1
-                    $CollectedReceivedData = substr($CollectedReceivedData, 1);
-                }
-            } // while
-
-            // get expected addresses in their sequence
-            $RequestedAddressesSequence = json_decode($this->GetBuffer("RequestedAddressesSequence"));
-
-            // check addres sequence is ok (ignoring duplicat addresses)
-            $lastAddress = "";
-            $y = 0;
-            $sequenceOK = true;
-            for ($x = 0; $x < count($singleResponses); $x++) {
-                if ($singleResponses[$x]['Address'] != $lastAddress) {
-                    if ($singleResponses[$x]['Address'] != $RequestedAddressesSequence[$y]) {
-                        $this->debugLog("Sequence issue. Found Address " . $singleResponses[$x]['Address'] . " but expected Address " . $RequestedAddressesSequence[$y]);
-                        $sequenceOK = false;
-                    }
-                    $lastAddress = $singleResponses[$x]['Address'];
-                    $y++;
-                }
-            }
-
-            if ($sequenceOK == false) {
-                // if sequence is broken, we cannot rely on the results -> no analysis
-                $this->debugLog("Sequence of requested addresses is not ok.");
-
-                if ($this->ReadPropertyBoolean("IgnoreResponseSequence") == false) {
-                    $this->debugLog("Analysis stopped as it's not sure if responses are for our requestes!");
-                    $this->SetBuffer("CommunicationStatus", "Idle");
-                    return;
-                }
-                $this->debugLog("Analysis still done (Response Sequence ignored!)");
-                $this->debugLog("NOTE! RECEIVED DATA MIGHT NOT BE MEANT FOR OUR REQUEST. DATA INCONSISTENCY MIGHT BE THE RESULT!");
-            } else {
-                $this->debugLog("Sequence of requested addresses is ok.");
-            }
-
-            // Analyze Single Responses
-            $lastAddress = "";
-            for ($x = 0; $x < count($singleResponses); $x++) {
-                if ($singleResponses[$x]['Address'] != $lastAddress) {
-                    // if an address comes multiple times, only take the first values, as other values don't belong to this power inverter
-                    $this->analyzeResponse($singleResponses[$x]['Address'], $singleResponses[$x]['Data']);
-                }
-                $lastAddress = $singleResponses[$x]['Address'];
-            }
-
-            $this->debugLog("Analysis completed");
-
-        } catch (Exception $e) {
-            $this->debugLog("Exception catched on Receiving data");
-        } catch (\Throwable $e) {
-            $this->debugLog("Throwable catched on Receiving data");
-        }
-
-        // reset data collection
-        $RequestedAddressesSequence = [];
-        $this->SetBuffer("RequestedAddressesSequence", json_encode($RequestedAddressesSequence));
-        $this->SetBuffer("CommunicationStatus", "Idle"); // no more data expected
-
     }
 
 
     //=== Tool Functions ============================================================================================
-    protected function analyzeResponse(string $address, string $data)
+    protected function analyzeResponseByAddress(string $address, string $data)
     {
         // precalculation
         $float = 0.0;
@@ -766,60 +656,6 @@ class RCTPowerInverter extends IPSModule
         }
     }
 
-    protected function RequestData(string $command, int $length = 4)
-    {
-        $RequestAddress = $command;
-
-        // build command
-        $hexlength = strtoupper(dechex($length));
-        if (strlen($hexlength) == 1) $hexlength = '0' . $hexlength;
-        $command = "01" . $hexlength . $command;
-        $command = "2B" . $command . $this->calcCRC($command);
-        $hexCommand = "";
-        for ($x = 0; $x < strlen($command) / 2; $x++)
-            $hexCommand = $hexCommand . chr(hexdec(substr($command, $x * 2, 2)));
-
-        // Store Address to Requested Addresses Buffer
-        $this->debugLog("Request Data ".$command);
-        $RequestedAddressesSequence = json_decode($this->GetBuffer("RequestedAddressesSequence"));
-        array_push($RequestedAddressesSequence, $RequestAddress);
-        // Remind Requested Address
-        $this->SetBuffer("RequestedAddressesSequence", json_encode($RequestedAddressesSequence));
-
-        // send Data to Parent (IO)...
-        $this->SendDataToParent(json_encode(array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($hexCommand))));
-
-        // slow down Transmit frequency to avoid client server connection get wrong packages with CRC issues
-        // In 5.5 a value of 50.000 was successfull, while in 5.4 100.000 is necessary!
-        usleep(100000);
-    }
-
-    protected function calcCRC(string $command)
-    {
-        $commandLength = strlen($command) / 2;
-        if ($commandLength % 2 != 0) {
-            // Command with an odd byte length (add 0x00 to make odd!) without(!) start byte (0x2B)
-            $command = $command . '00';
-            $commandLength = strlen($command) / 2;
-        }
-        $crc = 0xFFFF;
-        for ($x = 0; $x < $commandLength; $x++) {
-            $b = hexdec(substr($command, $x * 2, 2));
-            for ($i = 0; $i < 8; $i++) {
-                $bit = (($b >> (7 - $i) & 1) == 1);
-                $c15 = ((($crc >> 15) & 1) == 1);
-                $crc <<= 1;
-                if ($c15 ^ $bit) $crc ^= 0x1021;
-            }
-            $crc &= 0xffff;
-        }
-        $crc = strtoupper(dechex($crc));
-        // if the CRC is too short, add '0' at the beginning
-        if (strlen($crc) == 2) $crc = '00' . $crc;
-        if (strlen($crc) == 3) $crc = '0' . $crc;
-        return $crc;
-    }
-
     protected function hexTo32Float(string $strHex)
     {
         $bin = str_pad(base_convert($strHex, 16, 2), 32, "0", STR_PAD_LEFT);
@@ -865,25 +701,8 @@ class RCTPowerInverter extends IPSModule
 
     public function UpdateData()
     {
-        /* get Data from RCT Power Inverter */
         $this->debugLog("UpdateData() called");
-
-        if ($this->GetBuffer("CommunicationStatus") != "Idle") {
-            // own communication still running!!
-            $this->debugLog("Old UpdateData still pending! Clearing old Update Process");
-            $alreadyhappened = $this->GetBuffer("UpdateWhilePreviousUpdate");
-            if ($alreadyhappened >= 2) {
-                $this->SetBuffer("CommunicationStatus", "Idle");
-            } else {
-                $alreadyhappened = $alreadyhappened + 1;
-                $this->SetBuffer("UpdateWhilePreviousUpdate", $alreadyhappened);
-                return false;
-            }
-        }
-
-        $this->SetBuffer("UpdateWhilePreviousUpdate", 0);
-
-        ///--- HANDLE Connection --------------------------------------------------------------------------------------
+        ///--- HANDLE Connection ------------------------------------------------------------------------------------
         // check Socket Connection (parent)
         $SocketConnectionInstanceID = IPS_GetInstance($this->InstanceID)['ConnectionID'];
         if ($SocketConnectionInstanceID == 0) {
@@ -891,143 +710,32 @@ class RCTPowerInverter extends IPSModule
             return false; // No parent assigned
         }
 
-        if (!$this->HasActiveParent()) {
-            $this->debugLog("Parent Gateway not open!");
-            return false; // wrong parent type
+        $SocketStatus = IPS_GetInstance($SocketConnectionInstanceID)["InstanceStatus"];
+        if ($SocketStatus == 104)
+        {
+            $this->debugLog("Parent Gateway closed, so open it...");
+            IPS_SetProperty($SocketConnectionInstanceID, "Open", false);
+            IPS_ApplyChanges($SocketConnectionInstanceID);
+            IPS_Sleep(2000);
+        }
+        elseif ($SocketStatus >= 200)
+        {
+            $this->debugLog("Parent Gateway in error state!...");
+            return false;
         }
 
-
-        // GET SEMAPHORE TO AVOID PARALLEL ACCESS BY OTHER RCT POWER INVERTER INSTANCES!!!
-        if (IPS_SemaphoreEnter("RCTPowerInverterUpdateData", 8000) == false) {
-            // wait max. 8 sec. for semaphore
-            $this->debugLog("Semaphore could not be entered");
-            return false; // Semaphore not available
-        }
-
-        try {
-
-            $this->debugLog("Semaphore RCTPowerInverterUpdateData entered");
-
-            // Init Communication -----------------------------------------------------------------------------------------
-            // Clear Buffer for Requested Addresses (Stack!)
-            $RequestedAddressesSequence = [];
-            $this->SetBuffer("RequestedAddressesSequence", json_encode($RequestedAddressesSequence));
-            $this->SetBuffer("CommunicationStatus", "WAITING FOR RESPONSES"); // we're now requesting data -> receive and analyze it
-
-            // Request Data -----------------------------------------------------------------------------------------------
-
-            // $this->RequestData( "DB2D69AE" ); // Actual inverters AC-power [W]. ---> NO RESPONSE!
-
-            // $this->RequestData( "CF053085" ); // Phase L1 voltage [V] --> not used
-            // $this->RequestData( "54B4684E" ); // Phase L2 voltage [V] --> not used
-            // $this->RequestData( "2545E22D" ); // Phase L3 voltage [V] --> not used
-
-            $this->RequestData("B55BA2CE"); // DC input A voltage [V] (by Documentation B298395D)
-            $this->RequestData("DB11855B"); // DC input A power [W]
-
-            $this->RequestData("B0041187"); // DC input B voltage [V] (by Documentation 5BB8075A)
-            $this->RequestData("0CB5D21B"); // DC input B power [W]
-
-            // $this->RequestData( "B408E40A" ); usleep( 100000 ); // Battery current measured by inverter, low pass filter with Tau = 1s [A]
-
-            $this->RequestData("A7FA5C5D"); // Battery voltage [V]
-            $this->RequestData("959930BF"); // Battery State of Charge (SoC) [0..1]
-            $this->RequestData("400F015B"); // Battery power (positive if discharge) [W]
-            $this->RequestData("902AFAFB"); // Battery temperature [°C]
-
-            $this->RequestData("91617C58"); // Public grid power (house connection, negative by feed-in) [W]
-
-            $this->RequestData("E96F1844"); // External power (additional inverters/generators in house internal grid) [W]
-
-            //--- Request Energies -------------------------------------
-            // Todays Energy
-            $this->RequestData("BD55905F"); // Todays energy [Wh]
-            $this->RequestData("2AE703F2"); // Tagesenergie Ertrag Input A in Wh
-            $this->RequestData("FBF3CE97"); // Tagesenergie Ertrag Input B in Wh
-            $this->RequestData("3C87C4F5"); // Tagesenergie Netzeinspeisung in -Wh
-            $this->RequestData("867DEF7D"); // Tagesenergie Netzverbrauch	in Wh
-            $this->RequestData("2F3C1D7D"); // Tagesenergie Haushalt in Wh
-
-            // Month Energy
-            $this->RequestData("10970E9D"); // This month energy [Wh]
-            $this->RequestData("81AE960B"); // Monatsenergie Ertrag Input A in Wh
-            $this->RequestData("7AB9B045"); // Monatsenergie Ertrag Input B in Wh
-            $this->RequestData("65B624AB"); // Monatsenergie Netzeinspeisung ins Netz in -Wh
-            $this->RequestData("126ABC86"); // Monatsenergie Netzverbrauch in Wh
-            $this->RequestData("F0BE6429"); // Monatsenergie Haushalt in Wh
-
-            // Year Energy
-            $this->RequestData("C0CC81B6"); // This year energy [Wh]
-            $this->RequestData("AF64D0FE"); // Jahresenergie Ertrag Input A in Wh
-            $this->RequestData("BD55D796"); // Jahresenergie Ertrag Input B in Wh
-            $this->RequestData("26EFFC2F");  // Jahresenergie Netzinspeisung ins Netz in -Wh
-            $this->RequestData("DE17F021"); // Jahresenergie Netzverbrauch in Wh
-            $this->RequestData("C7D3B479"); // Jahresenergie Haushalt in Wh
-
-            // Total Energy
-            $this->RequestData("B1EF67CE"); // Total Energy [Wh]
-            $this->RequestData("FC724A9E"); // Gesamtenergie Ertrag Input A in Wh
-            $this->RequestData("68EEFD3D"); // Gesamtenergie Ertrag Input B in Wh
-            $this->RequestData("44D4C533"); // Gesamtenergie Netzeinspeisung in -Wh
-            $this->RequestData("62FBE7DC"); // Gesamtenergie Netzverbrauch in Wh
-            $this->RequestData("EFF4B537"); // Gesamtenergie Haushalt in Wh
-
-
-            // $this->RequestData( "FE1AA500" ); // External Power Limit [0..1]
-            // $this->RequestData( "BD008E29" ); // External battery power target [W] (positive = discharge)
-            // $this->RequestData( "872F380B" ); // External load demand [W] (positive = feed in / 0=internal
-
-            // Bit-coded fault word 0-3
-            // $this->RequestData( "37F9D5CA" );
-            // $this->RequestData( "234B4736" );
-            // $this->RequestData( "3B7FCD47" );
-            // $this->RequestData( "7F813D73" );
-
-            // Serial numbers and Descriptions
-            // $this->RequestData( "7924ABD9"4 ); // Inverter serial number
-            $this->RequestData("FBF6D834"); // Battery Stack 0 serial number
-            $this->RequestData("99396810"); // Battery Stack 1 serial number
-            $this->RequestData("73489528"); // Battery Stack 2 serial number
-            $this->RequestData("257B7612"); // Battery Stack 3 serial number
-            $this->RequestData("4E699086"); // Battery Stack 4 serial number
-            $this->RequestData("162491E8"); // Battery Stack 5 serial number
-            $this->RequestData("5939EC5D"); // Battery Stack 6 serial number
-
-            //--- NOT DOCUMENTED -------------------------------------------------------------------------
-            $this->RequestData("8B9FF008"); // Upper load boundary in %
-            $this->RequestData("4BC0F974"); // Installed PV Panel kWp
-            $this->RequestData("1AC87AA0"); // Current House power consumption 	<=== THIS HAS TO BE THE LAST REQUESTED ADDRESS !!!
-
-            // Wait for answers (till Receive Data sets CommunicationStatus) or we run over 15 seconds
-            $counter = 0;
-            while (($this->GetBuffer("CommunicationStatus") != "Idle") and ($counter < 12)) {
-                $counter++;
-                sleep(1); // wait 1 second
+        ///--- Request Data -----------------------------------------------------------------------------------------
+        $this->debugLog("Requestind Data");
+        $pollingIds = HelperFunctions::getPollingIds();
+        $LastPolledId = "";
+        $this->SetBuffer("LastPolledID", $LastPolledId);
+        if (isset($pollingIds)) {
+            foreach ($pollingIds as $pollingId) {
+                $hexCommand = HelperFunctions::getHexReadCommandString($pollingId["id"]);
+                $this->SendDataToParent(json_encode(array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($hexCommand))));
+                usleep(100000);
             }
-            if ($counter >= 12 ) {
-                $this->debugLog("WAITING FOR RESPONSES TOOK TOO LONG - ABORTED");
-            }
-
-        } catch (Exception $e) {
-            $this->debugLog("Exception catched on Update data");
-        } catch (\Throwable $e) {
-            $this->debugLog("Throwable catched on Update data");
         }
-
-        // reset communication
-        $RequestedAddressesSequence = [];
-        $this->SetBuffer("RequestedAddressesSequence", json_encode($RequestedAddressesSequence));
-        $this->SetBuffer("CommunicationStatus", "Idle"); // no more data expected
-        $this->SetBuffer("UpdateWhilePreviousUpdate", 0);
-
-        // release semaphore
-        if (IPS_SemaphoreLeave("RCTPowerInverterUpdateData")) {
-            $this->debugLog("Semaphore released");
-        } else {
-            $this->debugLog("Semaphore wasn't released properly");
-        }
-
-        // return result
         return true;
     }
 

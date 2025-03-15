@@ -45,10 +45,7 @@
       }, 
       { "type": "Label", "caption": "   " },
       { "type": "Label", "label": "Tools" },      
-      { "type": "CheckBox", "name": "DebugSwitch",         "caption": "Debuginformationen ausgeben" },   
-      { "type": "CheckBox", "name": "IgnoreResponseSequence", "caption": "Fehlerhafte Antwort-Sequenz ignorieren" }, 
-      { "type": "CheckBox", "name": "ReactOnForeignPolls", "caption": "Auf fremde Abfragen reagieren" },
-      { "type": "CheckBox", "name": "IgnoreCRCErrors", "caption": "CRC Fehler ignorieren" }
+      { "type": "CheckBox", "name": "DebugSwitch",         "caption": "Debuginformationen ausgeben" }
     ],
     "status":   
     [
