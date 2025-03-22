@@ -45,7 +45,7 @@ Der Zugriff auf den RCT Power Inverter erfolgt über eine ClientServer TCP Insta
 Dem RCT Power Inverter Modul muss diese als übergeordnete Instanz zugewiesen werden
 
 <p align="center">
-  <img width="800" src="./imgs/RCT%20Modul%20Instanzkonfiguration.png">
+  <img width="800" src="./imgs/RCT%20Modul%20Instanzkonfiguration 2.0.png">
 </p>
 
 Weitere Einstellungen:
@@ -74,10 +74,8 @@ Sollen die Updates nicht automatisch erfolgen, können die Daten mittels des Bef
 
 Die Verwendung der Tools sollte eigentlich nur im Problemfall notwendig und deshalb alle Tools im Normalfall deaktiviert sein.
 
-* **Debuginformationen ausgeben**. Über diesen Schalter können Debug-Meldungen im Modul aktiviert werden. So kann man grob mitverfolgen, was das Modul aktuell gerade macht.
-* **Fehlerhafte Antwort-Sequence ignorieren**. Das Modul arbeitet nach dem Prinzip "Frage X Adressen an und werde die Antworten aus". Dabei erwartet es die Anworten in genau der Sequenz, in der sie angefragt wurden. Sollte es hier zu Probleme kommen (siehe Debug-Meldungen im Modul), kann man versuchen, diese Sequenz-Überprüfung zu deaktivieren. Die Sequenz-Überprüfung ist zudem nur wirklich relevant, wenn mehrere, miteinander kommunizierende, Wechselrichter angeschlossen sind. Bei einem einzelnen Wechselrichter kann das setzen dieses Schalters sogar die Häufigkeit der Datenauswertung verbessern!
-* **Auf fremde Abfragen reagieren**. Im Normalfall ignoriert das Modul Antworten auf der Schnittstelle, die von anderen Anbindungen wie z.B. der RCT Android/iOS App angefordert wurden. Durch diesen Schalter kann man versuchen, auch diese Antworten auswerten zu lassen (experimentell).
-* **CRC Fehler ignorieren**. Im Normalfall werden die empfangenen Pakete einer Checksummenprüfung (CRC) unterzogen. Fehlerhafte Pakete werden dabei ignoriert, welches wiederum die Antwort-Sequenz stören kann! Mit diesem Schalter kann die CRC Prüfung abgeschaltet werden.
+* **Debug Informationen ausgeben (sehr viele Details)**. Über diesen Schalter können Debug-Meldungen im Modul aktiviert werden. So kann man mitverfolgen, was das Modul aktuell gerade macht.
+* **Dringende Problem-Informationen ausgeben (im Debug Informationen enthaltebn)**. Es werden nur ernsthafte Probleme (z.B. Verbindungsprobleme) in das Log geschrieben.
 
 ## 4. Module
 Derzeit bietet das GIT nur das Modul "RCT_POWER_INVERTER" für die direkte Anbindung eines einzelnen RCT-Power Inverter/Wechselrichter. 
@@ -97,6 +95,18 @@ Das Modul reagiert auf Nachrichten vom Wechselrichter über die geöffnete TCP S
 **Während die Quer-Kommunikation der Wechselrichter untereinander möglichst ignoriert wird, kann ein paralleles Pollen über die Android oder IOS App ggf. die Kommunikation und den Datenempfang dieses Moduls stören. Aus diesem Grund sollte man möglichst auf einen parallele Nutzung der RCT Android/iOS App verzichten!**
 
 ## 5. Versionshistorie
+
+### Version 2.0
+Der Abruf-Prozess wurde überarbeitet, weshalb auch ein Versionsnummerwechsel vor dem Punkt angesagt ist. 
+* Das **Semaphor-Handling** wurde entfernt. 
+Es wurde vor langer Zeit eingeführt, um bei mehreren Wechselrichtern zwischen Daten des abgerufenen und den Daten anderer Wechselrichter (die untereinander Kommunizieren) zu trennen. Letztendlich funktionierte es zwar, hat aber immer wieder zu Probleme geführt.
+* Das **Abruf- und Antworten auswerten-Verhalten** wurde komplett geändert. Zwar werden die Daten immer noch aktiv abgerufen, aber es wird sich intern keine Sequenz mehr gemerkt und diese bei den Antworten überprüft. Faktisch reagiert das Modul nun auf ALLE Antworten zu bekannten Adressen, ignoriert aber andere Kommunikationen. Dadurch ist es intern wesentlich schlanker und robuster aufgestellt.
+
+Es werden immer noch dieselben Daten abgerufen und die vorhandenen Variablen werden weiter bedient.
+
+Was bisher beim Testen aufgefallen ist:
+* Die Schnittstelle zum RCT (der Socket) kann gelegentlich auf **fehlerhaft** springen. Ob dies nur auftritt, wenn mehrere Wechselrichter vorhanden sind (die untereinander kommunizieren) konnte nicht geklärt werden. Es wurde aber erst ab da bemerkt.
+* Wechselrichter, die keine angeschlossene Batterie haben, stehen ab Sonnenuntergang nicht mehr zur Kommunikation zur Verfügung. Das ist bei RCT so üblich, da die Stromversorgung des Wechselrichters über die DC Eingänge (Solarpanel) erfolgt. Keine Batterie, keine Kommunikation in der Nacht. Dies hat nichts mit dem Modul zu tun. Die Kommunikation startet am nächsten Morgen automatisch wieder.
 
 ### Version 1.3
 Weitere Try-Catch bei der Verarbeitung
