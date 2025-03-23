@@ -860,7 +860,7 @@
       "ipsProfile": "RCTPOWER_Energy",
       "ipsPosition": 805,
       "countInDocumentation": 826,
-      "id": "EFF4B5379",
+      "id": "EFF4B537",
       "polling": true,
       "technicalName": "energy.e_load_total",
       "descriptionInDocumentation": "Household Total energy [Wh]",

@@ -730,6 +730,7 @@ class RCTPowerInverter extends IPSModule
         $this->SetBuffer("LastPolledID", $LastPolledId);
         if (isset($pollingIds)) {
             foreach ($pollingIds as $pollingId) {
+                $this->debugLog("Requesting Data for Address ".$pollingId["id"]);
                 $hexCommand = HelperFunctions::getHexReadCommandString($pollingId["id"]);
                 $this->SendDataToParent(json_encode(array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($hexCommand))));
                 usleep(100000);
