@@ -524,9 +524,6 @@ class RCTPowerInverter extends IPSModule
                 case "FE1AA500": // External Power Limit [0..1], Float
                     break;
 
-                case "BD008E29": // External battery power target [W] (positive = discharge), Float
-                    break;
-
                 case "872F380B": // External load demand [W] (positive = feed in / 0=internal ), Float
                     break;
 
@@ -643,9 +640,26 @@ class RCTPowerInverter extends IPSModule
                 case "EBC62737": // Inverter Description
                     break;
 
+                //--- SoC Strategy
+                case "F168B748": // SOC target selection/strategy
+                    $this->SetValue("SoCStrategy", round($float, 0));
+                    break;
+
+                case "BD008E29": // Battery target power [W] (positive = discharge)
+                    $this->SetValue("SoCBatteryPowerExtern", round($float, 0));
+                    break;
+
+                case "D1DFC969": // Force SOC target
+                    $this->SetValue("SoCTargetSoCSet", round($float * 100, 1));
+                    break;
+
+                case "CE266F0F": // Min SOC target
+                    $this->SetValue("SoCMinTarget", round($float * 100, 1));
+                    break;
+
                 //--- Default Handling ---------------------------------------------------------------------------
                 default:         // Unknown response
-                    $this->debugLog("Unkown Response Address " . $address . " with data " . $data . " (as Float " . number_format($float, 2) . ")");
+                    $this->debugLog("Unknown Response Address " . $address . " with data " . $data . " (as Float " . number_format($float, 2) . ")");
 
             }
         } catch (\Exception $e) {
@@ -776,6 +790,19 @@ class RCTPowerInverter extends IPSModule
             IPS_SetVariableProfileText('RCTPOWER_Energy', "", " Wh");
         }
 
+        if (!IPS_VariableProfileExists('RCTPOWER_SoCStrategy')) {
+            IPS_CreateVariableProfile('RCTPOWER_SoCStrategy', 1);
+            IPS_SetVariableProfileDigits('RCTPOWER_SoCStrategy', 0);
+            IPS_SetVariableProfileIcon('RCTPOWER_SoCStrategy', 'Battery');
+            IPS_SetVariableProfileText('RCTPOWER_SoCStrategy', "", "");
+            IPS_SetVariableProfileAssociation("RCTPOWER_SoCStrategy", 0, "SOC Target", "", 0xFFFFFF);
+            IPS_SetVariableProfileAssociation("RCTPOWER_SoCStrategy", 1, "Konstant", "", 0xFFFFFF);
+            IPS_SetVariableProfileAssociation("RCTPOWER_SoCStrategy", 2, "Extern", "", 0xFFFFFF);
+            IPS_SetVariableProfileAssociation("RCTPOWER_SoCStrategy", 3, "Mittlere Batteriespannung", "", 0xFFFFFF);
+            IPS_SetVariableProfileAssociation("RCTPOWER_SoCStrategy", 4, "Intern (default)", "", 0xFFFFFF);
+            IPS_SetVariableProfileAssociation("RCTPOWER_SoCStrategy", 5, "Zeitplan", "", 0xFFFFFF);
+        }
+
         //--- Float (Type 2)
         if (!IPS_VariableProfileExists('RCTPOWER_Capacity.2')) {
             IPS_CreateVariableProfile('RCTPOWER_Capacity.2', 2);
@@ -820,7 +847,7 @@ class RCTPowerInverter extends IPSModule
         $this->RegisterVariableFloat("BatteryGrossCapacity", "Batterie Brutto-Kapazität", "RCTPOWER_Capacity.2", 202);
         $this->RegisterVariableFloat("BatteryRemainingNetCapacity", "Batterie verf. Restkapazität", "RCTPOWER_Capacity.2", 202);
         $this->RegisterVariableFloat("BatterySoC", "Batterie Ladestand", "~Valve.F", 203);
-        $this->RegisterVariableFloat("BatteryUpperSoC", "Batterie Ladegrenze", "~Valve.F", 204);
+        $this->RegisterVariableFloat("BatteryUpperSoC", "Batterie obere Ladegrenze", "~Valve.F", 204);
         $this->RegisterVariableFloat("BatteryTemperature", "Batterie Temperatur", "~Temperature", 205);
 
         $this->RegisterVariableInteger("HousePowerCurrent", "Haus Leistung", "RCTPOWER_Power", 250);
@@ -881,6 +908,13 @@ class RCTPowerInverter extends IPSModule
         $this->RegisterVariableInteger("EnergyTotalGridPowerLevel", "Gesamt - % Anteil externer Strom am Gesamtverbrauch", "~Valve", 807);
         $this->RegisterVariableInteger("EnergyTotalSelfConsumptionLevel", "Gesamt - % PV Selbstverbrauch", "~Valve", 808);
         $this->RegisterVariableInteger("EnergyTotalGridFeedInLevel", "Gesamt - % PV Netzeinspeisung", "~Valve", 809);
+
+        // SoC Strategy / External loading
+        $this->RegisterVariableInteger("SoCStrategy", "SoC Ladestrategie", "RCTPOWER_SoCStrategy", 900);
+        $this->RegisterVariableInteger("SoCBatteryPowerExtern", "SoC Entladeleistung (extern)", "RCTPOWER_Power", 901);
+        $this->RegisterVariableFloat("SoCTargetSoCSet", "Gesetzter Ziel-Ladestand", "~Valve.F", 902);
+        $this->RegisterVariableFloat("SoCMinTarget", "Minimaler Ziel-Ladestand", "~Valve.F", 903);
+
 
         $this->RegisterVariableBoolean("Errorstatus", "Fehlerstatus", "~Alert", 1000);
     }

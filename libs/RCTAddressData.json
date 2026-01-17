@@ -899,6 +899,72 @@
       "ipsName": "Gesamt - % PV Netzeinspeisung",
       "ipsProfile": "~Valve",
       "ipsPosition": 809
+    },
+
+    // SoC Strategy
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "SoCStrategy",
+      "ipsType": "Integer",
+      "ipsProfile": "~Valve.F",
+      "ipsPosition": 900,
+      "ipsName": "SoC Ladestrategie",
+      "countInDocumentation": 835,
+      "id": "F168B748",
+      "polling": true,
+      "technicalName": "power_mng.soc_strategy",
+      "descriptionInDocumentation": "SOC target selection",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 0
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "SoCBatteryPowerExtern",
+      "ipsType": "Integer",
+      "ipsProfile": "RCTPOWER_Power",
+      "ipsPosition": 901,
+      "ipsName": "SoC Entladeleistung (extern)",
+      "countInDocumentation": 667,
+      "id": "BD008E29",
+      "polling": true,
+      "technicalName": "power_mng.battery_power_extern",
+      "descriptionInDocumentation": "Battery target power [W] (positive = discharge)",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 0
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "SoCTargetSocSet",
+      "ipsType": "Float",
+      "ipsProfile": "~Valve.F",
+      "ipsPosition": 902,
+      "ipsName": "Gesetzter Ziel-Ladestand",
+      "countInDocumentation": 740,
+      "id": "D1DFC969",
+      "polling": true,
+      "technicalName": "power_mng.soc_target_set",
+      "descriptionInDocumentation": "Force SOC target",
+      "dataType": "t_float",
+      "factor": 100,
+      "precision": 1
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "SoCMinTarget",
+      "ipsType": "Float",
+      "ipsProfile": "~Valve.F",
+      "ipsPosition": 903,
+      "ipsName": "Minimaler Ziel-Ladestand",
+      "countInDocumentation": 731,
+      "id": "CE266F0F",
+      "polling": true,
+      "technicalName": "power_mng.soc_min",
+      "descriptionInDocumentation": "Min SOC target",
+      "dataType": "t_float",
+      "factor": 100,
+      "precision": 1
     }
   ]
 }
