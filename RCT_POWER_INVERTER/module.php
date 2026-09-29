@@ -567,7 +567,7 @@ class RCTPowerInverter extends IPSModule
                     $RemainingCapacity = $GrossCapacity / 100 * $RemainingPercentage;
                     $this->SetValue("BatteryRemainingNetCapacityStack2", round($RemainingCapacity, 2));
 
-                    $this->SetValue("BatteryRemainingNetCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryNetCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryNetCapacityStack2")));
+                    $this->SetValue("BatteryRemainingNetCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryRemainingNetCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryRemainingNetCapacityStack2")));
                     break;
 
                 case "4BC0F974": // Installed PV Power kWp (was <V1.0 "gross battery capacity kwh" - error!)
