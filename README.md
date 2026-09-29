@@ -96,6 +96,9 @@ Das Modul reagiert auf Nachrichten vom Wechselrichter über die geöffnete TCP S
 
 ## 5. Versionshistorie
 
+### Version 2.2
+Erweiterung auf das Abrufen der Daten eines 2ten Batterieturms. Es wurden weitere Attribute für hinzugefügt, um einen 2ten Batterieturm auszulesen.
+
 ### Version 2.0
 Der Abruf-Prozess wurde überarbeitet, weshalb auch ein Versionsnummerwechsel vor dem Punkt angesagt ist. 
 * Das **Semaphor-Handling** wurde entfernt. 

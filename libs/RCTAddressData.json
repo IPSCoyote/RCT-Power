@@ -119,14 +119,43 @@
       "precision": 0
     },
 
-    //--- Battery -----------------------------------------------------------------------
+    //--- Battery General Info ------------------------------------------------
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "BatteryStackCount",
+      "ipsType": "Integer",
+      "ipsName": "Anzahl Batterietürme",
+      "ipsProfile": "RCTPOWER_Voltage",
+      "ipsPosition": 190,
+      "countInDocumentation": 354,
+      "id": "663F1452",
+      "polling": true,
+      "technicalName": "power_mng.n_batteries",
+      "descriptionInDocumentation": "power_mng.n_batteries"
+    },
+    {
+      "ipsCalculated": false,
+      "ipsName": "Batterie Ladegrenze",
+      "ipsIdent": "BatteryUpperSoc",
+      "ipsType": "Float",
+      "ipsProfile": "~Valve.F",
+      "ipsPosition": 191,
+      "countInDocumentation": 497,
+      "id": "8B9FF008",
+      "polling": true,
+      "technicalName": "battery.soc_target ",
+      "descriptionInDocumentation": "Target SOC",
+      "dataType": "t_float",
+      "factor": 100,
+      "precision": 0
+    },
     {
       "ipsCalculated": false,
       "ipsIdent": "BatteryVoltage",
       "ipsType": "Integer",
       "ipsName": "Batterie Spannung",
       "ipsProfile": "RCTPOWER_Voltage",
-      "ipsPosition": 200,
+      "ipsPosition": 192,
       "countInDocumentation": 600,
       "id": "A7FA5C5D",
       "polling": true,
@@ -142,7 +171,7 @@
       "ipsType": "Integer",
       "ipsName": "Batterie Leistung",
       "ipsProfile": "RCTPOWER_POWER",
-      "ipsPosition": 201,
+      "ipsPosition": 193,
       "countInDocumentation": 219,
       "id": "400F015B",
       "polling": true,
@@ -152,6 +181,8 @@
       "factor": 1,
       "precision": 0
     },
+
+    //--- Battery Stack 1 -----------------------------------------------------
     {
       "ipsCalculated": true,
       "ipsIdent": "BatteryGrossCapacity",
@@ -186,19 +217,19 @@
     },
     {
       "ipsCalculated": false,
-      "ipsName": "Batterie Ladegrenze",
-      "ipsIdent": "BatteryUpperSoc",
+      "ipsIdent": "BatterySoH",
       "ipsType": "Float",
       "ipsProfile": "~Valve.F",
-      "ipsPosition": 204,
-      "countInDocumentation": 497,
-      "id": "8B9FF008",
+      "ipsPosition": 203,
+      "ipsName": "Batterie StateOfHealth",
+      "countInDocumentation": 187,
+      "id": "381B8BF9",
       "polling": true,
-      "technicalName": "battery.soc_target ",
-      "descriptionInDocumentation": "Target SOC",
+      "technicalName": "battery.soh",
+      "descriptionInDocumentation": "SOH (State of health)",
       "dataType": "t_float",
       "factor": 100,
-      "precision": 0
+      "precision": 1
     },
     {
       "ipsCalculated": false,
@@ -278,6 +309,111 @@
       "technicalName": "battery.module_sn[6]",
       "dataType": "t_string",
       "descriptionInDocumentation": "Module 6 Serial Number"
+    },
+
+    //--- Battery Stack 2 ----------------------------------------------------
+    {
+      "ipsCalculated": true,
+      "ipsIdent": "BatteryGrossCapacityStack2",
+      "ipsType": "Float",
+      "ipsName": "Batterie Brutto-Kapazität Stack 2",
+      "ipsProfile": "RCTPOWER_Capacity.2",
+      "ipsPosition": 212
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "BatterySoC",
+      "ipsType": "Float",
+      "ipsProfile": "~Valve.F",
+      "ipsPosition": 213,
+      "ipsName": "Batterie Ladestand Stack 2",
+      "countInDocumentation": 545,
+      "id": "8B4BE168",
+      "polling": true,
+      "technicalName": "battery.soc",
+      "descriptionInDocumentation": "SOC (State of charge)",
+      "dataType": "t_float",
+      "factor": 100,
+      "precision": 1
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "BatterySoH",
+      "ipsType": "Float",
+      "ipsProfile": "~Valve.F",
+      "ipsPosition": 213,
+      "ipsName": "Batterie StateOfHealth Stack 2",
+      "countInDocumentation": 187,
+      "id": "1781CD31",
+      "polling": true,
+      "technicalName": "battery.soh",
+      "descriptionInDocumentation": "SOH (State of health)",
+      "dataType": "t_float",
+      "factor": 100,
+      "precision": 1
+    },
+    {
+      "ipsCalculated": false,
+      "countInDocumentation": 0,
+      "id": "690C32D2",
+      "polling": true,
+      "technicalName": "battery_placeholder[0].module_sn[0]",
+      "dataType": "t_string",
+      "descriptionInDocumentation": "Stack 2 - Module 0 Serial Number"
+    },
+    {
+      "ipsCalculated": false,
+      "countInDocumentation": 0,
+      "id": "ABA015FC",
+      "polling": true,
+      "technicalName": "battery_placeholder[0].module_sn[1]",
+      "dataType": "t_string",
+      "descriptionInDocumentation": "Stack 2 - Module 1 Serial Number"
+    },
+    {
+      "ipsCalculated": false,
+      "countInDocumentation": 0,
+      "id": "E635A6C4",
+      "polling": true,
+      "technicalName": "battery_placeholder[0].module_sn[2]",
+      "dataType": "t_string",
+      "descriptionInDocumentation": "Stack 2 - Module 2 Serial Number"
+    },
+    {
+      "ipsCalculated": false,
+      "countInDocumentation": 0,
+      "id": "4FC53F19",
+      "polling": true,
+      "technicalName": "battery.module_sn[3]",
+      "dataType": "t_string",
+      "descriptionInDocumentation": "Stack 2 - Module 3 Serial Number"
+    },
+    {
+      "ipsCalculated": false,
+      "countInDocumentation": 0,
+      "id": "20A3A91F",
+      "polling": true,
+      "technicalName": "battery.module_sn[4]",
+      "dataType": "t_string",
+      "descriptionInDocumentation": "Stack 2 - Module 4 Serial Number"
+    },
+    {
+      "ipsCalculated": false,
+      "countInDocumentation": 0,
+      "id": "035E64EA",
+      "polling": true,
+      "technicalName": "battery.module_sn[5]",
+      "dataType": "t_string",
+      "descriptionInDocumentation": "Stack 2 - Module 5 Serial Number"
+    },
+    {
+      "ipsCalculated": false,
+      "countInDocumentation": 0,
+      "id": "8594D11E",
+      "polling": true,
+      "technicalName": "battery.module_sn[6]",
+      "dataType": "t_string",
+      "descriptionInDocumentation": "Stack 2 - Module 6 Serial Number"
     },
 
     //--- External Grid -----------------------------------------------------------------
