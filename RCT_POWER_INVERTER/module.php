@@ -117,6 +117,7 @@ class RCTPowerInverter extends IPSModule
             $RemainingDataBin = hex2bin($RemainingData);
             $this->SetBuffer("ReceivedDataBuffer", $RemainingDataBin);
         }
+
     }
 
 
@@ -129,6 +130,13 @@ class RCTPowerInverter extends IPSModule
             $float = $this->hexTo32Float($data);
             // Debug output
             $this->debugLog("Address " . $address . " with data " . $data . " (as Float " . number_format($float, 2) . ")");
+        }
+
+        $int = 0;
+        if (strlen($data) == 2) {
+            $int = $this->stringToInteger($data);
+            // Debug output
+            $this->debugLog("Address " . $address . " with data " . $data . " (as Integer " . $int . ")");
         }
 
         if (strlen($data) > 8) {
@@ -208,7 +216,7 @@ class RCTPowerInverter extends IPSModule
                     break;
 
                 case "663F1452": // Battery Stack Count
-                    $this->SetValue("BatteryStackCount", intval(round($float, 0)));
+                    $this->SetValue("BatteryStackCount", $int);
                     break;
 
                 case "B408E40A": // Battery current measured by inverter, low pass filter with Tau = 1s [A], Float
@@ -558,6 +566,8 @@ class RCTPowerInverter extends IPSModule
                     if ($RemainingPercentage < 0) $RemainingPercentage = 0;
                     $RemainingCapacity = $GrossCapacity / 100 * $RemainingPercentage;
                     $this->SetValue("BatteryRemainingNetCapacityStack2", round($RemainingCapacity, 2));
+
+                    $this->SetValue("BatteryRemainingNetCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryNetCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryNetCapacityStack2")));
                     break;
 
                 case "4BC0F974": // Installed PV Power kWp (was <V1.0 "gross battery capacity kwh" - error!)
@@ -590,6 +600,7 @@ class RCTPowerInverter extends IPSModule
                     } elseif (GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity")) < 1.9) {
                         $this->SetValue("BatteryGrossCapacity", 1.9);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
                 case "99396810": // Battery Stack 1 - 1 serial number
@@ -601,6 +612,7 @@ class RCTPowerInverter extends IPSModule
                         // we have at least 2 stack panels -> Battery Capacity is min. 3.8
                         $this->SetValue("BatteryGrossCapacity", 3.8);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
                 case "73489528": // Battery Stack 1 - 2 serial number
@@ -612,6 +624,7 @@ class RCTPowerInverter extends IPSModule
                         // we have at least 3 stack panels -> Battery Capacity is min. 5.7
                         $this->SetValue("BatteryGrossCapacity", 5.7);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
                 case "257B7612": // Battery Stack 1 - 3 serial number
@@ -623,6 +636,7 @@ class RCTPowerInverter extends IPSModule
                         // we have at least 4 stack panels -> Battery Capacity is min. 7.6
                         $this->SetValue("BatteryGrossCapacity", 7.6);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
                 case "4E699086": // Battery Stack 1 - 4 serial number
@@ -634,6 +648,7 @@ class RCTPowerInverter extends IPSModule
                         // we have at least 5 stack panels -> Battery Capacity is min. 9.6
                         $this->SetValue("BatteryGrossCapacity", 9.6);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
                 case "162491E8": // Battery Stack 1 -  5 serial number
@@ -645,6 +660,7 @@ class RCTPowerInverter extends IPSModule
                         // we have at least 6 stack panels -> Battery Capacity is min. 11.5
                         $this->SetValue("BatteryGrossCapacity", 11.5);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
                 case "5939EC5D": // Battery Stack 1 - 6 serial number
@@ -656,6 +672,7 @@ class RCTPowerInverter extends IPSModule
                         // we have at least 7 stack panels -> Battery Capacity is min. 13.4
                         $this->SetValue("BatteryGrossCapacity", 13.4);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
                 case "690C32D2": // Battery Stack 2 - 0 serial number
@@ -665,9 +682,10 @@ class RCTPowerInverter extends IPSModule
                     } elseif (GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) < 1.9) {
                         $this->SetValue("BatteryGrossCapacityStack2", 1.9);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
-                case "ABA015FC": // Battery Stack 1 serial number
+                case "ABA015FC": // Battery Stack 2 - 1 serial number
                     if (substr($string, 1, 3) <> "181") {
                         // we don't have a 2nd stack panel -> Battery Capacity is max. 1.9kWh
                         if (GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) > 1.9)
@@ -676,9 +694,10 @@ class RCTPowerInverter extends IPSModule
                         // we have at least 2 stack panels -> Battery Capacity is min. 3.8
                         $this->SetValue("BatteryGrossCapacityStack2", 3.8);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
-                case "E635A6C4": // Battery Stack 2 serial number
+                case "E635A6C4": // Battery Stack 2 - 2 serial number
                     if (substr($string, 1, 3) <> "181") {
                         // we don't have a 3nd stack panel -> Battery Capacity is max. 3.8kWh
                         if (GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) > 3.8)
@@ -687,9 +706,10 @@ class RCTPowerInverter extends IPSModule
                         // we have at least 3 stack panels -> Battery Capacity is min. 5.7
                         $this->SetValue("BatteryGrossCapacityStack2", 5.7);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
-                case "4FC53F19": // Battery Stack 3 serial number
+                case "4FC53F19": // Battery Stack 2 - 3 serial number
                     if (substr($string, 1, 3) <> "181") {
                         // we don't have a 4th stack panel -> Battery Capacity is max. 5.7kWh
                         if (GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) > 5.7)
@@ -698,9 +718,10 @@ class RCTPowerInverter extends IPSModule
                         // we have at least 4 stack panels -> Battery Capacity is min. 7.6
                         $this->SetValue("BatteryGrossCapacityStack2", 7.6);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
-                case "20A3A91F": // Battery Stack 4 serial number
+                case "20A3A91F": // Battery Stack 2 - 4 serial number
                     if (substr($string, 1, 3) <> "181") {
                         // we don't have a 5th stack panel -> Battery Capacity is max. 7.6kWh
                         if (GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) > 7.6)
@@ -709,9 +730,10 @@ class RCTPowerInverter extends IPSModule
                         // we have at least 5 stack panels -> Battery Capacity is min. 9.6
                         $this->SetValue("BatteryGrossCapacityStack2", 9.6);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
-                case "035E64EA": // Battery Stack 5 serial number
+                case "035E64EA": // Battery Stack 2- 5 serial number
                     if (substr($string, 1, 3) <> "181") {
                         // we don't have a 5th stack panel -> Battery Capacity is max. 9.6kWh
                         if (GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) > 9.6)
@@ -720,9 +742,10 @@ class RCTPowerInverter extends IPSModule
                         // we have at least 6 stack panels -> Battery Capacity is min. 11.5
                         $this->SetValue("BatteryGrossCapacityStack2", 11.5);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
-                case "8594D11E ": // Battery Stack 6 serial number
+                case "8594D11E ": // Battery Stack 2 - 6 serial number
                     if (substr($string, 1, 3) <> "181") {
                         // we don't have a 6th stack panel -> Battery Capacity is max. 11.5kWh
                         if (GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) > 11.5)
@@ -731,6 +754,7 @@ class RCTPowerInverter extends IPSModule
                         // we have at least 7 stack panels -> Battery Capacity is min. 13.4
                         $this->SetValue("BatteryGrossCapacityStack2", 13.4);
                     }
+                    $this->SetValue("BatteryGrossCapacityTotal", GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity"))+GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) );
                     break;
 
                 //--- Ignore -------------------------------------------------------------------------------------
@@ -776,6 +800,20 @@ class RCTPowerInverter extends IPSModule
         $x = ($v & ((1 << 23) - 1)) + (1 << 23) * ($v >> 31 | 1);
         $exp = ($v >> 23 & 0xFF) - 127;
         return $x * pow(2, $exp - 23) * ($sign ? -1 : 1);
+    }
+
+    function stringToInteger(string $input): int
+    {
+        $result = 0;
+        $length = strlen($input);
+        for ($i = 0; $i < $length; $i++) {
+            $char = $input[$i];
+            $digit = (int) $char;
+            $exponent = $length - 1 - $i;
+            $power = 10 ** $exponent;
+            $result += $digit * $power;
+        }
+        return $result;
     }
 
     protected function hexToString(string $hex)
@@ -945,19 +983,21 @@ class RCTPowerInverter extends IPSModule
         $this->RegisterVariableFloat("BatteryUpperSoC", "Batterie obere Ladegrenze", "~Valve.F", 191); // "8B9FF008": Upper load boundary in %
         $this->RegisterVariableInteger("BatteryVoltage", "Batterie Spannung", "RCTPOWER_Voltage", 192); // "A7FA5C5D": "Battery voltage [V], Float
         $this->RegisterVariableInteger("BatteryPower", "Batterie Leistung", "RCTPOWER_Power", 193); // "BD008E29": Battery target power [W] (positive = discharge)
+        $this->RegisterVariableFloat("BatteryGrossCapacityTotal", "Batterie Brutto-Gesamtkapazität", "RCTPOWER_Capacity.2", 197);
+        $this->RegisterVariableFloat("BatteryRemainingNetCapacityTotal", "Batterie verf. Rest-Gesamtkapazität", "RCTPOWER_Capacity.2", 198);
 
         // Battery Stack 1
-        $this->RegisterVariableFloat("BatteryGrossCapacity", "Batterie Brutto-Kapazität", "RCTPOWER_Capacity.2", 202); // "FBF6D834","99396810","73489528","257B7612","4E699086","162491E8", "5939EC5D": Battery Stack serial numbers evaluated
-        $this->RegisterVariableFloat("BatteryRemainingNetCapacity", "Batterie verf. Restkapazität", "RCTPOWER_Capacity.2", 202); // "8B9FF008" - Upper Load Boundary -> calculates the net capacity
-        $this->RegisterVariableFloat("BatterySoC", "Batterie Ladestand", "~Valve.F", 203); // "959930BF": Battery State of Charge (SoC) [0..1], Float
-        $this->RegisterVariableFloat("BatterySoH", "Batterie State of Health", "~Valve.F", 203); // "381B8BF9": Battery State of Health (SoH) [0..1], Float
-        $this->RegisterVariableFloat("BatteryTemperature", "Batterie Temperatur", "~Temperature", 205); // "902AFAFB": Battery temperature [Grad C], Float
+        $this->RegisterVariableFloat("BatteryGrossCapacity", "Batterie Brutto-Kapazität Stack 1", "RCTPOWER_Capacity.2", 202); // "FBF6D834","99396810","73489528","257B7612","4E699086","162491E8", "5939EC5D": Battery Stack serial numbers evaluated
+        $this->RegisterVariableFloat("BatteryRemainingNetCapacity", "Batterie verf. Restkapazität Stack 2", "RCTPOWER_Capacity.2", 202); // "8B9FF008" - Upper Load Boundary -> calculates the net capacity
+        $this->RegisterVariableFloat("BatterySoC", "Batterie Ladestand (SoC) Stack 1", "~Valve.F", 203); // "959930BF": Battery State of Charge (SoC) [0..1], Float
+        $this->RegisterVariableFloat("BatterySoH", "Batterie Gesundheitszustand (SoH) Stack 1", "~Valve.F", 204); // "381B8BF9": Battery State of Health (SoH) [0..1], Float
+        $this->RegisterVariableFloat("BatteryTemperature", "Batterie Temperatur Stack 1", "~Temperature", 205); // "902AFAFB": Battery temperature [Grad C], Float
 
         // Battery Stack 2
         $this->RegisterVariableFloat("BatteryGrossCapacityStack2", "Batterie Brutto-Kapazität Stack 2", "RCTPOWER_Capacity.2", 212); // "FBF6D834","99396810","73489528","257B7612","4E699086","162491E8", "5939EC5D": Battery Stack serial numbers evaluated
         $this->RegisterVariableFloat("BatteryRemainingNetCapacityStack2", "Batterie verf. Restkapazität Stack 2", "RCTPOWER_Capacity.2", 212); // "8B9FF008" - Upper Load Boundary -> calculates the net capacity
-        $this->RegisterVariableFloat("BatterySoCStack2", "Batterie Ladestand Stack 2", "~Valve.F", 213); // "8B4BE168": Battery State of Charge (SoC) [0..1], Float
-        $this->RegisterVariableFloat("BatterySoH", "Batterie State of Health", "~Valve.F", 213); // "1781CD31 ": Battery State of Health (SoH) [0..1], Float
+        $this->RegisterVariableFloat("BatterySoCStack2", "Batterie Ladestand (SoC) Stack 2", "~Valve.F", 213); // "8B4BE168": Battery State of Charge (SoC) [0..1], Float
+        $this->RegisterVariableFloat("BatterySoHStack2", "Batterie Gesundheitszustand (SoH) Stack 2", "~Valve.F", 214); // "1781CD31 ": Battery State of Health (SoH) [0..1], Float
 
         // House external connection
         $this->RegisterVariableInteger("HousePowerCurrent", "Haus Leistung", "RCTPOWER_Power", 250);
