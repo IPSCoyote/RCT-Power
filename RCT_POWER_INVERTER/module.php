@@ -596,7 +596,9 @@ class RCTPowerInverter extends IPSModule
                 case "FBF6D834": // Battery Stack 1 - 0 serial number
                     if (substr($string, 1, 3) != "181") {
                         // we don't have a battery stack -> Battery Capacity is 0 kWh
-                        $this->SetValue("BatteryGrossCapacity", 0);
+                        if (GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity")) <> 0) {
+                            $this->SetValue("BatteryGrossCapacity", 0);
+                        }
                     } elseif (GetValueFloat($this->GetIDForIdent("BatteryGrossCapacity")) < 1.9) {
                         $this->SetValue("BatteryGrossCapacity", 1.9);
                     }
@@ -678,7 +680,9 @@ class RCTPowerInverter extends IPSModule
                 case "690C32D2": // Battery Stack 2 - 0 serial number
                     if (substr($string, 1, 3) != "181") {
                         // we don't have a battery stack -> Battery Capacity is 0 kWh
-                        $this->SetValue("BatteryGrossCapacityStack2", 0);
+                        if (GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) <> 0) {
+                            $this->SetValue("BatteryGrossCapacityStack2", 0);
+                        }
                     } elseif (GetValueFloat($this->GetIDForIdent("BatteryGrossCapacityStack2")) < 1.9) {
                         $this->SetValue("BatteryGrossCapacityStack2", 1.9);
                     }
