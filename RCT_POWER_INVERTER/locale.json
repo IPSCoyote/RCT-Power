@@ -3,6 +3,7 @@
         "de": { 
             "Disclaimer": "Dieses Modul wurde unabhängig vom Hersteller RCT Power entwickelt. Die Benutzung des Moduls erfolgt auf eigene Gefahr unter Ausschluss jeglicher Gewährleistung für Probleme oder Schäden am RCT Power System.",
             "Donation": "Das Modul ist ein Hobby. Wer sich mit einer kleinen Spende für dessen Entwicklung (ohne Recht auf irgendwelche Ansprüche) bedanken möchte, kann dies gerne via Paypal-Spende machen:",
+            "PowerInverterMaster": "Dieses Modul ist für die Anbindung eines RCT Power Inverters oder Storage, welches als MASTER AGIERT!, konzipiert. Es sollte nicht an einem einzelnen RCT Power Inverter oder Storage, oder einem Inverter, welcher als SLAVE konfiguriert wurde verwendet werden. Die die zum Master gehörenden Slaves werden automatisch mit ausgelesen.",
             "Basic Data - INPUT A": "PV Paneldaten - Eingang A",
             "Basic Data - INPUT B": "PV Paneldaten - Eingang B",
             "Basic Data": "Grunddaten",
@@ -15,8 +16,8 @@
             "4 (7.6 kWh)":  "4 Stackmodule (7.6kWh)",
             "5 (9.6 kWh)":  "5 Stackmodule (9.6kWh)",
             "6 (11.5 kWh)": "6 Stackmodule (11.7kWh)",
-            "Auf fremde Abfragen reagieren": "Auf fremde Abfragen reagieren (Achtung! Gefahr von Datenfehlern wenn mehrere Wechselrichter vorhanden sind!)",
-            "Fehlerhafte Antwort-Sequenz ignorieren": "Fehlerhafte Antwort-Sequence ignorieren", 
+            "Debuginformationen ausgeben": "Debug Information ausgeben (sehr viele Details)",
+            "Very High Debuginformationen ausgeben": "Dringende Problem-Informationen ausgeben (in Debug Informationen enthalten)",
             "CRC Fehler ignorieren": "CRC Fehler ignorieren",
             
             "Check Connection": "Verbindung testen",
