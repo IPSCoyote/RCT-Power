@@ -60,7 +60,7 @@ class RCTPowerInverter extends IPSModule
     public function ReceiveData($JSONString)
     {
         $this->debugLog("ReceiveData() called");
-        $CurrentlyReceivedData = utf8_decode(json_decode($JSONString)->Buffer);
+        $CurrentlyReceivedData = mb_convert_encoding(json_decode($JSONString)->Buffer, 'ISO-8859-1', 'UTF-8');
         $ReceivedDataBuffered = $this->GetBuffer("ReceivedDataBuffer");
         $CollectedReceivedData = $ReceivedDataBuffered . $CurrentlyReceivedData;
 
@@ -885,7 +885,7 @@ class RCTPowerInverter extends IPSModule
             foreach ($pollingIds as $pollingId) {
                 $this->debugLog("Requesting Data for Address ".$pollingId["id"]);
                 $hexCommand = HelperFunctions::getHexReadCommandString($pollingId["id"]);
-                $this->SendDataToParent(json_encode(array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($hexCommand))));
+                $this->SendDataToParent(json_encode(array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => mb_convert_encoding($hexCommand, 'UTF-8', 'ISO-8859-1'))));
                 usleep(100000);
             }
         }
