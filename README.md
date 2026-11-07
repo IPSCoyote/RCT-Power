@@ -96,6 +96,21 @@ Das Modul reagiert auf Nachrichten vom Wechselrichter über die geöffnete TCP S
 
 ## 5. Versionshistorie
 
+### Version 2.3
+
+Neue Variablen (rein additiv, keine manuellen Anpassungen notwendig):
+
+- Wechselrichter: AC Leistung, Netzspannung Phase L1, L2 und L3
+- Batterie: Strom, Leistung je Turm (Turm 1 und Turm 2, aus Spannung und Strom des jeweiligen Turms berechnet), Statusfelder, Ladungsfluss in die Batterie
+- Power-Management: Erhaltungsladung (Schwelle und Leistung), Netzstrom nutzen erlaubt, Entladeleistung des Power-Managements, Stop-Entlade- und Stop-Ladestrom, Status
+- Batterie-Kalibrierung: nächster Termin, Intervall, Vorlauf, Kalibrier-Ladeleistung
+- Externe Energie (Tag und Gesamt)
+- Fehlerstatus (`Errorstatus`) wird jetzt anhand der vier Fehlerworte des Wechselrichters gesetzt. Er ist `true`, sobald mindestens ein Fehlerwort ungleich 0 ist. Bisher wurde die Variable zwar angelegt, aber nie gesetzt.
+
+Neue Variablenprofile: `RCTPOWER_YesNo`, `RCTPOWER_Days`, `RCTPOWER_AmpereHours`.
+
+Pro Update-Zyklus werden 29 zusätzliche Adressen abgefragt (ca. 2,9 Sekunden mehr). Das Vorzeichen der Leistungen entspricht dem der Variable "Batterie Leistung" (Laden negativ, Entladen positiv).
+
 ### Version 2.2
 Erweiterung auf das Abrufen der Daten eines 2ten Batterieturms. Es wurden weitere Attribute für hinzugefügt, um einen 2ten Batterieturm auszulesen.
 

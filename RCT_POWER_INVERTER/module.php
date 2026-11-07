@@ -148,15 +148,19 @@ class RCTPowerInverter extends IPSModule
         try {
             switch ($address) {
                 case "DB2D69AE": // Actual inverters AC-power [W], Float
+                    $this->SetValue("InverterACPower", round($float, 0));
                     break;
 
                 case "CF053085": // Phase L1 voltage [V], Float
+                    $this->SetValue("GridVoltageL1", round($float, 0));
                     break;
 
                 case "54B4684E": // Phase L2 voltage [V], Float
+                    $this->SetValue("GridVoltageL2", round($float, 0));
                     break;
 
                 case "2545E22D": // Phase L3 voltage [V], Float
+                    $this->SetValue("GridVoltageL3", round($float, 0));
                     break;
 
                 case "B55BA2CE": // DC input A voltage [V], Float (by Documentation B298395D!)
@@ -579,12 +583,16 @@ class RCTPowerInverter extends IPSModule
                     break;
 
                 case "37F9D5CA": // Bit-coded fault word 0
+                    $this->updateFaultWord(0, $data);
                     break;
                 case "234B4736": // Bit-coded fault word 1
+                    $this->updateFaultWord(1, $data);
                     break;
                 case "3B7FCD47": // Bit-coded fault word 2
+                    $this->updateFaultWord(2, $data);
                     break;
                 case "7F813D73": // Bit-coded fault word 3
+                    $this->updateFaultWord(3, $data);
                     break;
 
                 case "EBC62737": // android description
@@ -782,6 +790,110 @@ class RCTPowerInverter extends IPSModule
                     $this->SetValue("SoCMinTarget", round($float * 100, 1));
                     break;
 
+                //--- Battery current and battery towers ---------------------------------------------------------
+                case "0AFDD6CF": // acc_conv.i_acc_lp_fast, battery current [A], Float (positive = discharge)
+                    $this->SetValue("BatteryCurrent", round($float, 2));
+                    break;
+
+                case "21961B58": // Battery tower 1 current [A], Float
+                    $this->SetBuffer("Tower1Current", (string)$float);
+                    $this->updateTowerPower(1);
+                    break;
+
+                case "65EED11B": // Battery tower 1 voltage [V], Float
+                    $this->SetBuffer("Tower1Voltage", (string)$float);
+                    $this->updateTowerPower(1);
+                    break;
+
+                case "79D7D617": // Battery tower 2 current [A], Float
+                    $this->SetBuffer("Tower2Current", (string)$float);
+                    $this->updateTowerPower(2);
+                    break;
+
+                case "FCA1CBB5": // Battery tower 2 voltage [V], Float
+                    $this->SetBuffer("Tower2Voltage", (string)$float);
+                    $this->updateTowerPower(2);
+                    break;
+
+                //--- Power Management ----------------------------------------------------------------------------
+                case "BD3A23C3": // power_mng.soc_charge [0..1], Float (maintenance charge below this SoC)
+                    $this->SetValue("SoCMaintenanceChargeMin", round($float * 100, 1));
+                    break;
+
+                case "1D2994EA": // power_mng.soc_charge_power [W], Float (maintenance charge power)
+                    $this->SetValue("SoCMaintenanceChargePower", round($float, 0));
+                    break;
+
+                case "36A9E9A6": // power_mng.use_grid_power_enable, Bool (1 byte)
+                    $this->SetValue("UseGridPowerEnable", HelperFunctions::hexUInt8ToDec($data) != 0);
+                    break;
+
+                case "1156DFD0": // power_mng.battery_power [W], Float (positive = discharge)
+                    $this->SetValue("PowerMngBatteryPower", round($float, 0));
+                    break;
+
+                case "F1342795": // power_mng.stop_discharge_current [A], Float
+                    $this->SetValue("PowerMngStopDischargeCurrent", round($float, 1));
+                    break;
+
+                case "D197CBE0": // power_mng.stop_charge_current [A], Float
+                    $this->SetValue("PowerMngStopChargeCurrent", round($float, 1));
+                    break;
+
+                case "DC667958": // power_mng.state, UInt8
+                    $this->SetValue("PowerMngState", HelperFunctions::hexUInt8ToDec($data));
+                    break;
+
+                //--- Battery status -------------------------------------------------------------------------------
+                case "315D1490": // power_mng.bat_empty_full, UInt8 bitfield (bit 0 = was empty, bit 1 = was full)
+                    $bits = HelperFunctions::hexUInt8ToDec($data);
+                    $this->SetValue("BatteryWasEmpty", ($bits & 1) != 0);
+                    $this->SetValue("BatteryWasFull", ($bits & 2) != 0);
+                    break;
+
+                case "70A2AF4F": // battery.bat_status, INT32 (bitfield)
+                    $parsed = $this->hexToInt($data, 8, true);
+                    if ($parsed !== null) $this->SetValue("BatteryStatus", $parsed);
+                    break;
+
+                case "71765BD8": // battery.status, INT32
+                    $parsed = $this->hexToInt($data, 8, true);
+                    if ($parsed !== null) $this->SetValue("BatteryStatus2", $parsed);
+                    break;
+
+                //--- Battery calibration --------------------------------------------------------------------------
+                case "B6623608": // power_mng.bat_next_calib_date, UInt32 (Unix timestamp)
+                    $parsed = $this->hexToInt($data, 8);
+                    if ($parsed !== null) $this->SetValue("BatteryCalibNextDate", $parsed);
+                    break;
+
+                case "93C0C2E2": // power_mng.bat_calib_reqularity [days], UInt32
+                    $parsed = $this->hexToInt($data, 8);
+                    if ($parsed !== null) $this->SetValue("BatteryCalibRegularity", $parsed);
+                    break;
+
+                case "672552DC": // power_mng.bat_calib_days_in_advance [days], UInt8
+                    $this->SetValue("BatteryCalibDaysInAdvance", HelperFunctions::hexUInt8ToDec($data));
+                    break;
+
+                case "F393B7B0": // power_mng.calib_charge_power [W], Float
+                    $this->SetValue("BatteryCalibChargePower", round($float, 0));
+                    break;
+
+                //--- Battery charge flow --------------------------------------------------------------------------
+                case "06A9FFA2": // battery.charged_amp_hours [Ah], Float
+                    $this->SetValue("BatteryChargedAmpHours", round($float, 1));
+                    break;
+
+                //--- External energy ------------------------------------------------------------------------------
+                case "B9A026F9": // energy.e_ext_day [Wh], Float
+                    $this->SetValue("EnergyDayExternal", round($float, 0));
+                    break;
+
+                case "A59C8428": // energy.e_ext_total [Wh], Float
+                    $this->SetValue("EnergyTotalExternal", round($float, 0));
+                    break;
+
                 //--- Default Handling ---------------------------------------------------------------------------
                 default:         // Unknown response
                     $this->debugLog("Unknown Response Address " . $address . " with data " . $data . " (as Float " . number_format($float, 2) . ")");
@@ -794,6 +906,83 @@ class RCTPowerInverter extends IPSModule
             $this->debugLog("Error processing address " . $address, true);
             $this->debugLog("Exception catched: " . $e->getMessage(), true);
         }
+    }
+
+    /**
+     * Converts a hex string with the expected length (in hex characters) to an integer.
+     * Returns null (and writes a debug message) if the data does not look as expected.
+     * With $signed = true the value is interpreted as two's complement (INT32 etc.).
+     */
+    protected function hexToInt(string $hex, int $expectedLength, bool $signed = false)
+    {
+        if (strlen($hex) != $expectedLength || !ctype_xdigit($hex)) {
+            $this->debugLog("Unexpected data '" . $hex . "', expected " . $expectedLength . " hex characters");
+            return null;
+        }
+        $value = hexdec($hex);
+        if ($signed && $value >= (1 << (4 * $expectedLength - 1))) {
+            $value -= (1 << (4 * $expectedLength));
+        }
+        return $value;
+    }
+
+    /**
+     * Stores one bit-coded fault word and updates the "Errorstatus" variable.
+     * Errorstatus is true as soon as at least one of the four fault words is not 0.
+     */
+    protected function updateFaultWord(int $index, string $dataHex)
+    {
+        // fault words are 32 bit values -> 8 hex characters
+        $faultWord = $this->hexToInt($dataHex, 8);
+        if ($faultWord === null) {
+            return;
+        }
+
+        $this->SetBuffer("FaultWord" . $index, (string)$faultWord);
+        if ($faultWord != 0) {
+            $this->debugLog("Fault word " . $index . " = 0x" . $dataHex);
+        }
+
+        $anyFault = false;
+        for ($i = 0; $i < 4; $i++) {
+            if ((int)$this->GetBuffer("FaultWord" . $i) != 0) {
+                $anyFault = true;
+                break;
+            }
+        }
+        $this->SetValue("Errorstatus", $anyFault);
+    }
+
+    /**
+     * Calculates the battery power of one tower (P = U * I) as soon as
+     * current and voltage of that tower have been received.
+     */
+    protected function updateTowerPower(int $tower)
+    {
+        $currentBuffer = $this->GetBuffer("Tower" . $tower . "Current");
+        $voltageBuffer = $this->GetBuffer("Tower" . $tower . "Voltage");
+
+        // wait until both values are available
+        if ($currentBuffer === "" || $voltageBuffer === "") {
+            return;
+        }
+
+        $current = (float)$currentBuffer;
+        $voltage = (float)$voltageBuffer;
+
+        // no tower connected / tower off
+        if (abs($voltage) < 1.0) {
+            $this->SetValue("BatteryTower" . $tower . "Power", 0);
+            return;
+        }
+
+        // plausibility check
+        if ($voltage < 200 || $voltage > 600 || abs($current) > 100) {
+            $this->debugLog("Tower " . $tower . ": implausible values U=" . $voltage . " V, I=" . $current . " A, ignored");
+            return;
+        }
+
+        $this->SetValue("BatteryTower" . $tower . "Power", (int)round($voltage * $current, 0));
     }
 
     protected function hexTo32Float(string $strHex)
@@ -885,7 +1074,7 @@ class RCTPowerInverter extends IPSModule
             foreach ($pollingIds as $pollingId) {
                 $this->debugLog("Requesting Data for Address ".$pollingId["id"]);
                 $hexCommand = HelperFunctions::getHexReadCommandString($pollingId["id"]);
-                $this->SendDataToParent(json_encode(array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => mb_convert_encoding($hexCommand, 'UTF-8', 'ISO-8859-1'))));
+                $this->SendDataToParent(json_encode(array("DataID" => "{79827379-F36E-4ADA-8A95-5F8D1DC92FA9}", "Buffer" => utf8_encode($hexCommand))));
                 usleep(100000);
             }
         }
@@ -899,8 +1088,19 @@ class RCTPowerInverter extends IPSModule
         // Generate Variable Profiles
 
         //--- Boolean (Type 0)
+        if (!IPS_VariableProfileExists('RCTPOWER_YesNo')) {
+            IPS_CreateVariableProfile('RCTPOWER_YesNo', 0);
+            IPS_SetVariableProfileAssociation('RCTPOWER_YesNo', 0, "Nein", "", -1);
+            IPS_SetVariableProfileAssociation('RCTPOWER_YesNo', 1, "Ja", "", -1);
+        }
 
         //--- Integer (Type 1)
+        if (!IPS_VariableProfileExists('RCTPOWER_Days')) {
+            IPS_CreateVariableProfile('RCTPOWER_Days', 1);
+            IPS_SetVariableProfileDigits('RCTPOWER_Days', 0);
+            IPS_SetVariableProfileIcon('RCTPOWER_Days', 'Calendar');
+            IPS_SetVariableProfileText('RCTPOWER_Days', "", " Tage");
+        }
         if (!IPS_VariableProfileExists('RCTPOWER_Ampere')) {
             IPS_CreateVariableProfile('RCTPOWER_Ampere', 1);
             IPS_SetVariableProfileDigits('RCTPOWER_Ampere', 0);
@@ -943,6 +1143,12 @@ class RCTPowerInverter extends IPSModule
         }
 
         //--- Float (Type 2)
+        if (!IPS_VariableProfileExists('RCTPOWER_AmpereHours')) {
+            IPS_CreateVariableProfile('RCTPOWER_AmpereHours', 2);
+            IPS_SetVariableProfileDigits('RCTPOWER_AmpereHours', 1);
+            IPS_SetVariableProfileIcon('RCTPOWER_AmpereHours', 'Battery');
+            IPS_SetVariableProfileText('RCTPOWER_AmpereHours', "", " Ah");
+        }
         if (!IPS_VariableProfileExists('RCTPOWER_Capacity.2')) {
             IPS_CreateVariableProfile('RCTPOWER_Capacity.2', 2);
             IPS_SetVariableProfileDigits('RCTPOWER_Capacity.2', 2);
@@ -1068,6 +1274,45 @@ class RCTPowerInverter extends IPSModule
         $this->RegisterVariableInteger("SoCBatteryPowerExtern", "SoC Entladeleistung (extern)", "RCTPOWER_Power", 901);
         $this->RegisterVariableFloat("SoCTargetSoCSet", "Gesetzter Ziel-Ladestand", "~Valve.F", 902);
         $this->RegisterVariableFloat("SoCMinTarget", "Minimaler Ziel-Ladestand", "~Valve.F", 903);
+
+        // Inverter AC side
+        $this->RegisterVariableInteger("InverterACPower", "Wechselrichter AC Leistung", "RCTPOWER_Power", 150); // "DB2D69AE"
+        $this->RegisterVariableInteger("GridVoltageL1", "Netzspannung Phase L1", "RCTPOWER_Voltage", 151); // "CF053085"
+        $this->RegisterVariableInteger("GridVoltageL2", "Netzspannung Phase L2", "RCTPOWER_Voltage", 152); // "54B4684E"
+        $this->RegisterVariableInteger("GridVoltageL3", "Netzspannung Phase L3", "RCTPOWER_Voltage", 153); // "2545E22D"
+
+        // Battery current and battery towers
+        $this->RegisterVariableFloat("BatteryCurrent", "Batterie Strom", "~Ampere", 194); // "0AFDD6CF": acc_conv.i_acc_lp_fast
+        $this->RegisterVariableInteger("BatteryTower1Power", "Batterie Leistung Turm 1", "RCTPOWER_Power", 195); // "21961B58" * "65EED11B"
+        $this->RegisterVariableInteger("BatteryTower2Power", "Batterie Leistung Turm 2", "RCTPOWER_Power", 196); // "79D7D617" * "FCA1CBB5"
+
+        // Power Management
+        $this->RegisterVariableFloat("SoCMaintenanceChargeMin", "Erhaltungsladung ab SoC", "~Valve.F", 904); // "BD3A23C3": power_mng.soc_charge
+        $this->RegisterVariableInteger("SoCMaintenanceChargePower", "Erhaltungsladeleistung", "RCTPOWER_Power", 905); // "1D2994EA": power_mng.soc_charge_power
+        $this->RegisterVariableBoolean("UseGridPowerEnable", "Netzstrom nutzen erlaubt", "RCTPOWER_YesNo", 906); // "36A9E9A6": power_mng.use_grid_power_enable
+        $this->RegisterVariableInteger("PowerMngBatteryPower", "Batterie Entladeleistung (Power-Management)", "RCTPOWER_Power", 907); // "1156DFD0": power_mng.battery_power
+        $this->RegisterVariableFloat("PowerMngStopDischargeCurrent", "Stop-Entladestrom", "~Ampere", 908); // "F1342795"
+        $this->RegisterVariableFloat("PowerMngStopChargeCurrent", "Stop-Ladestrom", "~Ampere", 909); // "D197CBE0"
+        $this->RegisterVariableInteger("PowerMngState", "Power-Management Status", "", 910); // "DC667958": power_mng.state
+
+        // Battery status
+        $this->RegisterVariableBoolean("BatteryWasEmpty", "Batterie war leer", "RCTPOWER_YesNo", 911); // "315D1490" bit 0
+        $this->RegisterVariableBoolean("BatteryWasFull", "Batterie war voll", "RCTPOWER_YesNo", 912); // "315D1490" bit 1
+        $this->RegisterVariableInteger("BatteryStatus", "Batteriestatus (bitcodiert)", "", 913); // "70A2AF4F": battery.bat_status
+        $this->RegisterVariableInteger("BatteryStatus2", "Batteriestatus 2", "", 914); // "71765BD8": battery.status
+
+        // Battery calibration
+        $this->RegisterVariableInteger("BatteryCalibNextDate", "Nächste Batterie-Kalibrierung", "~UnixTimestamp", 920); // "B6623608"
+        $this->RegisterVariableInteger("BatteryCalibRegularity", "Kalibrierung alle", "RCTPOWER_Days", 921); // "93C0C2E2"
+        $this->RegisterVariableInteger("BatteryCalibDaysInAdvance", "Kalibrierung Vorlauf", "RCTPOWER_Days", 922); // "672552DC"
+        $this->RegisterVariableInteger("BatteryCalibChargePower", "Kalibrier-Ladeleistung", "RCTPOWER_Power", 923); // "F393B7B0"
+
+        // Battery charge flow
+        $this->RegisterVariableFloat("BatteryChargedAmpHours", "Ladungsfluss in Batterie gesamt", "RCTPOWER_AmpereHours", 930); // "06A9FFA2"
+
+        // External energy
+        $this->RegisterVariableInteger("EnergyDayExternal", "Tag - Externe Energie", "RCTPOWER_Energy", 510); // "B9A026F9"
+        $this->RegisterVariableInteger("EnergyTotalExternal", "Gesamt - Externe Energie", "RCTPOWER_Energy", 810); // "A59C8428"
 
 
         $this->RegisterVariableBoolean("Errorstatus", "Fehlerstatus", "~Alert", 1000);

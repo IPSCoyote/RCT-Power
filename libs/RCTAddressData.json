@@ -469,6 +469,11 @@
     //--- Inverter Data -----------------------------------------------------------------
     {
       "ipsCalculated": false,
+      "ipsIdent": "InverterACPower",
+      "ipsType": "Integer",
+      "ipsName": "Wechselrichter AC Leistung",
+      "ipsProfile": "RCTPOWER_Power",
+      "ipsPosition": 150,
       "countInDocumentation": 767,
       "id": "DB2D69AE",
       "polling": true,
@@ -476,8 +481,7 @@
       "dataType": "t_float",
       "factor": 1,
       "precision": 0,
-      "descriptionInDocumentation": "AC power [W]",
-      "ipsProfile": "RCTPOWER_POWER"
+      "descriptionInDocumentation": "AC power [W]"
     },
 
     //--- Request Energies --------------------------------------------------------------
@@ -1101,6 +1105,412 @@
       "dataType": "t_float",
       "factor": 100,
       "precision": 1
+    },
+
+    // Inverter AC side: grid voltages
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "GridVoltageL1",
+      "ipsType": "Integer",
+      "ipsName": "Netzspannung Phase L1",
+      "ipsProfile": "RCTPOWER_Voltage",
+      "ipsPosition": 151,
+      "id": "CF053085",
+      "polling": true,
+      "technicalName": "g_sync.u_l_rms[0]",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 0,
+      "descriptionInDocumentation": "AC voltage phase 1"
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "GridVoltageL2",
+      "ipsType": "Integer",
+      "ipsName": "Netzspannung Phase L2",
+      "ipsProfile": "RCTPOWER_Voltage",
+      "ipsPosition": 152,
+      "id": "54B4684E",
+      "polling": true,
+      "technicalName": "g_sync.u_l_rms[1]",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 0,
+      "descriptionInDocumentation": "AC voltage phase 2"
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "GridVoltageL3",
+      "ipsType": "Integer",
+      "ipsName": "Netzspannung Phase L3",
+      "ipsProfile": "RCTPOWER_Voltage",
+      "ipsPosition": 153,
+      "id": "2545E22D",
+      "polling": true,
+      "technicalName": "g_sync.u_l_rms[2]",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 0,
+      "descriptionInDocumentation": "AC voltage phase 3"
+    },
+
+    // Fault words (set Errorstatus)
+    {
+      "ipsCalculated": false,
+      "id": "37F9D5CA",
+      "polling": true,
+      "technicalName": "fault[0].flt",
+      "dataType": "t_uint32",
+      "descriptionInDocumentation": "Error bit field 1"
+    },
+    {
+      "ipsCalculated": false,
+      "id": "234B4736",
+      "polling": true,
+      "technicalName": "fault[1].flt",
+      "dataType": "t_uint32",
+      "descriptionInDocumentation": "Error bit field 2"
+    },
+    {
+      "ipsCalculated": false,
+      "id": "3B7FCD47",
+      "polling": true,
+      "technicalName": "fault[2].flt",
+      "dataType": "t_uint32",
+      "descriptionInDocumentation": "Error bit field 3"
+    },
+    {
+      "ipsCalculated": false,
+      "id": "7F813D73",
+      "polling": true,
+      "technicalName": "fault[3].flt",
+      "dataType": "t_uint32",
+      "descriptionInDocumentation": "Error bit field 4"
+    },
+
+    // Battery current and battery towers
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "BatteryCurrent",
+      "ipsType": "Float",
+      "ipsName": "Batterie Strom",
+      "ipsProfile": "~Ampere",
+      "ipsPosition": 194,
+      "id": "0AFDD6CF",
+      "polling": true,
+      "technicalName": "acc_conv.i_acc_lp_fast",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 2,
+      "descriptionInDocumentation": "Battery current"
+    },
+    {
+      "ipsCalculated": false,
+      "id": "21961B58",
+      "polling": true,
+      "technicalName": "battery.current",
+      "dataType": "t_float",
+      "descriptionInDocumentation": "Battery tower 1 current [A]"
+    },
+    {
+      "ipsCalculated": false,
+      "id": "65EED11B",
+      "polling": true,
+      "technicalName": "battery.voltage",
+      "dataType": "t_float",
+      "descriptionInDocumentation": "Battery tower 1 voltage [V]"
+    },
+    {
+      "ipsCalculated": false,
+      "id": "79D7D617",
+      "polling": true,
+      "technicalName": "battery_placeholder[0].current",
+      "dataType": "t_float",
+      "descriptionInDocumentation": "Battery tower 2 current [A]"
+    },
+    {
+      "ipsCalculated": false,
+      "id": "FCA1CBB5",
+      "polling": true,
+      "technicalName": "battery_placeholder[0].voltage",
+      "dataType": "t_float",
+      "descriptionInDocumentation": "Battery tower 2 voltage [V]"
+    },
+    {
+      "ipsCalculated": true,
+      "ipsIdent": "BatteryTower1Power",
+      "ipsType": "Integer",
+      "ipsName": "Batterie Leistung Turm 1",
+      "ipsProfile": "RCTPOWER_Power",
+      "ipsPosition": 195
+    },
+    {
+      "ipsCalculated": true,
+      "ipsIdent": "BatteryTower2Power",
+      "ipsType": "Integer",
+      "ipsName": "Batterie Leistung Turm 2",
+      "ipsProfile": "RCTPOWER_Power",
+      "ipsPosition": 196
+    },
+
+    // Power management
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "SoCMaintenanceChargeMin",
+      "ipsType": "Float",
+      "ipsProfile": "~Valve.F",
+      "ipsPosition": 904,
+      "ipsName": "Erhaltungsladung ab SoC",
+      "id": "BD3A23C3",
+      "polling": true,
+      "technicalName": "power_mng.soc_charge",
+      "descriptionInDocumentation": "power_mng.soc_charge",
+      "dataType": "t_float",
+      "factor": 100,
+      "precision": 1
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "SoCMaintenanceChargePower",
+      "ipsType": "Integer",
+      "ipsProfile": "RCTPOWER_Power",
+      "ipsPosition": 905,
+      "ipsName": "Erhaltungsladeleistung",
+      "id": "1D2994EA",
+      "polling": true,
+      "technicalName": "power_mng.soc_charge_power",
+      "descriptionInDocumentation": "power_mng.soc_charge_power",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 0
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "UseGridPowerEnable",
+      "ipsType": "Boolean",
+      "ipsProfile": "RCTPOWER_YesNo",
+      "ipsPosition": 906,
+      "ipsName": "Netzstrom nutzen erlaubt",
+      "id": "36A9E9A6",
+      "polling": true,
+      "technicalName": "power_mng.use_grid_power_enable",
+      "descriptionInDocumentation": "power_mng.use_grid_power_enable",
+      "dataType": "t_bool"
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "PowerMngBatteryPower",
+      "ipsType": "Integer",
+      "ipsProfile": "RCTPOWER_Power",
+      "ipsPosition": 907,
+      "ipsName": "Batterie Entladeleistung (Power-Management)",
+      "id": "1156DFD0",
+      "polling": true,
+      "technicalName": "power_mng.battery_power",
+      "descriptionInDocumentation": "power_mng.battery_power",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 0
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "PowerMngStopDischargeCurrent",
+      "ipsType": "Float",
+      "ipsProfile": "~Ampere",
+      "ipsPosition": 908,
+      "ipsName": "Stop-Entladestrom",
+      "id": "F1342795",
+      "polling": true,
+      "technicalName": "power_mng.stop_discharge_current",
+      "descriptionInDocumentation": "power_mng.stop_discharge_current",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 1
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "PowerMngStopChargeCurrent",
+      "ipsType": "Float",
+      "ipsProfile": "~Ampere",
+      "ipsPosition": 909,
+      "ipsName": "Stop-Ladestrom",
+      "id": "D197CBE0",
+      "polling": true,
+      "technicalName": "power_mng.stop_charge_current",
+      "descriptionInDocumentation": "power_mng.stop_charge_current",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 1
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "PowerMngState",
+      "ipsType": "Integer",
+      "ipsProfile": "",
+      "ipsPosition": 910,
+      "ipsName": "Power-Management Status",
+      "id": "DC667958",
+      "polling": true,
+      "technicalName": "power_mng.state",
+      "descriptionInDocumentation": "power_mng.state",
+      "dataType": "t_uint8"
+    },
+
+    // Battery status
+    {
+      "ipsCalculated": false,
+      "id": "315D1490",
+      "polling": true,
+      "technicalName": "power_mng.bat_empty_full",
+      "descriptionInDocumentation": "power_mng.bat_empty_full (bit 0 = was empty, bit 1 = was full)",
+      "dataType": "t_uint8"
+    },
+    {
+      "ipsCalculated": true,
+      "ipsIdent": "BatteryWasEmpty",
+      "ipsType": "Boolean",
+      "ipsProfile": "RCTPOWER_YesNo",
+      "ipsPosition": 911,
+      "ipsName": "Batterie war leer"
+    },
+    {
+      "ipsCalculated": true,
+      "ipsIdent": "BatteryWasFull",
+      "ipsType": "Boolean",
+      "ipsProfile": "RCTPOWER_YesNo",
+      "ipsPosition": 912,
+      "ipsName": "Batterie war voll"
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "BatteryStatus",
+      "ipsType": "Integer",
+      "ipsProfile": "",
+      "ipsPosition": 913,
+      "ipsName": "Batteriestatus (bitcodiert)",
+      "id": "70A2AF4F",
+      "polling": true,
+      "technicalName": "battery.bat_status",
+      "descriptionInDocumentation": "Current battery status (bitfield)",
+      "dataType": "t_int32"
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "BatteryStatus2",
+      "ipsType": "Integer",
+      "ipsProfile": "",
+      "ipsPosition": 914,
+      "ipsName": "Batteriestatus 2",
+      "id": "71765BD8",
+      "polling": true,
+      "technicalName": "battery.status",
+      "descriptionInDocumentation": "Battery status",
+      "dataType": "t_int32"
+    },
+
+    // Battery calibration
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "BatteryCalibNextDate",
+      "ipsType": "Integer",
+      "ipsProfile": "~UnixTimestamp",
+      "ipsPosition": 920,
+      "ipsName": "Nächste Batterie-Kalibrierung",
+      "id": "B6623608",
+      "polling": true,
+      "technicalName": "power_mng.bat_next_calib_date",
+      "descriptionInDocumentation": "power_mng.bat_next_calib_date (Unix timestamp)",
+      "dataType": "t_uint32"
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "BatteryCalibRegularity",
+      "ipsType": "Integer",
+      "ipsProfile": "RCTPOWER_Days",
+      "ipsPosition": 921,
+      "ipsName": "Kalibrierung alle",
+      "id": "93C0C2E2",
+      "polling": true,
+      "technicalName": "power_mng.bat_calib_reqularity",
+      "descriptionInDocumentation": "power_mng.bat_calib_reqularity (days)",
+      "dataType": "t_uint32"
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "BatteryCalibDaysInAdvance",
+      "ipsType": "Integer",
+      "ipsProfile": "RCTPOWER_Days",
+      "ipsPosition": 922,
+      "ipsName": "Kalibrierung Vorlauf",
+      "id": "672552DC",
+      "polling": true,
+      "technicalName": "power_mng.bat_calib_days_in_advance",
+      "descriptionInDocumentation": "power_mng.bat_calib_days_in_advance (days)",
+      "dataType": "t_uint8"
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "BatteryCalibChargePower",
+      "ipsType": "Integer",
+      "ipsProfile": "RCTPOWER_Power",
+      "ipsPosition": 923,
+      "ipsName": "Kalibrier-Ladeleistung",
+      "id": "F393B7B0",
+      "polling": true,
+      "technicalName": "power_mng.calib_charge_power",
+      "descriptionInDocumentation": "power_mng.calib_charge_power",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 0
+    },
+
+    // Battery charge flow
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "BatteryChargedAmpHours",
+      "ipsType": "Float",
+      "ipsProfile": "RCTPOWER_AmpereHours",
+      "ipsPosition": 930,
+      "ipsName": "Ladungsfluss in Batterie gesamt",
+      "id": "06A9FFA2",
+      "polling": true,
+      "technicalName": "battery.charged_amp_hours",
+      "descriptionInDocumentation": "Total charge flow into battery",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 1
+    },
+
+    // External energy
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "EnergyDayExternal",
+      "ipsType": "Integer",
+      "ipsProfile": "RCTPOWER_Energy",
+      "ipsPosition": 510,
+      "ipsName": "Tag - Externe Energie",
+      "id": "B9A026F9",
+      "polling": true,
+      "technicalName": "energy.e_ext_day",
+      "descriptionInDocumentation": "External day energy [Wh]",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 0
+    },
+    {
+      "ipsCalculated": false,
+      "ipsIdent": "EnergyTotalExternal",
+      "ipsType": "Integer",
+      "ipsProfile": "RCTPOWER_Energy",
+      "ipsPosition": 810,
+      "ipsName": "Gesamt - Externe Energie",
+      "id": "A59C8428",
+      "polling": true,
+      "technicalName": "energy.e_ext_total",
+      "descriptionInDocumentation": "External total energy [Wh]",
+      "dataType": "t_float",
+      "factor": 1,
+      "precision": 0
     }
   ]
 }
